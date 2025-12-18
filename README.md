@@ -240,20 +240,35 @@ export function UsersTable() {
 
 Main server function for handling table data fetching.
 
+**With Mongoose Model** (auto-infers document type):
+
 ```typescript
-type TDataKitServerActionOptions<T, R> = {
-	input: TDataKitInput<T>;
-	model: TMongoModel<T>;
-	item: (item: T) => Promise<R> | R;
-	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
-	// ** Custom filter configuration (defines allowed filter keys)
-	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
-	defaultSort?: TSortOptions<T>;
-	// ** Maximum limit per page (default: 100)
-	maxLimit?: number;
-	// ** Whitelist of allowed query fields
-	queryAllowed?: string[];
-};
+dataKitServerAction({
+  model: UserModel,           // Mongoose model
+  input: TDataKitInput,
+  item: user => ({ ... }),    // user is typed from model
+  filterCustom?: { ... },     // Custom filter handlers
+  filter?: (input) => query,  // Custom filter function
+  defaultSort?: { ... },
+  maxLimit?: number,          // Default: 100
+  queryAllowed?: string[],    // Whitelist for query fields
+  filterAllowed?: string[],   // Auto-derived from filterCustom
+});
+```
+
+**With Custom Adapter** (for testing or non-mongoose):
+
+```typescript
+import { adapterMemory } from 'next-data-kit/server';
+
+dataKitServerAction({
+  adapter: adapterMemory(items), // or custom adapter
+  input: TDataKitInput,
+  item: item => ({ ... }),
+  maxLimit?: number,
+  queryAllowed?: string[],
+  filterAllowed?: string[],
+});
 ```
 
 ```
@@ -475,18 +490,29 @@ interface TFilterConfig {
 }
 ```
 
-## Working with Custom Models
+## Custom Adapters
 
-The package provides generic database types that work with any ORM/ODM:
+Use custom adapters for non-mongoose databases or testing:
 
 ```typescript
-import type { TModel, TMongoFilterQuery, TQueryBuilder } from 'next-data-kit/types';
+import { adapterMemory } from 'next-data-kit/server';
+import type { TDataKitAdapter } from 'next-data-kit/types';
 
-// Your model just needs to implement the Model interface
-interface MyModel extends TModel<MyDocument> {
-	countDocuments(filter?: TMongoFilterQuery<MyDocument>): Promise<number>;
-	find(filter?: TMongoFilterQuery<MyDocument>): TQueryBuilder<MyDocument[]>;
-}
+// Built-in memory adapter (great for testing)
+const adapter = adapterMemory(items);
+
+// Or create a custom adapter
+const myAdapter: TDataKitAdapter<MyDocument> = async ({ filter, sorts, limit, skip }) => {
+  const items = await myDb.query({ filter, limit, skip });
+  const total = await myDb.count(filter);
+  return { items, total };
+};
+
+dataKitServerAction({
+  adapter: myAdapter,
+  input,
+  item: doc => ({ ... }),
+});
 ```
 
 ## License

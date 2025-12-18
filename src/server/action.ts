@@ -6,53 +6,59 @@
  */
 
 import { mongooseAdapter } from './adapters/mongoose';
+import type { Model } from 'mongoose';
 import type { TDataKitInput, TDataKitResult, TDataKitAdapter, TMongoModel, TMongoFilterQuery, TFilterCustomConfigWithFilter, TSortOptions } from '../types';
 
-// ** ============================================================================
-// ** Types
-// ** ============================================================================
+/**
+ * Extract document type from a Mongoose Model.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TExtractDocType<M> = M extends Model<infer TRawDocType, any, any, any, any, any> ? TRawDocType : never;
 
-export type TDataKitServerActionOptions<T, R> = {
-	// ** The input from the client
-	input: TDataKitInput<T>;
-	// ** The database adapter or Mongoose model
-	adapter: TDataKitAdapter<T> | TMongoModel<T>;
-	// ** Function to transform each item before returning
-	item: (item: T) => Promise<R> | R;
-	// ** Custom filter function
-	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
-	// ** Custom filter configuration (defines allowed filter keys)
-	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
-	// ** Default sort options
-	defaultSort?: TSortOptions<T>;
-	// ** Maximum limit per page (default: 100)
+/**
+ * Base options shared by both mongoose and adapter versions
+ */
+type TBaseOptions<TDoc, R> = {
+	input: TDataKitInput<TDoc>;
+	item: (item: TDoc) => Promise<R> | R;
+	filterAllowed?: string[];
 	maxLimit?: number;
-	// ** Whitelist of allowed query fields
-	queryAllowed?: string[];
+	queryAllowed?: (keyof TDoc | string)[];
 };
 
-// ** ============================================================================
-// ** Server Action
-// ** ============================================================================
+/**
+ * Options when using a Mongoose model
+ */
+type TMongooseOptions<M, TDoc, R> = TBaseOptions<TDoc, R> & {
+	model: M;
+	adapter?: never;
+	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<TDoc>;
+	filterCustom?: TFilterCustomConfigWithFilter<TDoc, TMongoFilterQuery<TDoc>>;
+	defaultSort?: TSortOptions<TDoc>;
+};
 
-export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerActionOptions<T, R>>): Promise<TDataKitResult<R>> => {
-	// ** Deconstruct Props
-	const { input, adapter, item, maxLimit = 100, filterCustom, queryAllowed } = props;
+/**
+ * Options when using a custom adapter
+ */
+type TAdapterOptions<TDoc, R> = TBaseOptions<TDoc, R> & {
+	adapter: TDataKitAdapter<TDoc>;
+	model?: never;
+	filter?: never;
+	filterCustom?: TFilterCustomConfigWithFilter<TDoc, unknown>;
+	defaultSort?: never;
+};
 
-	// ** Auto-generate filterAllowed from filterCustom keys (server defines what's allowed)
-	const filterAllowed = filterCustom ? Object.keys(filterCustom) : undefined;
-
-	// ** Whitelist filtering for security (if configured)
-	// ** We do this here instead of in the adapter to keep the adapter simple and "dumb"
-
-	// ** Check Query
+/**
+ * Core execution logic shared by both overloads
+ */
+async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDataKitAdapter<TDoc>, item: (item: TDoc) => Promise<R> | R, maxLimit: number, filterAllowed?: string[], queryAllowed?: (keyof TDoc | string)[]): Promise<TDataKitResult<R>> {
+	// Check Query
 	if (input.query) {
 		const safeQuery: Record<string, string | number | boolean> = {};
 		Object.keys(input.query).forEach(key => {
 			if (queryAllowed && !queryAllowed.includes(key)) {
 				throw new Error(`[Security] Query field '${key}' is not allowed.`);
 			}
-			// ** Enforce primitive values only (Anti-NoSQL Injection)
 			const val = input.query![key];
 			if (val !== null && typeof val === 'object') {
 				throw new Error(`[Security] Query value for '${key}' must be a primitive.`);
@@ -64,14 +70,13 @@ export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerAc
 		input.query = safeQuery;
 	}
 
-	// ** Check Filter
+	// Check Filter
 	if (input.filter) {
 		const safeFilter: Record<string, unknown> = {};
 		Object.keys(input.filter).forEach(key => {
 			if (filterAllowed && !filterAllowed.includes(key)) {
 				throw new Error(`[Security] Filter field '${key}' is not allowed.`);
 			}
-			// ** Enforce primitive values only (Anti-NoSQL Injection)
 			const val = input.filter![key];
 			if (val !== null && typeof val === 'object') {
 				throw new Error(`[Security] Filter value for '${key}' must be a primitive.`);
@@ -81,10 +86,7 @@ export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerAc
 		input.filter = safeFilter;
 	}
 
-	// ** Determine adapter
-	const finalAdapter: TDataKitAdapter<T> = typeof adapter === 'function' ? adapter : mongooseAdapter(adapter as TMongoModel<T>, props);
-
-	// ** Handle action
+	// Handle action
 	switch (input.action ?? 'FETCH') {
 		case 'FETCH': {
 			if (!input.limit || !input.page) {
@@ -94,8 +96,7 @@ export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerAc
 			const limit = Math.min(input.limit, maxLimit);
 			const skip = limit * (input.page - 1);
 
-			// ** Fetch data using adapter
-			const { items, total } = await finalAdapter({
+			const { items, total } = await adapter({
 				filter: input.filter ?? {},
 				sorts: input.sorts ?? [],
 				limit,
@@ -104,7 +105,6 @@ export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerAc
 				input,
 			});
 
-			// ** Process each item through the item mapper function
 			const processedItems = await Promise.all(items.map(dataItem => item(dataItem)));
 
 			return {
@@ -117,4 +117,45 @@ export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerAc
 		default:
 			throw new Error(`Unsupported action: ${(input as { action?: string }).action}`);
 	}
-};
+}
+
+/**
+ * Server action with Mongoose model (auto-infers document type)
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function dataKitServerAction<M extends Model<any>, R = unknown>(props: Readonly<TMongooseOptions<M, TExtractDocType<M>, R>>): Promise<TDataKitResult<R>>;
+
+/**
+ * Server action with custom adapter
+ */
+export async function dataKitServerAction<TDoc, R = unknown>(props: Readonly<TAdapterOptions<TDoc, R>>): Promise<TDataKitResult<R>>;
+
+/**
+ * Implementation
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function dataKitServerAction<M extends Model<any>, TDoc = any, R = unknown>(props: Readonly<TMongooseOptions<M, TDoc, R> | TAdapterOptions<TDoc, R>>): Promise<TDataKitResult<R>> {
+	const { input, item, maxLimit = 100, queryAllowed, filterAllowed: explicitFilterAllowed } = props;
+
+	// Determine filterAllowed
+	const filterCustom = 'filterCustom' in props ? props.filterCustom : undefined;
+	const filterAllowed = explicitFilterAllowed ?? (filterCustom ? Object.keys(filterCustom) : undefined);
+
+	// Determine adapter
+	let finalAdapter: TDataKitAdapter<TDoc>;
+
+	if ('adapter' in props && props.adapter) {
+		finalAdapter = props.adapter;
+	} else if ('model' in props && props.model) {
+		const model = props.model as unknown as TMongoModel<TDoc>;
+		finalAdapter = mongooseAdapter(model, {
+			filter: props.filter,
+			filterCustom: props.filterCustom,
+			defaultSort: props.defaultSort,
+		}) as TDataKitAdapter<TDoc>;
+	} else {
+		throw new Error('Either model or adapter must be provided');
+	}
+
+	return executeDataKit(input, finalAdapter, item, maxLimit, filterAllowed, queryAllowed);
+}

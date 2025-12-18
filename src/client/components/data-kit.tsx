@@ -28,9 +28,6 @@ import type {
     TDataKitRef,
 } from '../../types';
 
-// ** ============================================================================
-// ** Component
-// ** ============================================================================
 
 const DataKitInner = <
     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>

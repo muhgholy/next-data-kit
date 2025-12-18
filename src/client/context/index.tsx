@@ -9,15 +9,9 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import type { TUseDataKitReturn } from '../../types';
 
-// ** ============================================================================
-// ** Types
-// ** ============================================================================
 
 export type TDataKitContextValue<T = unknown, R = unknown> = TUseDataKitReturn<T, R>;
 
-// ** ============================================================================
-// ** Context Factory
-// ** ============================================================================
 
 export const createDataKitContext = <T = unknown, R = unknown>() => {
      const Context = createContext<TDataKitContextValue<T, R> | null>(null);
@@ -43,9 +37,6 @@ export const createDataKitContext = <T = unknown, R = unknown>() => {
      return { DataKitProvider, useDataKitContext, Context };
 };
 
-// ** ============================================================================
-// ** Default Context
-// ** ============================================================================
 
 const {
      DataKitProvider: DefaultDataKitProvider,

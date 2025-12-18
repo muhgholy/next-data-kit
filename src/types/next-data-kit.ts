@@ -6,9 +6,6 @@
 
 import type { TMongoFilterQuery, TSortOrder } from './database/mongo';
 
-// ** ============================================================================
-// ** Sort Types
-// ** ============================================================================
 
 /**
  * Sort options type that references keys from the item type
@@ -25,9 +22,6 @@ export type TSortEntry = {
      value: 1 | -1;
 };
 
-// ** ============================================================================
-// ** Filter Types
-// ** ============================================================================
 
 /**
  * Filter configuration for automatic filtering
@@ -57,9 +51,6 @@ export type TFilterCustomConfigWithFilter<TDoc = unknown, TFilter = TMongoFilter
      [id: string]: (data: unknown) => TFilter;
 };
 
-// ** ============================================================================
-// ** Input/Output Types
-// ** ============================================================================
 
 /**
  * React Data Kit server action input
@@ -94,9 +85,6 @@ export type TDataKitResult<R> = {
      documentTotal: number;
 };
 
-// ** ============================================================================
-// ** Pagination Types
-// ** ============================================================================
 
 /**
  * Pagination info for client-side use
@@ -122,9 +110,6 @@ export const calculatePagination = (page: number, limit: number, total: number):
      hasPrevPage: page > 1,
 });
 
-// ** ============================================================================
-// ** Adapter Types
-// ** ============================================================================
 
 /**
  * React Data Kit Adapter Interface

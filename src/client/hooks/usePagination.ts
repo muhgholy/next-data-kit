@@ -10,9 +10,6 @@ import { useMemo } from 'react';
 import type { TPaginationInfo } from '../../types';
 import { calculatePagination } from '../../types';
 
-// ** ============================================================================
-// ** Types
-// ** ============================================================================
 
 export type TUsePaginationReturn = TPaginationInfo & {
      // ** Array of page numbers/ellipsis to display
@@ -23,16 +20,10 @@ export type TUsePaginationReturn = TPaginationInfo & {
      lastPage: number;
 };
 
-// ** ============================================================================
-// ** Helpers
-// ** ============================================================================
 
 const range = (start: number, end: number): number[] =>
      Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
 
-// ** ============================================================================
-// ** Hook
-// ** ============================================================================
 
 export const usePagination = (props: Readonly<{
      page: number;

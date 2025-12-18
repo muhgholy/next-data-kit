@@ -4,9 +4,6 @@
  * Types for selectable/multi-select functionality in tables.
  */
 
-// ** ============================================================================
-// ** State Types
-// ** ============================================================================
 
 /**
  * Selection state for a table
@@ -20,9 +17,6 @@ export type TSelectionState<T = string> = {
      isIndeterminate: boolean;
 };
 
-// ** ============================================================================
-// ** Action Types
-// ** ============================================================================
 
 /**
  * Selection actions for a table
@@ -46,9 +40,6 @@ export type TSelectionActions<T = string> = {
      getSelectedArray: () => T[];
 };
 
-// ** ============================================================================
-// ** Combined Types
-// ** ============================================================================
 
 /**
  * Combined selection hook return type

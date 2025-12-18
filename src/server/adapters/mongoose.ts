@@ -4,142 +4,110 @@
  * Database adapter for Mongoose/MongoDB.
  */
 
-import type {
-     TMongoModel,
-     TMongoFilterQuery,
-     TSortOrder,
-     TSortOptions,
-     TFilterCustomConfigWithFilter,
-     TDataKitAdapter,
-     TExtractDocType,
-} from '../../types';
+import type { TMongoModel, TMongoFilterQuery, TSortOrder, TSortOptions, TFilterCustomConfigWithFilter, TDataKitAdapter } from '../../types';
+import { escapeRegex, isProvided, isSafeKey } from '../utils';
 
-// ** ============================================================================
-// ** Helpers
-// ** ============================================================================
-
-import { escapeRegex } from '../utils';
-
-// ** ============================================================================
-// ** Helpers
-// ** ============================================================================
-
-const isProvided = (value: unknown): boolean =>
-     value !== undefined && value !== null && value !== '';
-
-const isSafeKey = (key: string): boolean => {
-     const unsafeKeys = ['__proto__', 'constructor', 'prototype'];
-     return !unsafeKeys.includes(key);
-};
-
-// ** ============================================================================
-// ** Adapter
-// ** ============================================================================
-
-export const mongooseAdapter = <
-     M extends TMongoModel<unknown, object>,
-     DocType = TExtractDocType<M>
->(
-     model: M,
-     options: Readonly<{
-          filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>;
-          filterCustom?: TFilterCustomConfigWithFilter<DocType, TMongoFilterQuery<DocType>>;
-          defaultSort?: TSortOptions<DocType>;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          [key: string]: any;
-     }> = {}
+export const mongooseAdapter = <DocType = unknown>(
+	model: TMongoModel<DocType>,
+	options: Readonly<{
+		filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>;
+		filterCustom?: TFilterCustomConfigWithFilter<DocType, TMongoFilterQuery<DocType>>;
+		defaultSort?: TSortOptions<DocType>;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		[key: string]: any;
+	}> = {},
 ): TDataKitAdapter<DocType> => {
-     // ** Deconstruct options
-     const { filter: customFilterFn, filterCustom, defaultSort = { _id: -1 } as TSortOptions<DocType> } = options;
+	// ** Deconstruct options
+	const { filter: customFilterFn, filterCustom, defaultSort = { _id: -1 } as TSortOptions<DocType> } = options;
 
-     return async ({ filter, sorts, limit, skip, input }) => {
-          // ** Normalize sort
-          let sortOption: Record<string, TSortOrder>;
+	return async ({ filter, sorts, limit, skip, input }) => {
+		// ** Normalize sort
+		let sortOption: Record<string, TSortOrder>;
 
-          if (input.sort && Object.keys(input.sort).length > 0) {
-               sortOption = input.sort as Record<string, TSortOrder>;
-          } else if (sorts && sorts.length > 0) {
-               sortOption = sorts.reduce<Record<string, TSortOrder>>((acc, s) => {
-                    if (s?.path && (s.value === 1 || s.value === -1)) {
-                         acc[s.path] = s.value;
-                    }
-                    return acc;
-               }, {});
-          } else {
-               sortOption = defaultSort as Record<string, TSortOrder>;
-          }
+		if (input.sort && Object.keys(input.sort).length > 0) {
+			sortOption = input.sort as Record<string, TSortOrder>;
+		} else if (sorts && sorts.length > 0) {
+			sortOption = sorts.reduce<Record<string, TSortOrder>>((acc, s) => {
+				if (s?.path && (s.value === 1 || s.value === -1)) {
+					acc[s.path] = s.value;
+				}
+				return acc;
+			}, {});
+		} else {
+			sortOption = defaultSort as Record<string, TSortOrder>;
+		}
 
-          // ** Construct filter query
-          let filterQuery: TMongoFilterQuery<DocType> = {};
+		// ** Construct filter query
+		let filterQuery: TMongoFilterQuery<DocType> = {};
 
-          // ** Query params (exact match)
-          if (input.query) {
-               Object.entries(input.query).forEach(([key, value]) => {
-                    if (isProvided(value) && isSafeKey(key)) {
-                         (filterQuery as Record<string, unknown>)[key] = value;
-                    }
-               });
-          }
+		// ** Query params (exact match)
+		if (input.query) {
+			Object.entries(input.query).forEach(([key, value]) => {
+				if (isProvided(value) && isSafeKey(key)) {
+					(filterQuery as Record<string, unknown>)[key] = value;
+				}
+			});
+		}
 
-          // ** Custom filter function
-          if (customFilterFn) {
-               const customQuery = customFilterFn(filter);
-               filterQuery = { ...filterQuery, ...customQuery };
-          }
+		// ** Custom filter function
+		if (customFilterFn) {
+			const customQuery = customFilterFn(filter);
+			filterQuery = { ...filterQuery, ...customQuery };
+		}
 
-          // ** User defined filters
-          if (filter && !customFilterFn) {
-               if (input.filterConfig) {
-                    Object.entries(filter).forEach(([key, value]) => {
-                         if (isProvided(value) && isSafeKey(key) && input.filterConfig?.[key]) {
-                              const config = input.filterConfig[key];
-                              const fieldName = config?.field ?? key;
+		// ** User defined filters
+		if (filter && !customFilterFn) {
+			if (input.filterConfig) {
+				Object.entries(filter).forEach(([key, value]) => {
+					if (isProvided(value) && isSafeKey(key) && input.filterConfig?.[key]) {
+						const config = input.filterConfig[key];
+						const fieldName = config?.field ?? key;
 
-                              if (config?.type === 'REGEX') {
-                                   (filterQuery as Record<string, unknown>)[fieldName] = {
-                                        $regex: escapeRegex(String(value)),
-                                        $options: 'i',
-                                   };
-                              } else if (config?.type === 'EXACT') {
-                                   (filterQuery as Record<string, unknown>)[fieldName] = value;
-                              }
-                         }
-                    });
-               } else {
-                    // ** Default automatic filtering
-                    Object.entries(filter).forEach(([key, value]) => {
-                         if (isProvided(value) && isSafeKey(key)) {
-                              if (typeof value === 'string') {
-                                   (filterQuery as Record<string, unknown>)[key] = {
-                                        $regex: escapeRegex(value),
-                                        $options: 'i',
-                                   };
-                              } else if (typeof value === 'number' || typeof value === 'boolean') {
-                                   (filterQuery as Record<string, unknown>)[key] = value;
-                              }
-                         }
-                    });
-               }
-          }
+						if (config?.type === 'REGEX') {
+							(filterQuery as Record<string, unknown>)[fieldName] = {
+								$regex: escapeRegex(String(value)),
+								$options: 'i',
+							};
+						} else if (config?.type === 'EXACT') {
+							(filterQuery as Record<string, unknown>)[fieldName] = value;
+						}
+					}
+				});
+			} else {
+				// ** Default automatic filtering
+				Object.entries(filter).forEach(([key, value]) => {
+					if (isProvided(value) && isSafeKey(key)) {
+						if (typeof value === 'string') {
+							(filterQuery as Record<string, unknown>)[key] = {
+								$regex: escapeRegex(value),
+								$options: 'i',
+							};
+						} else if (typeof value === 'number' || typeof value === 'boolean') {
+							(filterQuery as Record<string, unknown>)[key] = value;
+						}
+					}
+				});
+			}
+		}
 
-          // ** Custom filter logic (filterCustom)
-          if (filterCustom && filter) {
-               Object.entries(filter).forEach(([key, value]) => {
-                    if (isProvided(value) && isSafeKey(key) && filterCustom[key]) {
-                         const customFilter = filterCustom[key]!(value);
-                         filterQuery = { ...filterQuery, ...customFilter };
-                    }
-               });
-          }
+		// ** Custom filter logic (filterCustom)
+		if (filterCustom && filter) {
+			Object.entries(filter).forEach(([key, value]) => {
+				if (isProvided(value) && isSafeKey(key) && filterCustom[key]) {
+					const customFilter = filterCustom[key]!(value);
+					filterQuery = { ...filterQuery, ...customFilter };
+				}
+			});
+		}
 
-          // ** Execute queries
-          const total = await model.countDocuments(filterQuery as TMongoFilterQuery<unknown>);
-          const items = await model
-               .find(filterQuery as TMongoFilterQuery<unknown>)
-               .sort(sortOption)
-               .limit(limit)
-               .skip(skip) as unknown as DocType[];
+		// ** Execute queries
+		const total = await model.countDocuments(filterQuery as TMongoFilterQuery<unknown>);
+		const items = (await model
+			.find(filterQuery as TMongoFilterQuery<unknown>)
+			.sort(sortOption)
+			.limit(limit)
+			.skip(skip)) as unknown as DocType[];
 
-          return { items, total };
-     };
+		return { items, total };
+	};
 };

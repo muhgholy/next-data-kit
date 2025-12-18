@@ -10,9 +10,6 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { TDataKitInput, TDataKitResult, TDataKitControllerOptions, TSortEntry, TUseDataKitReturn } from '../../types';
 import { parseUrlParams, stateToUrlParams } from '../utils';
 
-// ** ============================================================================
-// ** Hook
-// ** ============================================================================
 
 export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TDataKitControllerOptions<T, R>>): TUseDataKitReturn<T, R> => {
 	// ** Deconstruct Props

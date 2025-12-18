@@ -41,9 +41,6 @@ import type {
     TFilterConfig,
 } from '../../types';
 
-// ** ============================================================================
-// ** Component
-// ** ============================================================================
 
 const DataKitRoot = <
     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>,

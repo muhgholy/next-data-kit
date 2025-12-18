@@ -74,8 +74,8 @@ export default function TableDemo() {
                               body: ({ item }) => (
                                    <DataKitTable.Cell>
                                         <span className={`px-2 py-1 rounded text-xs ${item.role === 'admin' ? 'bg-red-100 text-red-800' :
-                                                  item.role === 'user' ? 'bg-blue-100 text-blue-800' :
-                                                       'bg-gray-100 text-gray-800'
+                                             item.role === 'user' ? 'bg-blue-100 text-blue-800' :
+                                                  'bg-gray-100 text-gray-800'
                                              }`}>
                                              {item.role}
                                         </span>

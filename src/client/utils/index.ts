@@ -8,9 +8,6 @@ import type { TDataKitColumn, TSortEntry } from '../../types';
 
 export { cn, type ClassValue } from './cn';
 
-// ** ============================================================================
-// ** Column Utilities
-// ** ============================================================================
 
 /**
  * Get the value from an item using a column accessor
@@ -37,18 +34,12 @@ export const getNextSortValue = (current: 1 | -1 | null): 1 | -1 | null => {
      return null;
 };
 
-// ** ============================================================================
-// ** Formatting Utilities
-// ** ============================================================================
 
 /**
  * Format a number with commas
  */
 export const formatNumber = (num: number): string => num.toLocaleString();
 
-// ** ============================================================================
-// ** Function Utilities
-// ** ============================================================================
 
 /**
  * Debounce a function
@@ -81,9 +72,6 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
      };
 };
 
-// ** ============================================================================
-// ** Sort Entry Utilities
-// ** ============================================================================
 
 /**
  * Create a stable object key from sort entries
@@ -102,9 +90,6 @@ export const keyToSortEntries = (key: string): TSortEntry[] => {
      });
 };
 
-// ** ============================================================================
-// ** URL State Utilities
-// ** ============================================================================
 
 /**
  * Parse URL search params into tabler state

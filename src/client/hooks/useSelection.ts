@@ -9,9 +9,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { TUseSelectionReturn } from '../../types';
 
-// ** ============================================================================
-// ** Hook
-// ** ============================================================================
 
 export const useSelection = <T = string>(initialSelected: T[] = []): TUseSelectionReturn<T> => {
      // ** State
@@ -86,9 +83,6 @@ export const useSelection = <T = string>(initialSelected: T[] = []): TUseSelecti
      };
 };
 
-// ** ============================================================================
-// ** Hook with Total
-// ** ============================================================================
 
 export const useSelectionWithTotal = <T = string>(
      totalItems: T[],

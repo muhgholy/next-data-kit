@@ -5,17 +5,15 @@
  */
 
 // Server action
-export { dataKitServerAction, type TDataKitServerActionOptions } from './action';
+export { dataKitServerAction, type TExtractDocType } from './action';
 
 // Adapters
 export { mongooseAdapter } from './adapters/mongoose';
 export { adapterMemory } from './adapters/memory';
 
 // Utils
-export { escapeRegex, createSearchFilter } from './utils';
+export { escapeRegex, createSearchFilter, isProvided, isSafeKey } from './utils';
 export { dataKitSchemaZod, type TDataKitSchemaZod } from './schema';
 
 // Re-export types commonly used on server
-export type { TModel, TExtractDocType, THydratedDocument, TSortOrder, TSortOptions, TDataKitInput, TDataKitResult, TFilterCustomConfig, TFilterCustomConfigWithFilter, TFilterConfig, TDataKitAdapter } from '../types';
-
-export type { TMongoFilterQuery, TMongoFilterOperators, TMongoRootFilterOperators, TObjectId, TMongoDocument, TMongoHydratedDocument, TMongoModel } from '../types';
+export type { TSortOrder, TSortOptions, TDataKitInput, TDataKitResult, TFilterCustomConfig, TFilterCustomConfigWithFilter, TFilterConfig, TDataKitAdapter, TMongoFilterQuery, TMongoModel } from '../types';

@@ -7,9 +7,6 @@
 import type { TDataKitInput, TDataKitResult } from './next-data-kit';
 import type { TUseDataKitReturn } from './hook';
 
-// ** ============================================================================
-// ** Type Inference Helpers
-// ** ============================================================================
 
 /**
  * Extract the item type from a TDataKitResult
@@ -32,9 +29,6 @@ export type TExtractDataKitItemType<T> = T extends (input: TDataKitInput<unknown
      ? TExtractDataKitItemFromResult<Awaited<R>>
      : never;
 
-// ** ============================================================================
-// ** Component Types
-// ** ============================================================================
 
 /**
  * Column definition for React Data Kit component

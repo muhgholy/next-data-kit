@@ -1,7 +1,9 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import type { Document, Model, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-export interface IUser {
-	_id: mongoose.Types.ObjectId;
+// ** Document Type
+export interface IUserDocument extends Document {
+	_id: Types.ObjectId;
 	name: string;
 	email: string;
 	role: 'admin' | 'user' | 'guest';
@@ -11,17 +13,48 @@ export interface IUser {
 	updatedAt: Date;
 }
 
-const UserSchema = new Schema<IUser>(
+// ** Schema
+const userSchema = new Schema<IUserDocument>(
 	{
-		name: { type: String, required: true },
-		email: { type: String, required: true, unique: true },
-		role: { type: String, enum: ['admin', 'user', 'guest'], default: 'user' },
-		age: { type: Number, required: true },
-		active: { type: Boolean, default: true },
+		name: {
+			type: String,
+			required: true,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		role: {
+			type: String,
+			enum: ['admin', 'user', 'guest'],
+			default: 'user',
+		},
+		age: {
+			type: Number,
+			required: true,
+		},
+		active: {
+			type: Boolean,
+			default: true,
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now,
+			required: true,
+		},
+		updatedAt: {
+			type: Date,
+			default: Date.now,
+			required: true,
+		},
 	},
 	{
 		timestamps: true,
 	},
 );
 
-export const UserModel = models.User || model<IUser>('User', UserSchema);
+// ** Create and export User model
+const User: Model<IUserDocument> = mongoose.models.User || mongoose.model<IUserDocument>('User', userSchema);
+
+export default User;
