@@ -33,6 +33,12 @@ export type TDataKitServerActionOptions<T, R> = {
      filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
      // ** Default sort options
      defaultSort?: TSortOptions<T>;
+     // ** Maximum limit per page (default: 100)
+     maxLimit?: number;
+     // ** Whitelist of allowed filter fields
+     filterAllowed?: string[];
+     // ** Whitelist of allowed query fields
+     queryAllowed?: string[];
 };
 
 // ** ============================================================================
@@ -43,16 +49,49 @@ export const dataKitServerAction = async <T, R>(
      props: Readonly<TDataKitServerActionOptions<T, R>>
 ): Promise<TDataKitResult<R>> => {
      // ** Deconstruct Props
-     const { input, adapter, item, filter, filterCustom, defaultSort } = props;
+     const { input, adapter, item, maxLimit = 100, filterAllowed, queryAllowed } = props;
+
+     // ** Whitelist filtering for security (if configured)
+     // ** We do this here instead of in the adapter to keep the adapter simple and "dumb"
+
+     // ** Check Query
+     if (input.query) {
+          const safeQuery: Record<string, unknown> = {};
+          Object.keys(input.query).forEach((key) => {
+               if (queryAllowed && !queryAllowed.includes(key)) {
+                    throw new Error(`[Security] Query field '${key}' is not allowed.`);
+               }
+               // ** Enforce primitive values only (Anti-NoSQL Injection)
+               const val = input.query![key];
+               if (val !== null && typeof val === 'object') {
+                    throw new Error(`[Security] Query value for '${key}' must be a primitive.`);
+               }
+               safeQuery[key] = val;
+          });
+          input.query = safeQuery;
+     }
+
+     // ** Check Filter
+     if (input.filter) {
+          const safeFilter: Record<string, unknown> = {};
+          Object.keys(input.filter).forEach((key) => {
+               if (filterAllowed && !filterAllowed.includes(key)) {
+                    throw new Error(`[Security] Filter field '${key}' is not allowed.`);
+               }
+               // ** Enforce primitive values only (Anti-NoSQL Injection)
+               const val = input.filter![key];
+               if (val !== null && typeof val === 'object') {
+                    throw new Error(`[Security] Filter value for '${key}' must be a primitive.`);
+               }
+               safeFilter[key] = val;
+          });
+          input.filter = safeFilter;
+     }
 
      // ** Determine adapter
      const finalAdapter: TDataKitAdapter<T> = typeof adapter === 'function'
           ? adapter
-          : mongooseAdapter(adapter as TMongoModel<T>, {
-               filter: filter as ((filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>) | undefined,
-               filterCustom: filterCustom as TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>> | undefined,
-               defaultSort: defaultSort as TSortOptions<T> | undefined,
-          });
+          : mongooseAdapter(adapter as TMongoModel<T>, props);
 
      // ** Handle action
      switch (input.action ?? 'FETCH') {
@@ -61,7 +100,7 @@ export const dataKitServerAction = async <T, R>(
                     throw new Error('Invalid input: missing limit or page');
                }
 
-               const limit = input.limit;
+               const limit = Math.min(input.limit, maxLimit);
                const skip = limit * (input.page - 1);
 
                // ** Fetch data using adapter

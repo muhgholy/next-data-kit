@@ -18,8 +18,19 @@ import type {
 // ** Helpers
 // ** ============================================================================
 
+import { escapeRegex } from '../utils';
+
+// ** ============================================================================
+// ** Helpers
+// ** ============================================================================
+
 const isProvided = (value: unknown): boolean =>
      value !== undefined && value !== null && value !== '';
+
+const isSafeKey = (key: string): boolean => {
+     const unsafeKeys = ['__proto__', 'constructor', 'prototype'];
+     return !unsafeKeys.includes(key);
+};
 
 // ** ============================================================================
 // ** Adapter
@@ -34,6 +45,8 @@ export const mongooseAdapter = <
           filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>;
           filterCustom?: TFilterCustomConfigWithFilter<DocType, TMongoFilterQuery<DocType>>;
           defaultSort?: TSortOptions<DocType>;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          [key: string]: any;
      }> = {}
 ): TDataKitAdapter<DocType> => {
      // ** Deconstruct options
@@ -62,7 +75,7 @@ export const mongooseAdapter = <
           // ** Query params (exact match)
           if (input.query) {
                Object.entries(input.query).forEach(([key, value]) => {
-                    if (isProvided(value)) {
+                    if (isProvided(value) && isSafeKey(key)) {
                          (filterQuery as Record<string, unknown>)[key] = value;
                     }
                });
@@ -78,16 +91,16 @@ export const mongooseAdapter = <
           if (filter && !customFilterFn) {
                if (input.filterConfig) {
                     Object.entries(filter).forEach(([key, value]) => {
-                         if (isProvided(value) && input.filterConfig?.[key]) {
+                         if (isProvided(value) && isSafeKey(key) && input.filterConfig?.[key]) {
                               const config = input.filterConfig[key];
                               const fieldName = config?.field ?? key;
 
-                              if (config?.type === 'regex') {
+                              if (config?.type === 'REGEX') {
                                    (filterQuery as Record<string, unknown>)[fieldName] = {
-                                        $regex: value,
+                                        $regex: escapeRegex(String(value)),
                                         $options: 'i',
                                    };
-                              } else if (config?.type === 'exact') {
+                              } else if (config?.type === 'EXACT') {
                                    (filterQuery as Record<string, unknown>)[fieldName] = value;
                               }
                          }
@@ -95,13 +108,13 @@ export const mongooseAdapter = <
                } else {
                     // ** Default automatic filtering
                     Object.entries(filter).forEach(([key, value]) => {
-                         if (isProvided(value)) {
+                         if (isProvided(value) && isSafeKey(key)) {
                               if (typeof value === 'string') {
                                    (filterQuery as Record<string, unknown>)[key] = {
-                                        $regex: value,
+                                        $regex: escapeRegex(value),
                                         $options: 'i',
                                    };
-                              } else {
+                              } else if (typeof value === 'number' || typeof value === 'boolean') {
                                    (filterQuery as Record<string, unknown>)[key] = value;
                               }
                          }
@@ -112,7 +125,7 @@ export const mongooseAdapter = <
           // ** Custom filter logic (filterCustom)
           if (filterCustom && filter) {
                Object.entries(filter).forEach(([key, value]) => {
-                    if (isProvided(value) && filterCustom[key]) {
+                    if (isProvided(value) && isSafeKey(key) && filterCustom[key]) {
                          const customFilter = filterCustom[key]!(value);
                          filterQuery = { ...filterQuery, ...customFilter };
                     }

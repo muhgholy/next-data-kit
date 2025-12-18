@@ -35,7 +35,7 @@ export type TSortEntry = {
 export type TFilterConfig = {
      [key: string]: {
           // ** Type of filter matching
-          type: 'regex' | 'exact';
+          type: 'REGEX' | 'EXACT';
           // ** Optional: different database field name
           field?: string;
      };
@@ -76,7 +76,7 @@ export type TDataKitInput<T = unknown> = {
      // ** Multi-sort as an array
      sorts?: TSortEntry[];
      // ** Query parameters for exact match filtering
-     query?: Record<string, unknown>;
+     query?: Record<string, string | number | boolean>;
      // ** Filter parameters
      filter?: Record<string, unknown>;
      // ** Filter configuration for automatic filtering

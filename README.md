@@ -255,6 +255,60 @@ type TDataKitServerActionOptions<T, R> = {
 	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
 	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
 	defaultSort?: TSortOptions<T>;
+    // ** Whitelist of allowed filter fields (crucial for security when using query prop)
+    filterAllowed?: string[];
+};
+```
+```
+
+// ... inside dataKitServerAction options
+	});
+}
+```
+
+### Security Note: `queryAllowed` & `filterAllowed` (Strict Mode)
+
+Security is strict by default when whitelists are provided. If you provide `filterAllowed` or `queryAllowed`, any input field **NOT** in the whitelist will cause the server action to **THROW AN ERROR**. This ensures that no hidden or unauthorized fields can be filtered or queried.
+
+```typescript
+// Strict Security Example
+dataKitServerAction({
+    model: UserModel,
+    input,
+    item: (u) => u,
+    // If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
+    filterAllowed: ["name", "email", "role"],
+    // Same for query params
+    queryAllowed: ["status"]
+})
+```
+
+### Error Handling on Client
+
+When the server action throws an Error (e.g., due to a security violation), `next-data-kit` catches it on the client side.
+
+- **`DataKitTable`**: Automatically displays the error message in Red within the table body.
+- **`useDataKit`**: The error is available in `state.error` for custom handling.
+
+```tsx
+// Custom UI with useDataKit
+const { state: { error } } = useDataKit({ ... });
+
+if (error) {
+  return <div className="text-red-500">Error: {error.message}</div>;
+}
+```
+
+### Input Validation (Optional)
+type TDataKitServerActionOptions<T, R> = {
+	input: TDataKitInput<T>;
+	model: TMongoModel<T>;
+	item: (item: T) => Promise<R> | R;
+	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
+	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
+	defaultSort?: TSortOptions<T>;
+    // ** Whitelist of allowed filter fields (crucial for security when using query prop)
+    filterAllowed?: string[];
 };
 ```
 
@@ -481,7 +535,7 @@ interface TDataKitResult<R> {
 ```typescript
 interface TFilterConfig {
 	[key: string]: {
-		type: "regex" | "exact";
+		type: "REGEX" | "EXACT";
 		field?: string;
 	};
 }

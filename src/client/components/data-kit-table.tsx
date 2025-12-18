@@ -346,6 +346,12 @@ const DataKitRoot = <
                                     <Loader2 className="mx-auto size-5 animate-spin" />
                                 </TableCell>
                             </TableRow>
+                        ) : dataKit.state.error ? (
+                            <TableRow>
+                                <TableCell colSpan={colSpan} className="h-24 text-center text-red-500">
+                                    Error: {dataKit.state.error.message}
+                                </TableCell>
+                            </TableRow>
                         ) : dataKit.items.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={colSpan} className="h-24 text-center text-muted-foreground">
