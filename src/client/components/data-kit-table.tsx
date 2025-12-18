@@ -320,7 +320,7 @@ const DataKitRoot = <
                             {columns.map((col, idx) => (
                                 <React.Fragment key={idx}>
                                     {col.sortable ? (
-                                        <TableHead>
+                                        <TableHead {...(React.isValidElement(col.head) ? (col.head.props as object) : {})}>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
