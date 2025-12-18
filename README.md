@@ -310,12 +310,6 @@ dataKitServerAction({
 });
 ```
 
-```
-
-// ... inside dataKitServerAction options
-	});
-}
-```
 
 ### Security & Filtering
 
