@@ -43,18 +43,10 @@ export async function fetchUsers(input: TDataKitInput) {
 			name: user.name,
 			email: user.email,
 		}),
-		filter: () => ({
-			active: true,
-		}),
 		filterCustom: {
 			search: createSearchFilter(['name', 'email']),
-			age: value => ({
-				age: {
-					$gte: value,
-				},
-			}),
+			age: value => ({ age: { $gte: value } }),
 		},
-		// Only 'search' and 'age' filters are allowed (auto-extracted from filterCustom keys)
 	});
 }
 ```
@@ -69,7 +61,6 @@ You can use the built-in Zod schema to validate inputs before processing:
 import { dataKitServerAction, dataKitSchemaZod } from 'next-data-kit/server';
 
 export async function fetchUsers(input: unknown) {
-	// Validate input
 	const parsedInput = dataKitSchemaZod.parse(input);
 
 	return dataKitServerAction({
@@ -80,7 +71,6 @@ export async function fetchUsers(input: unknown) {
 			search: value => ({ name: { $regex: value, $options: 'i' } }),
 			role: value => ({ role: value }),
 		},
-		// Only 'search' and 'role' filters are allowed
 	});
 }
 ```
@@ -273,163 +263,63 @@ type TDataKitServerActionOptions<T, R> = {
 }
 ```
 
-### Understanding `filter` vs `query`
+### Security & Filtering
 
-There are two ways data reaches your database:
+**Two ways to query data:**
 
-1. **`filter` (via `filterCustom`)** - For user-facing filters with transformations
-   - Client-side `filters` prop → sends values to `filter` parameter
-   - Server validates against `filterCustom` keys
-   - You define how values transform into database queries
-   - **Use for**: search boxes, dropdowns, date ranges, etc.
+1. **`filterCustom`** - User-facing filters (search, dropdowns, etc.)
+     - Client `filters` prop → validated against `filterCustom` keys
+     - Only defined keys are allowed (throws error otherwise)
 
-2. **`query` (via `queryAllowed`)** - For direct field matching
-   - Direct database field equality checks
-   - Must explicitly whitelist with `queryAllowed`
-   - **Use for**: fixed filters like `{ active: true }`, user-specific queries
+2. **`queryAllowed`** - Direct field matching (fixed filters)
+     - Explicit whitelist required
+     - Use for: `{ active: true }`, user-specific queries
 
 ```typescript
 dataKitServerAction({
 	model: UserModel,
 	input,
 	item: u => u,
-	// Client filters go through filterCustom
 	filterCustom: {
 		search: createSearchFilter(['name', 'email']),
 		role: value => ({ role: value }),
 	},
-	// Direct queries need explicit whitelist
 	queryAllowed: ['organizationId', 'active'],
 });
 ```
 
-### Security Note: Strict Mode by Default
+### Error Handling
 
-**Filter Security**: When you define `filterCustom`, ONLY those keys are allowed. Any other filter key from the client will **THROW AN ERROR**.
-
-**Query Security**: When you provide `queryAllowed`, only those query fields are accepted. Any other query field will throw an error.
-
-````typescript
-// Strict Security Example
-dataKitServerAction({
-	model: UserModel,
-	input,
-	item: u => ({ id: u._id.toString(), name: u.name }),
-	filterCustom: {
-		name: value => ({ name: { $regex: value, $options: 'i' } }),
-		email: value => ({ email: { $regex: value, $options: 'i' } }),
-		role: value => ({ role: value }),
-	},
-	// ONLY 'name', 'email', and 'role' filters are allowed
-	// If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
-
-	// Query params need explicit whitelist
-	queryAllowed: ['status'],
-});
-```
-
-### Error Handling on Client
-
-When the server action throws an error (e.g., security violation), the client automatically handles it:
-
-**`DataKitTable`**: Displays error in red within the table body
-
-**`useDataKit`**: Error available in `state.error`
-
-```tsx
-const { state: { error } } = useDataKit({ action: fetchUsers });
-
-if (error) {
-	return <div className="text-red-500">Error: {error.message}</div>;
-}
-```
-
-#### `createSearchFilter(fields)`
-
-Create a search filter for multiple fields. Use this in `filterCustom`.
-
-```typescript
-filterCustom: {
-	search: createSearchFilter(['name', 'email', 'phone']),
-}
-```
-
-#### `escapeRegex(str)`
-
-Escape regex special characters in a string.
-
-#### Custom Filter Implementation
-
-You can implement custom filters manually without using `createSearchFilter`. This gives you full control over the database query.
-
-```typescript
-import { escapeRegex } from "next-data-kit/server";
-
-// ... inside dataKitServerAction options
-filterCustom: {
-  // Manual search implementation
-  search: (value) => {
-    if (typeof value !== 'string') return {};
-    const term = escapeRegex(value);
-    return {
-      $or: [
-        { name: { $regex: term, $options: "i" } },
-        { email: { $regex: term, $options: "i" } },
-      ],
-    };
-  },
-  // Filter by range
-  priceRange: (value: { min: number; max: number }) => ({
-    price: { $gte: value.min, $lte: value.max },
-  }),
-},
-// Only 'search' and 'priceRange' filters are allowed from client
-```
-
-#### Understanding `filterCustom` Flow
-
-To use custom filters effectively, you must match the **Key** on the client with the **Key** on the server.
-
-1.   **Client-side**: Define a filter with a specific `id` (e.g., `'priceRange'`).
-
-     ```tsx
-     // Client Component
-     <DataKitTable
-     	filters={[{ id: 'priceRange', label: 'Price Range', type: 'TEXT' }]}
-     	// ...
-     />
-     ```
-
-     _Note: When use interact with this filter, `DataKit` sends `{ filter: { priceRange: "value" } }` to the server._
-
-2.   **Server-side**: Handle that key in `filterCustom`.
-
-     ```typescript
-     // Server Action
-     filterCustom: {
-     	// MATCHES 'priceRange' FROM CLIENT
-     	priceRange: value => ({
-     		price: { $lte: Number(value) },
-     	});
-     }
-     ```
-
-     The `filterCustom` function intercepts the value sent from the client before it hits the database query builder, allowing you to transform simple values into complex queries.
-
-**Client Usage:**
+Errors are automatically displayed in `DataKitTable` or available via `state.error` in `useDataKit`.
 
 ```tsx
 const {
-	actions: { setFilter },
-} = useDataKit({
-	/* ... */
-});
+	state: { error },
+} = useDataKit({ action: fetchUsers });
+if (error) return <div>Error: {error.message}</div>;
+```
 
-// Trigger the manual search
-setFilter('search', 'query string');
+#### Custom Filters
 
-// Trigger the range filter
-setFilter('priceRange', { min: 10, max: 100 });
+```typescript
+import { createSearchFilter, escapeRegex } from 'next-data-kit/server';\n\nfilterCustom: {\n  // Use built-in helper\n  search: createSearchFilter(['name', 'email', 'phone']),\n  \n  // Or implement custom logic\n  priceRange: (value: { min: number; max: number }) => ({\n    price: { $gte: value.min, $lte: value.max },\n  }),\n}\n```
+
+#### Filter Flow
+
+Match client filter `id` with server `filterCustom` key:
+
+```tsx
+// Client
+<DataKitTable filters={[{ id: 'priceRange', label: 'Price', type: 'TEXT' }]} />
+
+// Server
+filterCustom: {
+  priceRange: value => ({ price: { $lte: Number(value) } }),
+}
+
+// Or use programmatically
+const { actions: { setFilter } } = useDataKit({ ... });
+setFilter('priceRange', 100);
 ```
 
 ### Client
@@ -614,4 +504,8 @@ Then open:
 
 ```bash
 curl -X POST http://127.0.0.1:8787/api/seed/reset
+```
+
+```
+
 ```
