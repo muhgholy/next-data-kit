@@ -25,13 +25,14 @@ import type {
     TExtractDataKitItemType,
     TFilterConfig,
     TUseDataKitReturn,
+    TDataKitRef,
 } from '../../types';
 
 // ** ============================================================================
 // ** Component
 // ** ============================================================================
 
-export const DataKit = <
+const DataKitInner = <
     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>
 >(props: Readonly<{
     action: TAction;
@@ -46,7 +47,7 @@ export const DataKit = <
     state?: TDataKitStateMode;
     manual?: boolean;
     children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
-}>) => {
+}>, ref: React.ForwardedRef<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>) => {
     // ** Deconstruct Props
     const {
         action,
@@ -95,6 +96,9 @@ export const DataKit = <
         },
     });
     const pagination = usePagination({ page: dataKit.page, limit: dataKit.limit, total: dataKit.total, siblingCount: 1 });
+
+    // ** Imperative Handle
+    React.useImperativeHandle(ref, () => dataKit as unknown as TDataKitRef<unknown, TItem>, [dataKit]);
 
     // ** Handlers
     const handleResetFilters = useCallback(() => {
@@ -250,3 +254,23 @@ export const DataKit = <
         </div>
     );
 };
+
+export const DataKit = React.forwardRef(DataKitInner) as unknown as <
+    TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>
+>(
+    props: Readonly<{
+        action: TAction;
+        query?: Record<string, unknown>;
+        filterConfig?: TFilterConfig;
+        filters?: TDataKitFilterItem[];
+        limit?: { default: number };
+        className?: string;
+        autoFetch?: boolean;
+        debounce?: number;
+        refetchInterval?: number;
+        state?: TDataKitStateMode;
+        manual?: boolean;
+        children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
+        ref?: React.Ref<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>;
+    }>
+) => React.ReactElement;

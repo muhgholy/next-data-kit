@@ -5,6 +5,7 @@
  */
 
 import type { TDataKitInput, TDataKitResult } from './next-data-kit';
+import type { TUseDataKitReturn } from './hook';
 
 // ** ============================================================================
 // ** Type Inference Helpers
@@ -131,3 +132,9 @@ export type TDataKitSelectableItem = {
  * State persistence mode
  */
 export type TDataKitStateMode = 'memory' | 'search-params';
+
+/**
+ * DataKit Component Ref Type
+ * Exposes the internal state and actions of the DataKit component.
+ */
+export type TDataKitRef<T = unknown, R = unknown> = TUseDataKitReturn<T, R>;

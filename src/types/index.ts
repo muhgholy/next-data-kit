@@ -62,6 +62,8 @@ export type {
      TDataKitFilterItem,
      TDataKitBulkAction,
      TDataKitComponentController,
+
      TDataKitSelectableItem,
      TDataKitStateMode,
+     TDataKitRef,
 } from './component';

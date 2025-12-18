@@ -58,6 +58,28 @@ export async function fetchUsers(input: TDataKitInput) {
 }
 ```
 
+
+### Input Validation (Optional)
+
+You can use the built-in Zod schema to validate inputs before processing:
+
+```typescript
+"use server";
+
+import { dataKitServerAction, dataKitSchemaZod } from "next-data-kit/server";
+
+export async function fetchUsers(input: unknown) {
+    // Validate input
+    const parsedInput = dataKitSchemaZod.parse(input);
+
+    return dataKitServerAction({
+        model: UserModel,
+        input: parsedInput,
+        // ...
+    });
+}
+```
+
 ### Client-side (DataKitTable Component)
 
 Ready-to-use table with built-in filtering, sorting, and selection:
@@ -276,6 +298,36 @@ filterCustom: {
   }),
 }
 ```
+
+#### Understanding `filterCustom` Flow
+
+To use custom filters effectively, you must match the **Key** on the client with the **Key** on the server.
+
+1.  **Client-side**: Define a filter with a specific `id` (e.g., `'priceRange'`).
+    ```tsx
+    // Client Component
+    <DataKitTable
+      filters={[
+        { id: 'priceRange', label: 'Price Range', type: 'TEXT' } 
+      ]}
+      // ...
+    />
+    ```
+
+    _Note: When use interact with this filter, `DataKit` sends `{ filter: { priceRange: "value" } }` to the server._
+
+2.  **Server-side**: Handle that key in `filterCustom`.
+    ```typescript
+    // Server Action
+    filterCustom: {
+        // MATCHES 'priceRange' FROM CLIENT
+        priceRange: (value) => ({
+             price: { $lte: Number(value) }
+        })
+    }
+    ```
+
+    The `filterCustom` function intercepts the value sent from the client before it hits the database query builder, allowing you to transform simple values into complex queries.
 
 **Client Usage:**
 

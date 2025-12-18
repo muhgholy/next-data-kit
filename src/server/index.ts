@@ -13,6 +13,7 @@ export { adapterMemory } from './adapters/memory';
 
 // Utils
 export { escapeRegex, createSearchFilter } from './utils';
+export { dataKitSchemaZod, type TDataKitSchemaZod } from './schema';
 
 // Re-export types commonly used on server
 export type { TModel, TExtractDocType, THydratedDocument, TSortOrder, TSortOptions, TDataKitInput, TDataKitResult, TFilterCustomConfig, TFilterCustomConfigWithFilter, TFilterConfig, TDataKitAdapter } from '../types';
