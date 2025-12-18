@@ -4,14 +4,14 @@ A powerful table utility for server-side pagination, filtering, and sorting with
 
 ## Features
 
--    🚀 **Server-side pagination** - Efficient data fetching with page-based navigation
--    🔍 **Flexible filtering** - Support for regex, exact match, and custom filters
--    📊 **Multi-column sorting** - Sort by multiple columns with customizable order
--    ⚛️ **React hooks** - `useDataKit`, `useSelection`, `usePagination` for state management
--    🎨 **Components** - `DataKitTable` for tables, `DataKit` for custom layouts
--    📝 **TypeScript** - Fully typed with generics support
--    🔌 **Framework agnostic** - Works with any database ORM/ODM (Mongoose, Prisma, etc.)
--    📦 **Tree-shakeable** - Import only what you need
+- 🚀 **Server-side pagination** - Efficient data fetching with page-based navigation
+- 🔍 **Flexible filtering** - Support for regex, exact match, and custom filters
+- 📊 **Multi-column sorting** - Sort by multiple columns with customizable order
+- ⚛️ **React hooks** - `useDataKit`, `useSelection`, `usePagination` for state management
+- 🎨 **Components** - `DataKitTable` for tables, `DataKit` for custom layouts
+- 📝 **TypeScript** - Fully typed with generics support
+- 🔌 **Framework agnostic** - Works with any database ORM/ODM (Mongoose, Prisma, etc.)
+- 📦 **Tree-shakeable** - Import only what you need
 
 ## Installation
 
@@ -28,17 +28,17 @@ pnpm add next-data-kit
 ### Server-side (Next.js Server Action)
 
 ```typescript
-"use server";
+'use server';
 
-import { dataKitServerAction, createSearchFilter } from "next-data-kit/server";
-import type { TDataKitInput } from "next-data-kit/types";
-import UserModel from "@/models/User";
+import { dataKitServerAction, createSearchFilter } from 'next-data-kit/server';
+import type { TDataKitInput } from 'next-data-kit/types';
+import UserModel from '@/models/User';
 
 export async function fetchUsers(input: TDataKitInput) {
 	return dataKitServerAction({
 		model: UserModel,
 		input,
-		item: async (user) => ({
+		item: async user => ({
 			id: user._id.toString(),
 			name: user.name,
 			email: user.email,
@@ -47,38 +47,37 @@ export async function fetchUsers(input: TDataKitInput) {
 			active: true,
 		}),
 		filterCustom: {
-			search: createSearchFilter(["name", "email"]),
-            age: (value) => ({
-                age: {
-                    $gte: value,
-                }
-            })
+			search: createSearchFilter(['name', 'email']),
+			age: value => ({
+				age: {
+					$gte: value,
+				},
+			}),
 		},
-		filterAllowed: ["search", "age"],
+		filterAllowed: ['search', 'age'],
 	});
 }
 ```
-
 
 ### Input Validation (Optional)
 
 You can use the built-in Zod schema to validate inputs before processing:
 
 ```typescript
-"use server";
+'use server';
 
-import { dataKitServerAction, dataKitSchemaZod } from "next-data-kit/server";
+import { dataKitServerAction, dataKitSchemaZod } from 'next-data-kit/server';
 
 export async function fetchUsers(input: unknown) {
-    // Validate input
-    const parsedInput = dataKitSchemaZod.parse(input);
+	// Validate input
+	const parsedInput = dataKitSchemaZod.parse(input);
 
-    return dataKitServerAction({
-        model: UserModel,
-        input: parsedInput,
-        item: (user) => ({ id: user._id.toString(), name: user.name }),
-        filterAllowed: ["search", "role"],
-    });
+	return dataKitServerAction({
+		model: UserModel,
+		input: parsedInput,
+		item: user => ({ id: user._id.toString(), name: user.name }),
+		filterAllowed: ['search', 'role'],
+	});
 }
 ```
 
@@ -87,10 +86,10 @@ export async function fetchUsers(input: unknown) {
 Ready-to-use table with built-in filtering, sorting, and selection:
 
 ```tsx
-"use client";
+'use client';
 
-import { DataKitTable } from "next-data-kit/client";
-import { fetchUsers } from "@/actions/users";
+import { DataKitTable } from 'next-data-kit/client';
+import { fetchUsers } from '@/actions/users';
 
 export function UsersTable() {
 	return (
@@ -98,14 +97,14 @@ export function UsersTable() {
 			action={fetchUsers}
 			limit={{ default: 10 }}
 			filters={[
-				{ id: "search", label: "Search", type: "TEXT", placeholder: "Search..." },
+				{ id: 'search', label: 'Search', type: 'TEXT', placeholder: 'Search...' },
 				{
-					id: "role",
-					label: "Role",
-					type: "SELECT",
+					id: 'role',
+					label: 'Role',
+					type: 'SELECT',
 					dataset: [
-						{ id: "admin", name: "admin", label: "Admin" },
-						{ id: "user", name: "user", label: "User" },
+						{ id: 'admin', name: 'admin', label: 'Admin' },
+						{ id: 'user', name: 'user', label: 'User' },
 					],
 				},
 			]}
@@ -113,9 +112,9 @@ export function UsersTable() {
 				enabled: true,
 				actions: {
 					delete: {
-						name: "Delete Selected",
-						function: async (items) => {
-							await deleteUsers(items.map((i) => i.id));
+						name: 'Delete Selected',
+						function: async items => {
+							await deleteUsers(items.map(i => i.id));
 							return [true, { deselectAll: true }];
 						},
 					},
@@ -125,7 +124,7 @@ export function UsersTable() {
 				{
 					head: <DataKitTable.Head>Name</DataKitTable.Head>,
 					body: ({ item }) => <DataKitTable.Cell>{item.name}</DataKitTable.Cell>,
-					sortable: { path: "name", default: 0 },
+					sortable: { path: 'name', default: 0 },
 				},
 				{
 					head: <DataKitTable.Head>Email</DataKitTable.Head>,
@@ -142,22 +141,18 @@ export function UsersTable() {
 Use `DataKit` for grids, cards, or any custom layout. It provides toolbar/pagination but lets you render content:
 
 ```tsx
-"use client";
+'use client';
 
-import { DataKit } from "next-data-kit/client";
-import { fetchUsers } from "@/actions/users";
+import { DataKit } from 'next-data-kit/client';
+import { fetchUsers } from '@/actions/users';
 
 export function UsersGrid() {
 	return (
-		<DataKit
-			action={fetchUsers}
-			limit={{ default: 12 }}
-			filters={[{ id: "search", label: "Search", type: "TEXT" }]}
-		>
-			{(dataKit) => (
-				<div className="grid grid-cols-4 gap-4">
-					{dataKit.items.map((user) => (
-						<div key={user.id} className="rounded-lg border p-4">
+		<DataKit action={fetchUsers} limit={{ default: 12 }} filters={[{ id: 'search', label: 'Search', type: 'TEXT' }]}>
+			{dataKit => (
+				<div className='grid grid-cols-4 gap-4'>
+					{dataKit.items.map(user => (
+						<div key={user.id} className='rounded-lg border p-4'>
 							<h3>{user.name}</h3>
 							<p>{user.email}</p>
 						</div>
@@ -173,10 +168,12 @@ export function UsersGrid() {
 
 ```tsx
 <DataKit action={fetchUsers} manual>
-	{(dataKit) => (
+	{dataKit => (
 		<>
 			{dataKit.state.isLoading && <Spinner />}
-			{dataKit.items.map((user) => <Card key={user.id} user={user} />)}
+			{dataKit.items.map(user => (
+				<Card key={user.id} user={user} />
+			))}
 		</>
 	)}
 </DataKit>
@@ -187,10 +184,10 @@ export function UsersGrid() {
 For fully custom implementations:
 
 ```tsx
-"use client";
+'use client';
 
-import { useDataKit } from "next-data-kit/client";
-import { fetchUsers } from "@/actions/users";
+import { useDataKit } from 'next-data-kit/client';
+import { fetchUsers } from '@/actions/users';
 
 export function UsersTable() {
 	const {
@@ -208,7 +205,7 @@ export function UsersTable() {
 
 	return (
 		<div>
-			<input placeholder="Search..." onChange={(e) => setFilter("search", e.target.value)} />
+			<input placeholder='Search...' onChange={e => setFilter('search', e.target.value)} />
 
 			{isLoading ? (
 				<p>Loading...</p>
@@ -216,12 +213,12 @@ export function UsersTable() {
 				<table>
 					<thead>
 						<tr>
-							<th onClick={() => setSort("name", 1)}>Name</th>
-							<th onClick={() => setSort("email", 1)}>Email</th>
+							<th onClick={() => setSort('name', 1)}>Name</th>
+							<th onClick={() => setSort('email', 1)}>Email</th>
 						</tr>
 					</thead>
 					<tbody>
-						{items.map((user) => (
+						{items.map(user => (
 							<tr key={user.id}>
 								<td>{user.name}</td>
 								<td>{user.email}</td>
@@ -257,10 +254,11 @@ type TDataKitServerActionOptions<T, R> = {
 	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
 	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
 	defaultSort?: TSortOptions<T>;
-    // ** Whitelist of allowed filter fields (crucial for security when using query prop)
-    filterAllowed?: string[];
+	// ** Whitelist of allowed filter fields (crucial for security when using query prop)
+	filterAllowed?: string[];
 };
 ```
+
 ```
 
 // ... inside dataKitServerAction options
@@ -275,14 +273,14 @@ Security is strict by default when whitelists are provided. If you provide `filt
 ```typescript
 // Strict Security Example
 dataKitServerAction({
-    model: UserModel,
-    input,
-    item: (u) => ({ id: u._id.toString(), name: u.name }),
-    // If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
-    filterAllowed: ["name", "email", "role"],
-    // Same for query params
-    queryAllowed: ["status"],
-})
+	model: UserModel,
+	input,
+	item: u => ({ id: u._id.toString(), name: u.name }),
+	// If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
+	filterAllowed: ['name', 'email', 'role'],
+	// Same for query params
+	queryAllowed: ['status'],
+});
 ```
 
 ### Error Handling on Client
@@ -302,17 +300,19 @@ if (error) {
 ```
 
 ### Input Validation (Optional)
+
 type TDataKitServerActionOptions<T, R> = {
-	input: TDataKitInput<T>;
-	model: TMongoModel<T>;
-	item: (item: T) => Promise<R> | R;
-	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
-	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
-	defaultSort?: TSortOptions<T>;
-    // ** Whitelist of allowed filter fields (crucial for security when using query prop)
-    filterAllowed?: string[];
+input: TDataKitInput<T>;
+model: TMongoModel<T>;
+item: (item: T) => Promise<R> | R;
+filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
+filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
+defaultSort?: TSortOptions<T>;
+// \*\* Whitelist of allowed filter fields (crucial for security when using query prop)
+filterAllowed?: string[];
 };
-```
+
+````
 
 #### `createSearchFilter(fields)`
 
@@ -322,7 +322,7 @@ Create a search filter for multiple fields.
 filterCustom: {
 	search: createSearchFilter(["name", "email", "phone"]);
 }
-```
+````
 
 #### `escapeRegex(str)`
 
@@ -360,31 +360,31 @@ filterAllowed: ["search", "priceRange"]
 
 To use custom filters effectively, you must match the **Key** on the client with the **Key** on the server.
 
-1.  **Client-side**: Define a filter with a specific `id` (e.g., `'priceRange'`).
-    ```tsx
-    // Client Component
-    <DataKitTable
-      filters={[
-        { id: 'priceRange', label: 'Price Range', type: 'TEXT' } 
-      ]}
-      // ...
-    />
-    ```
+1.   **Client-side**: Define a filter with a specific `id` (e.g., `'priceRange'`).
 
-    _Note: When use interact with this filter, `DataKit` sends `{ filter: { priceRange: "value" } }` to the server._
+     ```tsx
+     // Client Component
+     <DataKitTable
+     	filters={[{ id: 'priceRange', label: 'Price Range', type: 'TEXT' }]}
+     	// ...
+     />
+     ```
 
-2.  **Server-side**: Handle that key in `filterCustom`.
-    ```typescript
-    // Server Action
-    filterCustom: {
-        // MATCHES 'priceRange' FROM CLIENT
-        priceRange: (value) => ({
-             price: { $lte: Number(value) }
-        })
-    }
-    ```
+     _Note: When use interact with this filter, `DataKit` sends `{ filter: { priceRange: "value" } }` to the server._
 
-    The `filterCustom` function intercepts the value sent from the client before it hits the database query builder, allowing you to transform simple values into complex queries.
+2.   **Server-side**: Handle that key in `filterCustom`.
+
+     ```typescript
+     // Server Action
+     filterCustom: {
+     	// MATCHES 'priceRange' FROM CLIENT
+     	priceRange: value => ({
+     		price: { $lte: Number(value) },
+     	});
+     }
+     ```
+
+     The `filterCustom` function intercepts the value sent from the client before it hits the database query builder, allowing you to transform simple values into complex queries.
 
 **Client Usage:**
 
@@ -396,10 +396,10 @@ const {
 });
 
 // Trigger the manual search
-setFilter("search", "query string");
+setFilter('search', 'query string');
 
 // Trigger the range filter
-setFilter("priceRange", { min: 10, max: 100 });
+setFilter('priceRange', { min: 10, max: 100 });
 ```
 
 ### Client
@@ -408,29 +408,29 @@ setFilter("priceRange", { min: 10, max: 100 });
 
 Full-featured table component with built-in UI.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `action` | `(input) => Promise<Result>` | Server action function |
-| `table` | `Column[]` | Column definitions |
-| `filters` | `FilterItem[]` | Filter configurations |
-| `selectable` | `{ enabled, actions? }` | Selection & bulk actions |
-| `limit` | `{ default: number }` | Items per page |
-| `controller` | `Ref<Controller>` | External control ref |
-| `className` | `string` | Container class |
-| `bordered` | `boolean \| 'rounded'` | Border style |
-| `refetchInterval` | `number` | Auto-refresh interval (ms) |
+| Prop              | Type                         | Description                |
+| ----------------- | ---------------------------- | -------------------------- |
+| `action`          | `(input) => Promise<Result>` | Server action function     |
+| `table`           | `Column[]`                   | Column definitions         |
+| `filters`         | `FilterItem[]`               | Filter configurations      |
+| `selectable`      | `{ enabled, actions? }`      | Selection & bulk actions   |
+| `limit`           | `{ default: number }`        | Items per page             |
+| `controller`      | `Ref<Controller>`            | External control ref       |
+| `className`       | `string`                     | Container class            |
+| `bordered`        | `boolean \| 'rounded'`       | Border style               |
+| `refetchInterval` | `number`                     | Auto-refresh interval (ms) |
 
 #### `<DataKit>` Component
 
 Headless component for custom layouts (grids, cards, etc).
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `action` | `(input) => Promise<Result>` | Server action function |
-| `filters` | `FilterItem[]` | Filter configurations |
-| `limit` | `{ default: number }` | Items per page |
-| `manual` | `boolean` | Skip loading/empty state handling |
-| `children` | `(dataKit) => ReactNode` | Render function |
+| Prop       | Type                         | Description                       |
+| ---------- | ---------------------------- | --------------------------------- |
+| `action`   | `(input) => Promise<Result>` | Server action function            |
+| `filters`  | `FilterItem[]`               | Filter configurations             |
+| `limit`    | `{ default: number }`        | Items per page                    |
+| `manual`   | `boolean`                    | Skip loading/empty state handling |
+| `children` | `(dataKit) => ReactNode`     | Render function                   |
 
 #### `useDataKit(options)`
 
@@ -455,23 +455,23 @@ interface TDataKitControllerOptions<T, R> {
 
 Returns:
 
--    `items` - Current page items
--    `page` - Current page number
--    `limit` - Items per page
--    `total` - Total document count
--    `sorts` - Current sort configuration
--    `filter` - Current filter values
--    `state`
-     -    `isLoading` - Loading state
-     -    `error` - Error state
--    `actions`
-     -    `setPage(page)` - Go to a specific page
-     -    `setLimit(limit)` - Set items per page
-     -    `setSort(path, value)` - Set sort for a column
-     -    `setFilter(key, value)` - Set a filter value
-     -    `clearFilters()` - Clear all filters
-     -    `refresh()` - Refresh the table data
-     -    `reset()` - Reset to initial state
+- `items` - Current page items
+- `page` - Current page number
+- `limit` - Items per page
+- `total` - Total document count
+- `sorts` - Current sort configuration
+- `filter` - Current filter values
+- `state`
+     - `isLoading` - Loading state
+     - `error` - Error state
+- `actions`
+     - `setPage(page)` - Go to a specific page
+     - `setLimit(limit)` - Set items per page
+     - `setSort(path, value)` - Set sort for a column
+     - `setFilter(key, value)` - Set a filter value
+     - `clearFilters()` - Clear all filters
+     - `refresh()` - Refresh the table data
+     - `reset()` - Reset to initial state
 
 #### `useSelection<T>()`
 
@@ -512,7 +512,7 @@ const { pages, hasNextPage, hasPrevPage, totalPages } = usePagination({
 
 ```typescript
 interface TDataKitInput<T = unknown> {
-	action?: "FETCH";
+	action?: 'FETCH';
 	page?: number;
 	limit?: number;
 	sort?: TSortOptions<T>;
@@ -527,7 +527,7 @@ interface TDataKitInput<T = unknown> {
 
 ```typescript
 interface TDataKitResult<R> {
-	type: "ITEMS";
+	type: 'ITEMS';
 	items: R[];
 	documentTotal: number;
 }
@@ -538,7 +538,7 @@ interface TDataKitResult<R> {
 ```typescript
 interface TFilterConfig {
 	[key: string]: {
-		type: "REGEX" | "EXACT";
+		type: 'REGEX' | 'EXACT';
 		field?: string;
 	};
 }
@@ -549,7 +549,7 @@ interface TFilterConfig {
 The package provides generic database types that work with any ORM/ODM:
 
 ```typescript
-import type { TModel, TMongoFilterQuery, TQueryBuilder } from "next-data-kit/types";
+import type { TModel, TMongoFilterQuery, TQueryBuilder } from 'next-data-kit/types';
 
 // Your model just needs to implement the Model interface
 interface MyModel extends TModel<MyDocument> {
@@ -566,8 +566,8 @@ MIT © muhgholy
 
 This repo includes a **dev-only** playground you can open in the browser to preview components and validate end-to-end behavior against a **temporary in-memory MongoDB**.
 
--    It is **not exported** in `package.json#exports`.
--    It is **not published** to npm because `package.json#files` only includes `dist`.
+- It is **not exported** in `package.json#exports`.
+- It is **not published** to npm because `package.json#files` only includes `dist`.
 
 ### Run
 
@@ -577,8 +577,8 @@ npm run playground:dev
 
 Then open:
 
--    Web UI: http://localhost:5173
--    API health: http://127.0.0.1:8787/api/health
+- Web UI: http://localhost:5173
+- API health: http://127.0.0.1:8787/api/health
 
 ### Reset seed data
 
