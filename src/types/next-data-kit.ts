@@ -65,8 +65,8 @@ export type TDataKitInput<T = unknown> = {
 	sorts?: TSortEntry[];
 	// ** Query parameters for exact match filtering
 	query?: Record<string, string | number | boolean>;
-	// ** Filter parameters
-	filter?: Record<string, unknown>;
+	// ** Filter parameters (primitives only for security)
+	filter?: Record<string, string | number | boolean | null>;
 	// ** Filter configuration for automatic filtering
 	filterConfig?: TFilterConfig;
 	// ** Custom filter configuration

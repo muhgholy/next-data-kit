@@ -33,7 +33,7 @@ async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDat
 
 	// Check Filter
 	if (input.filter) {
-		const safeFilter: Record<string, unknown> = {};
+		const safeFilter: Record<string, string | number | boolean | null> = {};
 		Object.keys(input.filter).forEach(key => {
 			if (filterAllowed && !filterAllowed.includes(key)) {
 				throw new Error(`[Security] Filter field '${key}' is not allowed.`);
@@ -42,7 +42,9 @@ async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDat
 			if (val !== null && typeof val === 'object') {
 				throw new Error(`[Security] Filter value for '${key}' must be a primitive.`);
 			}
-			safeFilter[key] = val;
+			if (val !== undefined) {
+				safeFilter[key] = val;
+			}
 		});
 		input.filter = safeFilter;
 	}

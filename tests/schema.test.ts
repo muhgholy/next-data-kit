@@ -174,4 +174,39 @@ describe('Schema Type Assignment', () => {
 		expect(input.page).toBe(1);
 		expect(input.limit).toBe(10);
 	});
+
+	it('should have compatible filter types', () => {
+		// Type-level check: Zod output should be assignable to TDataKitInput
+		const parsed = dataKitSchemaZod.parse({
+			page: 1,
+			limit: 10,
+			filter: { search: 'test', active: true, count: 5, deletedAt: null },
+		});
+
+		// This should compile without errors
+		const input: TDataKitInput = parsed;
+
+		// Runtime check
+		expect(input.filter).toEqual({ search: 'test', active: true, count: 5, deletedAt: null });
+	});
+
+	it('should ensure filter types are strictly primitives + null', () => {
+		type FilterType = NonNullable<TDataKitInput['filter']>;
+		type FilterValueType = FilterType[string];
+
+		// This is a compile-time assertion via type assignment
+		const testString: FilterValueType = 'test';
+		const testNumber: FilterValueType = 123;
+		const testBoolean: FilterValueType = true;
+		const testNull: FilterValueType = null;
+
+		// These should all be valid
+		expect(testString).toBe('test');
+		expect(testNumber).toBe(123);
+		expect(testBoolean).toBe(true);
+		expect(testNull).toBe(null);
+
+		// TypeScript should prevent: const testObject: FilterValueType = {};
+		// TypeScript should prevent: const testArray: FilterValueType = [];
+	});
 });

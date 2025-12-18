@@ -52,7 +52,7 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 			page,
 			limit,
 			sorts,
-			filter: debouncedFilter,
+			filter: debouncedFilter as Record<string, string | number | boolean | null>,
 			query: query as Record<string, string | number | boolean>,
 		};
 
