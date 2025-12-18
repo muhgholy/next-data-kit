@@ -302,7 +302,18 @@ if (error) return <div>Error: {error.message}</div>;
 #### Custom Filters
 
 ```typescript
-import { createSearchFilter, escapeRegex } from 'next-data-kit/server';\n\nfilterCustom: {\n  // Use built-in helper\n  search: createSearchFilter(['name', 'email', 'phone']),\n  \n  // Or implement custom logic\n  priceRange: (value: { min: number; max: number }) => ({\n    price: { $gte: value.min, $lte: value.max },\n  }),\n}\n```
+import { createSearchFilter, escapeRegex } from 'next-data-kit/server';
+
+filterCustom: {
+  // Use built-in helper
+  search: createSearchFilter(['name', 'email', 'phone']),
+
+  // Or implement custom logic
+  priceRange: (value: { min: number; max: number }) => ({
+    price: { $gte: value.min, $lte: value.max },
+  }),
+}
+```
 
 #### Filter Flow
 
@@ -504,8 +515,4 @@ Then open:
 
 ```bash
 curl -X POST http://127.0.0.1:8787/api/seed/reset
-```
-
-```
-
 ```
