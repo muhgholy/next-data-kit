@@ -1,3 +1,22 @@
+# [3.0.0](https://github.com/muhgholy/next-data-kit/compare/v2.0.0...v3.0.0) (2025-12-18)
+
+
+### Features
+
+* simplify security model - filterCustom keys define allowed filters ([2f3f5bc](https://github.com/muhgholy/next-data-kit/commit/2f3f5bcca80d6e4137c4135582bdf0003bae8ab4))
+
+
+### BREAKING CHANGES
+
+* Removed filterAllowed parameter. Filter security is now automatically enforced by filterCustom keys. When you define filterCustom, only those keys are allowed as filters from the client.
+
+- Remove filterAllowed parameter (redundant with filterCustom keys)
+- Auto-extract allowed filter keys from filterCustom
+- Clarify filter vs query architecture in documentation
+- Clean up README with better examples and explanations
+
+Migration: Remove any explicit filterAllowed parameters - they are no longer needed and will be ignored. The filterCustom keys automatically define what filters are allowed.
+
 # [2.0.0](https://github.com/muhgholy/next-data-kit/compare/v1.0.1...v2.0.0) (2025-12-18)
 
 
