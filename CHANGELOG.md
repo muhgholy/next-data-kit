@@ -1,3 +1,27 @@
+# [7.0.0](https://github.com/muhgholy/next-data-kit/compare/v6.0.0...v7.0.0) (2025-12-18)
+
+
+* feat!: restrict filter values to primitives for improved type safety ([5ef12b7](https://github.com/muhgholy/next-data-kit/commit/5ef12b7f352e7c1ddbf759ba85b33270f35aea9e))
+
+
+### BREAKING CHANGES
+
+* Filter type in TDataKitInput is now strictly typed to primitives:
+- Changed from: filter?: Record<string, unknown>
+- Changed to: filter?: Record<string, string | number | boolean | null>
+- This prevents objects/arrays in filter values at the type level
+- Matches runtime Zod validation for consistency
+
+Migration guide:
+- Ensure all filter values are primitives (string, number, boolean, or null)
+- Remove any object or array values from filter parameters
+- Type errors will now appear at compile-time instead of runtime
+
+Additional changes:
+- Added strict type-level tests to prevent type mismatches
+- Updated server action validation to skip undefined values
+- Improved test coverage for filter type compatibility
+
 # [6.0.0](https://github.com/muhgholy/next-data-kit/compare/v5.0.0...v6.0.0) (2025-12-18)
 
 
