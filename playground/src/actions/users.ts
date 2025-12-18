@@ -3,13 +3,21 @@
 import { dataKitServerAction, createSearchFilter } from '../../../src/server';
 import type { TDataKitInput } from '../../../src/types';
 import dbConnect from '@/lib/mongodb';
-import { UserModel } from '@/models/User';
+import { UserModel, type IUser } from '@/models/User';
 
 export async function fetchUsers(input: TDataKitInput) {
 	await dbConnect();
 
-	return dataKitServerAction({
-		model: UserModel,
+	return dataKitServerAction<IUser, {
+		id: string;
+		name: string;
+		email: string;
+		role: string;
+		age: number;
+		active: boolean;
+		createdAt: string;
+	}>({
+		adapter: UserModel,
 		input,
 		item: async user => ({
 			id: user._id.toString(),
@@ -22,8 +30,8 @@ export async function fetchUsers(input: TDataKitInput) {
 		}),
 		filterCustom: {
 			search: createSearchFilter(['name', 'email']),
-			role: value => ({ role: value }),
-			age: value => ({ age: { $gte: Number(value) } }),
+			role: value => ({ role: value as 'admin' | 'user' | 'guest' }),
+			age: value => ({ age: { $gte: value as number } }),
 		},
 		queryAllowed: ['active'],
 	});

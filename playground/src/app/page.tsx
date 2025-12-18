@@ -3,12 +3,22 @@
 import { DataKitTable } from '../../../src/client';
 import { fetchUsers, deleteUsers } from '@/actions/users';
 
+type UserItem = {
+     id: string;
+     name: string;
+     email: string;
+     role: string;
+     age: number;
+     active: boolean;
+     createdAt: string;
+};
+
 export default function TableDemo() {
      return (
           <div className="container mx-auto py-10">
                <h1 className="text-3xl font-bold mb-8">DataKitTable Demo</h1>
 
-               <DataKitTable
+               <DataKitTable<typeof fetchUsers>
                     action={fetchUsers}
                     limit={{ default: 10 }}
                     query={{ active: true }}
@@ -42,7 +52,7 @@ export default function TableDemo() {
                               delete: {
                                    name: 'Delete Selected',
                                    function: async items => {
-                                        await deleteUsers(items.map(i => i.id));
+                                        await deleteUsers(items.map(i => String(i.id)));
                                         return [true, { deselectAll: true }];
                                    },
                               },
