@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@next-data-kit": ["../src/index.ts"],
+      "@next-data-kit/*": ["../src/*"],
+      "@next-data-kit-server": ["../src/server/index.ts"],
+      "@next-data-kit-server/*": ["../src/server/*"]
+    }
+  },
+  "include": ["src"]
+}
