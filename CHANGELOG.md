@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/muhgholy/next-data-kit/compare/v3.0.0...v3.0.1) (2025-12-18)
+
+
+### Bug Fixes
+
+* correct markdown syntax errors in README ([d745a06](https://github.com/muhgholy/next-data-kit/commit/d745a06406e8dfe8c2638565a6f6258a4ada9f13))
+
 # [3.0.0](https://github.com/muhgholy/next-data-kit/compare/v2.0.0...v3.0.0) (2025-12-18)
 
 
