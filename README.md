@@ -493,26 +493,21 @@ interface MyModel extends TModel<MyDocument> {
 
 MIT © muhgholy
 
-## Dev Playground (Live Server + Temp MongoDB)
+## Dev Playground (Next.js + MongoDB)
 
-This repo includes a **dev-only** playground you can open in the browser to preview components and validate end-to-end behavior against a **temporary in-memory MongoDB**.
+This repo includes a real Next.js playground demonstrating all features with MongoDB.
 
-- It is **not exported** in `package.json#exports`.
-- It is **not published** to npm because `package.json#files` only includes `dist`.
-
-### Run
+### Run Playground
 
 ```bash
-npm run playground:dev
+cd playground
+npm install
+npm run seed   # Seed MongoDB with sample data
+npm run dev    # Start Next.js dev server
 ```
 
-Then open:
+Then open: http://localhost:3000
 
-- Web UI: http://localhost:5173
-- API health: http://127.0.0.1:8787/api/health
+**Prerequisites**: MongoDB running on `mongodb://localhost:27017`
 
-### Reset seed data
-
-```bash
-curl -X POST http://127.0.0.1:8787/api/seed/reset
-```
+See [playground/README.md](playground/README.md) for details.
