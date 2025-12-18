@@ -7,46 +7,7 @@
 
 import { mongooseAdapter } from './adapters/mongoose';
 import type { Model } from 'mongoose';
-import type { TDataKitInput, TDataKitResult, TDataKitAdapter, TMongoModel, TMongoFilterQuery, TFilterCustomConfigWithFilter, TSortOptions } from '../types';
-
-/**
- * Extract document type from a Mongoose Model.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TExtractDocType<M> = M extends Model<infer TRawDocType, any, any, any, any, any> ? TRawDocType : never;
-
-/**
- * Base options shared by both mongoose and adapter versions
- */
-type TBaseOptions<TDoc, R> = {
-	input: TDataKitInput<TDoc>;
-	item: (item: TDoc) => Promise<R> | R;
-	filterAllowed?: string[];
-	maxLimit?: number;
-	queryAllowed?: (keyof TDoc | string)[];
-};
-
-/**
- * Options when using a Mongoose model
- */
-type TMongooseOptions<M, TDoc, R> = TBaseOptions<TDoc, R> & {
-	model: M;
-	adapter?: never;
-	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<TDoc>;
-	filterCustom?: TFilterCustomConfigWithFilter<TDoc, TMongoFilterQuery<TDoc>>;
-	defaultSort?: TSortOptions<TDoc>;
-};
-
-/**
- * Options when using a custom adapter
- */
-type TAdapterOptions<TDoc, R> = TBaseOptions<TDoc, R> & {
-	adapter: TDataKitAdapter<TDoc>;
-	model?: never;
-	filter?: never;
-	filterCustom?: TFilterCustomConfigWithFilter<TDoc, unknown>;
-	defaultSort?: never;
-};
+import type { TDataKitInput, TDataKitResult, TDataKitAdapter, TMongoModel, TExtractDocType, TMongooseOptions, TAdapterOptions } from '../types';
 
 /**
  * Core execution logic shared by both overloads

@@ -4,7 +4,7 @@
  * Types for the next-data-kit hooks and state management.
  */
 
-import type { TSortEntry, TFilterConfig, TDataKitInput, TDataKitResult } from './next-data-kit';
+import type { TSortEntry, TFilterConfig, TDataKitInput, TDataKitResult } from '../next-data-kit';
 
 /**
  * React Data Kit controller state

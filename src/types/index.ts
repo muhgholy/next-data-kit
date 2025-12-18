@@ -5,17 +5,19 @@
  */
 
 // ** Database types
-export type { TSortOrder, TMongoFilterOperators, TMongoRootFilterOperators, TMongoFilterQuery, TMongoModel } from './database/mongo';
+export type { TSortOrder, TMongoFilterOperators, TMongoRootFilterOperators, TMongoFilterQuery, TMongoModel } from './server/database/mongo';
 
 // ** React Data Kit core types
 export type { TSortOptions, TSortEntry, TFilterConfig, TFilterCustomConfig, TFilterCustomConfigWithFilter, TDataKitInput, TDataKitResult, TPaginationInfo, TDataKitAdapter } from './next-data-kit';
-export { calculatePagination } from './next-data-kit';
 
-// ** Controller types
-export type { TDataKitState, TDataKitActions, TUseDataKitReturn, TDataKitControllerOptions, TDataKitColumn } from './hook';
+// ** Server types
+export type { TExtractDocType, TBaseOptions, TMongooseOptions, TAdapterOptions } from './server/action';
 
-// ** Selectable types
-export type { TSelectionState, TSelectionActions, TUseSelectionReturn, TSelectionMode, TSelectable } from './selectable';
+// ** Client - Controller types
+export type { TDataKitState, TDataKitActions, TUseDataKitReturn, TDataKitControllerOptions, TDataKitColumn } from './client/hook';
 
-// ** Component types
-export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitComponentController, TDataKitSelectableItem, TDataKitStateMode, TDataKitRef } from './component';
+// ** Client - Selectable types
+export type { TSelectionState, TSelectionActions, TUseSelectionReturn, TSelectionMode, TSelectable } from './client/selectable';
+
+// ** Client - Component types
+export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitComponentController, TDataKitSelectableItem, TDataKitStateMode, TDataKitRef } from './client/component';

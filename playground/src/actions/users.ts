@@ -1,6 +1,6 @@
 'use server';
 
-import User, { type IUserDocument } from '@/models/User';
+import User from '@/models/User';
 import { dataKitServerAction, createSearchFilter } from '../../../src/server';
 import type { TDataKitInput } from '../../../src/types';
 import dbConnect from '@/lib/mongodb';

@@ -130,6 +130,45 @@ export function UsersTable() {
 }
 ```
 
+#### Row State Management
+
+Use `initialState` and `setState` for per-row state (e.g., expanded rows, inline editing, loading states):
+
+```tsx
+'use client';
+
+import { DataKitTable } from 'next-data-kit/client';
+import { fetchUsers } from '@/actions/users';
+
+export function UsersTable() {
+	return (
+		<DataKitTable
+			action={fetchUsers}
+			initialState={{ isExpanded: false, isEditing: false }}
+			table={[
+				{
+					head: <DataKitTable.Head>Name</DataKitTable.Head>,
+					body: ({ item, state, setState }) => (
+						<DataKitTable.Cell>
+							<div>{state.isEditing ? <input defaultValue={item.name} onBlur={() => setState(s => ({ ...s, isEditing: false }))} /> : <span onClick={() => setState(s => ({ ...s, isEditing: true }))}>{item.name}</span>}</div>
+						</DataKitTable.Cell>
+					),
+				},
+				{
+					head: <DataKitTable.Head>Actions</DataKitTable.Head>,
+					body: ({ item, state, setState }) => (
+						<DataKitTable.Cell>
+							<button onClick={() => setState(s => ({ ...s, isExpanded: !s.isExpanded }))}>{state.isExpanded ? 'Collapse' : 'Expand'}</button>
+							{state.isExpanded && <div className='mt-2 text-sm'>Details: {item.email}</div>}
+						</DataKitTable.Cell>
+					),
+				},
+			]}
+		/>
+	);
+}
+```
+
 ### Client-side (DataKit Component - Custom Layout)
 
 Use `DataKit` for grids, cards, or any custom layout. It provides toolbar/pagination but lets you render content:

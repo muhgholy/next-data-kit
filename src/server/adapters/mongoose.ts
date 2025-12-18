@@ -13,8 +13,6 @@ export const mongooseAdapter = <DocType = unknown>(
 		filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>;
 		filterCustom?: TFilterCustomConfigWithFilter<DocType, TMongoFilterQuery<DocType>>;
 		defaultSort?: TSortOptions<DocType>;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		[key: string]: any;
 	}> = {},
 ): TDataKitAdapter<DocType> => {
 	// ** Deconstruct options

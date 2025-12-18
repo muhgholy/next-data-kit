@@ -11,7 +11,7 @@
 export * from './types';
 
 // Re-export server utilities
-export { dataKitServerAction, mongooseAdapter, adapterMemory, escapeRegex, createSearchFilter } from './server/index';
+export { dataKitServerAction, mongooseAdapter, adapterMemory, escapeRegex, createSearchFilter, calculatePagination } from './server/index';
 
 // Re-export client utilities
 export { useDataKit, useSelection, useSelectionWithTotal, usePagination, createDataKitContext, DataKitProvider, useDataKitContext, DataKitContext, DataKit, getColumnValue, getSortValue, getNextSortValue, formatNumber, debounce, throttle, sortEntriesToKey, keyToSortEntries, type TDataKitControllerOptions, type TUsePaginationReturn, type TDataKitContextValue } from './client/index';

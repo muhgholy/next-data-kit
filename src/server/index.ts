@@ -5,14 +5,15 @@
  */
 
 // Server action
-export { dataKitServerAction, type TExtractDocType } from './action';
+export { dataKitServerAction } from './action';
+export type { TExtractDocType } from '../types';
 
 // Adapters
 export { mongooseAdapter } from './adapters/mongoose';
 export { adapterMemory } from './adapters/memory';
 
 // Utils
-export { escapeRegex, createSearchFilter, isProvided, isSafeKey } from './utils';
+export { escapeRegex, createSearchFilter, isProvided, isSafeKey, calculatePagination } from './utils';
 export { dataKitSchemaZod, type TDataKitSchemaZod } from './schema';
 
 // Re-export types commonly used on server

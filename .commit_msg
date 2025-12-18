@@ -1,3 +1,0 @@
-feat!: refactor server action API
-
-BREAKING CHANGE: dataKitServerAction now uses overloads for model vs adapter
