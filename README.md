@@ -54,6 +54,7 @@ export async function fetchUsers(input: TDataKitInput) {
                 }
             })
 		},
+		filterAllowed: ["search", "age"],
 	});
 }
 ```
@@ -75,7 +76,8 @@ export async function fetchUsers(input: unknown) {
     return dataKitServerAction({
         model: UserModel,
         input: parsedInput,
-        // ...
+        item: (user) => ({ id: user._id.toString(), name: user.name }),
+        filterAllowed: ["search", "role"],
     });
 }
 ```
@@ -275,11 +277,11 @@ Security is strict by default when whitelists are provided. If you provide `filt
 dataKitServerAction({
     model: UserModel,
     input,
-    item: (u) => u,
+    item: (u) => ({ id: u._id.toString(), name: u.name }),
     // If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
     filterAllowed: ["name", "email", "role"],
     // Same for query params
-    queryAllowed: ["status"]
+    queryAllowed: ["status"],
 })
 ```
 
@@ -350,7 +352,8 @@ filterCustom: {
   priceRange: (value: { min: number; max: number }) => ({
     price: { $gte: value.min, $lte: value.max },
   }),
-}
+},
+filterAllowed: ["search", "priceRange"]
 ```
 
 #### Understanding `filterCustom` Flow

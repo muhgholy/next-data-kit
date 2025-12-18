@@ -80,7 +80,7 @@ export const useDataKit = <T = unknown, R = unknown>(
                limit,
                sorts,
                filter: debouncedFilter,
-               query,
+               query: query as Record<string, string | number | boolean>,
           };
 
           if (filterConfigRef.current) {
