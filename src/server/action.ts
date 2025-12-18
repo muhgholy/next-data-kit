@@ -21,14 +21,12 @@ export type TDataKitServerActionOptions<T, R> = {
 	item: (item: T) => Promise<R> | R;
 	// ** Custom filter function
 	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
-	// ** Custom filter configuration
+	// ** Custom filter configuration (defines allowed filter keys)
 	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
 	// ** Default sort options
 	defaultSort?: TSortOptions<T>;
 	// ** Maximum limit per page (default: 100)
 	maxLimit?: number;
-	// ** Whitelist of allowed filter fields
-	filterAllowed?: string[];
 	// ** Whitelist of allowed query fields
 	queryAllowed?: string[];
 };
@@ -39,7 +37,10 @@ export type TDataKitServerActionOptions<T, R> = {
 
 export const dataKitServerAction = async <T, R>(props: Readonly<TDataKitServerActionOptions<T, R>>): Promise<TDataKitResult<R>> => {
 	// ** Deconstruct Props
-	const { input, adapter, item, maxLimit = 100, filterAllowed, queryAllowed } = props;
+	const { input, adapter, item, maxLimit = 100, filterCustom, queryAllowed } = props;
+
+	// ** Auto-generate filterAllowed from filterCustom keys (server defines what's allowed)
+	const filterAllowed = filterCustom ? Object.keys(filterCustom) : undefined;
 
 	// ** Whitelist filtering for security (if configured)
 	// ** We do this here instead of in the adapter to keep the adapter simple and "dumb"

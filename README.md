@@ -54,7 +54,7 @@ export async function fetchUsers(input: TDataKitInput) {
 				},
 			}),
 		},
-		filterAllowed: ['search', 'age'],
+		// Only 'search' and 'age' filters are allowed (auto-extracted from filterCustom keys)
 	});
 }
 ```
@@ -76,7 +76,11 @@ export async function fetchUsers(input: unknown) {
 		model: UserModel,
 		input: parsedInput,
 		item: user => ({ id: user._id.toString(), name: user.name }),
-		filterAllowed: ['search', 'role'],
+		filterCustom: {
+			search: value => ({ name: { $regex: value, $options: 'i' } }),
+			role: value => ({ role: value }),
+		},
+		// Only 'search' and 'role' filters are allowed
 	});
 }
 ```
@@ -252,10 +256,13 @@ type TDataKitServerActionOptions<T, R> = {
 	model: TMongoModel<T>;
 	item: (item: T) => Promise<R> | R;
 	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
+	// ** Custom filter configuration (defines allowed filter keys)
 	filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
 	defaultSort?: TSortOptions<T>;
-	// ** Whitelist of allowed filter fields (crucial for security when using query prop)
-	filterAllowed?: string[];
+	// ** Maximum limit per page (default: 100)
+	maxLimit?: number;
+	// ** Whitelist of allowed query fields
+	queryAllowed?: string[];
 };
 ```
 
@@ -266,63 +273,86 @@ type TDataKitServerActionOptions<T, R> = {
 }
 ```
 
-### Security Note: `queryAllowed` & `filterAllowed` (Strict Mode)
+### Understanding `filter` vs `query`
 
-Security is strict by default when whitelists are provided. If you provide `filterAllowed` or `queryAllowed`, any input field **NOT** in the whitelist will cause the server action to **THROW AN ERROR**. This ensures that no hidden or unauthorized fields can be filtered or queried.
+There are two ways data reaches your database:
+
+1. **`filter` (via `filterCustom`)** - For user-facing filters with transformations
+   - Client-side `filters` prop → sends values to `filter` parameter
+   - Server validates against `filterCustom` keys
+   - You define how values transform into database queries
+   - **Use for**: search boxes, dropdowns, date ranges, etc.
+
+2. **`query` (via `queryAllowed`)** - For direct field matching
+   - Direct database field equality checks
+   - Must explicitly whitelist with `queryAllowed`
+   - **Use for**: fixed filters like `{ active: true }`, user-specific queries
 
 ```typescript
+dataKitServerAction({
+	model: UserModel,
+	input,
+	item: u => u,
+	// Client filters go through filterCustom
+	filterCustom: {
+		search: createSearchFilter(['name', 'email']),
+		role: value => ({ role: value }),
+	},
+	// Direct queries need explicit whitelist
+	queryAllowed: ['organizationId', 'active'],
+});
+```
+
+### Security Note: Strict Mode by Default
+
+**Filter Security**: When you define `filterCustom`, ONLY those keys are allowed. Any other filter key from the client will **THROW AN ERROR**.
+
+**Query Security**: When you provide `queryAllowed`, only those query fields are accepted. Any other query field will throw an error.
+
+````typescript
 // Strict Security Example
 dataKitServerAction({
 	model: UserModel,
 	input,
 	item: u => ({ id: u._id.toString(), name: u.name }),
+	filterCustom: {
+		name: value => ({ name: { $regex: value, $options: 'i' } }),
+		email: value => ({ email: { $regex: value, $options: 'i' } }),
+		role: value => ({ role: value }),
+	},
+	// ONLY 'name', 'email', and 'role' filters are allowed
 	// If client sends { filter: { secret: "true" } }, this WILL THROW an Error!
-	filterAllowed: ['name', 'email', 'role'],
-	// Same for query params
+
+	// Query params need explicit whitelist
 	queryAllowed: ['status'],
 });
 ```
 
 ### Error Handling on Client
 
-When the server action throws an Error (e.g., due to a security violation), `next-data-kit` catches it on the client side.
+When the server action throws an error (e.g., security violation), the client automatically handles it:
 
-- **`DataKitTable`**: Automatically displays the error message in Red within the table body.
-- **`useDataKit`**: The error is available in `state.error` for custom handling.
+**`DataKitTable`**: Displays error in red within the table body
+
+**`useDataKit`**: Error available in `state.error`
 
 ```tsx
-// Custom UI with useDataKit
-const { state: { error } } = useDataKit({ ... });
+const { state: { error } } = useDataKit({ action: fetchUsers });
 
 if (error) {
-  return <div className="text-red-500">Error: {error.message}</div>;
+	return <div className="text-red-500">Error: {error.message}</div>;
 }
 ```
 
-### Input Validation (Optional)
-
-type TDataKitServerActionOptions<T, R> = {
-input: TDataKitInput<T>;
-model: TMongoModel<T>;
-item: (item: T) => Promise<R> | R;
-filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<T>;
-filterCustom?: TFilterCustomConfigWithFilter<T, TMongoFilterQuery<T>>;
-defaultSort?: TSortOptions<T>;
-// \*\* Whitelist of allowed filter fields (crucial for security when using query prop)
-filterAllowed?: string[];
-};
-
-````
-
 #### `createSearchFilter(fields)`
 
-Create a search filter for multiple fields.
+Create a search filter for multiple fields. Use this in `filterCustom`.
 
 ```typescript
 filterCustom: {
-	search: createSearchFilter(["name", "email", "phone"]);
+	search: createSearchFilter(['name', 'email', 'phone']),
 }
-````
+```
 
 #### `escapeRegex(str)`
 
@@ -353,7 +383,7 @@ filterCustom: {
     price: { $gte: value.min, $lte: value.max },
   }),
 },
-filterAllowed: ["search", "priceRange"]
+// Only 'search' and 'priceRange' filters are allowed from client
 ```
 
 #### Understanding `filterCustom` Flow
