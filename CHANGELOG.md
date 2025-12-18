@@ -1,3 +1,23 @@
+# [5.0.0](https://github.com/muhgholy/next-data-kit/compare/v4.0.0...v5.0.0) (2025-12-18)
+
+
+* feat!: restructure types folder and move helper functions to utils ([fd7bc1e](https://github.com/muhgholy/next-data-kit/commit/fd7bc1ec25b3361289913bf803f1f2d0258f7d7d))
+
+
+### BREAKING CHANGES
+
+* Types folder has been reorganized into client and server subdirectories. Import paths have changed:
+- Types are now organized as types/client/ and types/server/
+- Database types moved from types/database/ to types/server/database/
+- Client types (hook, component, selectable) moved to types/client/
+- Server action types extracted to types/server/action.ts
+- Helper functions (calculatePagination) moved from types to server/utils.ts
+- All imports updated to reflect new structure
+
+Migration guide:
+- Update direct imports from types subfolders to use main types export
+- Helper functions like calculatePagination now exported from server utils
+
 # [4.0.0](https://github.com/muhgholy/next-data-kit/compare/v3.0.1...v4.0.0) (2025-12-18)
 
 
