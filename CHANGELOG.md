@@ -1,3 +1,23 @@
+# [4.0.0](https://github.com/muhgholy/next-data-kit/compare/v3.0.1...v4.0.0) (2025-12-18)
+
+
+* feat!: refactor server action API ([ccd143b](https://github.com/muhgholy/next-data-kit/commit/ccd143b274f11c0a8917f91383a7d04a16a916f0))
+
+
+### Bug Fixes
+
+* properly type dataKitServerAction generics in playground ([7f7aa78](https://github.com/muhgholy/next-data-kit/commit/7f7aa78e16bfe6fb87b807aea487a48cdeebdb01))
+
+
+### Features
+
+* create Next.js + MongoDB playground ([f6af4f3](https://github.com/muhgholy/next-data-kit/commit/f6af4f37e0acb037ee4ed32c30002eb09a22a775))
+
+
+### BREAKING CHANGES
+
+* dataKitServerAction now uses overloads for model vs adapter
+
 ## [3.0.1](https://github.com/muhgholy/next-data-kit/compare/v3.0.0...v3.0.1) (2025-12-18)
 
 
