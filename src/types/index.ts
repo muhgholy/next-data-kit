@@ -13,11 +13,11 @@ export type { TSortOptions, TSortEntry, TFilterConfig, TFilterCustomConfig, TFil
 // ** Server types
 export type { TExtractDocType, TBaseOptions, TMongooseOptions, TAdapterOptions } from './server/action';
 
-// ** Client - Controller types
-export type { TDataKitState, TDataKitActions, TUseDataKitReturn, TDataKitControllerOptions, TDataKitColumn } from './client/hook';
+// ** Client - Hook types
+export type { TDataKitState, TDataKitActions, TUseDataKitReturn, TUseDataKitOptions, TDataKitColumn } from './client/hook';
 
 // ** Client - Selectable types
 export type { TSelectionState, TSelectionActions, TUseSelectionReturn, TSelectionMode, TSelectable } from './client/selectable';
 
 // ** Client - Component types
-export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitComponentController, TDataKitSelectableItem, TDataKitStateMode, TDataKitRef } from './client/component';
+export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitController, TDataKitSelectableItem, TDataKitStateMode, TDataKitRef } from './client/component';

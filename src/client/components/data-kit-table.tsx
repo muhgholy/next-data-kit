@@ -34,8 +34,7 @@ import type {
      TDataKitComponentColumn,
      TDataKitFilterItem,
      TDataKitBulkAction,
-     TDataKitComponentController,
-     TDataKitSelectableItem,
+     TDataKitController,
      TDataKitStateMode,
      TExtractDataKitItemType,
      TFilterConfig,
@@ -43,7 +42,7 @@ import type {
 
 
 const DataKitRoot = <
-     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem & Record<string, unknown>>>,
+     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<any>>,
      TRowState = unknown
 >(props: Readonly<{
      action: TAction;
@@ -63,7 +62,7 @@ const DataKitRoot = <
      bordered?: boolean | 'rounded';
      refetchInterval?: number;
      state?: TDataKitStateMode;
-     controller?: React.MutableRefObject<TDataKitComponentController<TExtractDataKitItemType<TAction>> | null>;
+     controller?: React.MutableRefObject<TDataKitController<TExtractDataKitItemType<TAction>> | null>;
 }>) => {
      // ** Deconstruct Props
      const {

@@ -7,11 +7,10 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { TDataKitInput, TDataKitResult, TDataKitControllerOptions, TSortEntry, TUseDataKitReturn } from '../../types';
+import type { TDataKitInput, TDataKitResult, TUseDataKitOptions, TSortEntry, TUseDataKitReturn } from '../../types';
 import { parseUrlParams, stateToUrlParams } from '../utils';
 
-
-export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TDataKitControllerOptions<T, R>>): TUseDataKitReturn<T, R> => {
+export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKitOptions<T, R>>): TUseDataKitReturn<T, R> => {
 	// ** Deconstruct Props
 	const { initial = {}, state: stateMode = 'memory', filterConfig, action, onSuccess, onError, autoFetch = true, debounce: debounceDelay = 300 } = props;
 
@@ -280,4 +279,4 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TDataKitCon
 	};
 };
 
-export type { TDataKitControllerOptions };
+export type { TUseDataKitOptions };

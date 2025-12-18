@@ -86,9 +86,9 @@ export type TDataKitBulkAction<TItem> = {
 };
 
 /**
- * Controller for external table manipulation
+ * Controller ref for external DataKitTable manipulation
  */
-export type TDataKitComponentController<TItem> = {
+export type TDataKitController<TItem> = {
 	// ** Add a new item to the table
 	itemPush: (item: TItem, position?: 0 | 1) => void;
 	// ** Refetch data from the server

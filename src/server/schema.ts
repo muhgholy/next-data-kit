@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const dataKitSchemaZod = z.object({
+	action: z.literal('FETCH').optional(),
 	page: z.number().int().positive().optional(),
 	limit: z.number().int().positive().optional(),
 	query: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).optional(),

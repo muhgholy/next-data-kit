@@ -101,9 +101,9 @@ export type TUseDataKitReturn<T = unknown, R = unknown> = {
 };
 
 /**
- * React Data Kit controller options
+ * Options for the useDataKit hook
  */
-export type TDataKitControllerOptions<T = unknown, R = unknown> = {
+export type TUseDataKitOptions<T = unknown, R = unknown> = {
 	// ** Initial state configuration
 	initial?: {
 		page?: number;

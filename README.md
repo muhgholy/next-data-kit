@@ -310,7 +310,6 @@ dataKitServerAction({
 });
 ```
 
-
 ### Security & Filtering
 
 **Two ways to query data:**
@@ -416,7 +415,7 @@ Headless component for custom layouts (grids, cards, etc).
 React hook for managing next-data-kit state.
 
 ```typescript
-interface TDataKitControllerOptions<T, R> {
+interface TUseDataKitOptions<T, R> {
 	action: (input: TDataKitInput<T>) => Promise<TDataKitResult<R>>;
 	initial?: {
 		page?: number;
