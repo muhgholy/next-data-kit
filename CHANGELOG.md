@@ -1,3 +1,27 @@
+# [6.0.0](https://github.com/muhgholy/next-data-kit/compare/v5.0.0...v6.0.0) (2025-12-18)
+
+
+* feat!: rename controller types and improve type safety ([71119d6](https://github.com/muhgholy/next-data-kit/commit/71119d6cce51cb69c107ae272ddad778c6a42db0))
+
+
+### BREAKING CHANGES
+
+* Controller and options types have been renamed for clarity:
+- TDataKitControllerOptions renamed to TUseDataKitOptions
+- TDataKitComponentController renamed to TDataKitController
+- DataKitTable generic constraint relaxed to accept any item type
+- Zod schema updated to include action field validation
+
+Migration guide:
+- Replace TDataKitControllerOptions with TUseDataKitOptions
+- Replace TDataKitComponentController with TDataKitController
+- Controller refs now properly infer item types from action functions
+
+Additional changes:
+- Added comprehensive schema validation tests
+- Fixed type inference for DataKitTable controller prop
+- Updated README documentation with new type names
+
 # [5.0.0](https://github.com/muhgholy/next-data-kit/compare/v4.0.0...v5.0.0) (2025-12-18)
 
 
