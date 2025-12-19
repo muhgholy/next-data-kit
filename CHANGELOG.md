@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/muhgholy/next-data-kit/compare/v7.0.0...v7.1.0) (2025-12-19)
+
+
+### Features
+
+* support filter as function or plain object in dataKitServerAction ([5c5e5ab](https://github.com/muhgholy/next-data-kit/commit/5c5e5ab95500ecf8db2b77a4d2b08e2bb268cd7b))
+
 # [7.0.0](https://github.com/muhgholy/next-data-kit/compare/v6.0.0...v7.0.0) (2025-12-18)
 
 
