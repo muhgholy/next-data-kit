@@ -31,7 +31,7 @@ export type TBaseOptions<TDoc, R> = {
 export type TMongooseOptions<M, TDoc, R> = TBaseOptions<TDoc, R> & {
 	model: M;
 	adapter?: never;
-	filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<TDoc>;
+	filter?: ((filterInput?: Record<string, unknown>) => TMongoFilterQuery<TDoc>) | TMongoFilterQuery<TDoc>;
 	filterCustom?: TFilterCustomConfigWithFilter<TDoc, TMongoFilterQuery<TDoc>>;
 	defaultSort?: TSortOptions<TDoc>;
 };

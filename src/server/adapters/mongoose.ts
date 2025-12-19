@@ -10,13 +10,13 @@ import { escapeRegex, isProvided, isSafeKey } from '../utils';
 export const mongooseAdapter = <DocType = unknown>(
 	model: TMongoModel<DocType>,
 	options: Readonly<{
-		filter?: (filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>;
+		filter?: ((filterInput?: Record<string, unknown>) => TMongoFilterQuery<DocType>) | TMongoFilterQuery<DocType>;
 		filterCustom?: TFilterCustomConfigWithFilter<DocType, TMongoFilterQuery<DocType>>;
 		defaultSort?: TSortOptions<DocType>;
 	}> = {},
 ): TDataKitAdapter<DocType> => {
 	// ** Deconstruct options
-	const { filter: customFilterFn, filterCustom, defaultSort = { _id: -1 } as TSortOptions<DocType> } = options;
+	const { filter: customFilter, filterCustom, defaultSort = { _id: -1 } as TSortOptions<DocType> } = options;
 
 	return async ({ filter, sorts, limit, skip, input }) => {
 		// ** Normalize sort
@@ -47,14 +47,14 @@ export const mongooseAdapter = <DocType = unknown>(
 			});
 		}
 
-		// ** Custom filter function
-		if (customFilterFn) {
-			const customQuery = customFilterFn(filter);
+		// ** Custom filter function or object
+		if (customFilter) {
+			const customQuery = typeof customFilter === 'function' ? customFilter(filter) : customFilter;
 			filterQuery = { ...filterQuery, ...customQuery };
 		}
 
 		// ** User defined filters
-		if (filter && !customFilterFn) {
+		if (filter && !customFilter) {
 			if (input.filterConfig) {
 				Object.entries(filter).forEach(([key, value]) => {
 					if (isProvided(value) && isSafeKey(key) && input.filterConfig?.[key]) {
