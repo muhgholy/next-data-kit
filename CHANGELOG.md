@@ -1,3 +1,10 @@
+## [7.6.1](https://github.com/muhgholy/next-data-kit/compare/v7.6.0...v7.6.1) (2025-12-20)
+
+
+### Bug Fixes
+
+* hide inverse mode loading indicator when manual=true ([dd8c3e8](https://github.com/muhgholy/next-data-kit/commit/dd8c3e8b8f79217bac989b7e47388d02d226aa09))
+
 # [7.6.0](https://github.com/muhgholy/next-data-kit/compare/v7.5.0...v7.6.0) (2025-12-20)
 
 
