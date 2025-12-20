@@ -341,7 +341,7 @@ const DataKitInfinityInner = <
                     {/* Load more trigger at top for inverse mode */}
                     {inverse && dataKit.state.hasNextPage && (
                          <div className="flex items-center justify-center py-4">
-                              {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
+                              {!manual && dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
                          </div>
                     )}
 
