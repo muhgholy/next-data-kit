@@ -13,7 +13,7 @@ export { useDataKit, useSelection, useSelectionWithTotal, usePagination, type TU
 export { createDataKitContext, DataKitProvider, useDataKitContext, DataKitContext, type TDataKitContextValue } from './context';
 
 // ** Components
-export { DataKitTable, DataKit } from './components';
+export { DataKitTable, DataKit, DataKitInfinity } from './components';
 
 // ** Utilities
 export { getColumnValue, getSortValue, getNextSortValue, formatNumber, debounce, throttle, sortEntriesToKey, keyToSortEntries } from './utils';
