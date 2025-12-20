@@ -1,3 +1,10 @@
+## [7.6.2](https://github.com/muhgholy/next-data-kit/compare/v7.6.1...v7.6.2) (2025-12-20)
+
+
+### Bug Fixes
+
+* hide pull-refresh loading spinner when manual=true ([3b6590d](https://github.com/muhgholy/next-data-kit/commit/3b6590db559032ff07dd1dd467718933a3d8d045))
+
 ## [7.6.1](https://github.com/muhgholy/next-data-kit/compare/v7.6.0...v7.6.1) (2025-12-20)
 
 
