@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { dataKitServerAction } from '../src/server/action';
+import { dataKitServerAction, calculatePagination } from '../src/server';
 import { adapterMemory } from '../src/server/adapters/memory';
-import { calculatePagination } from '../src/types/next-data-kit';
 
 type User = {
 	id: string;
