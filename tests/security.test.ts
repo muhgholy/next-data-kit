@@ -65,9 +65,7 @@ describe('Security - Whitelist Strictness', () => {
 					action: 'FETCH',
 					page: 1,
 					limit: 10,
-					sorts: [
-						{ path: 'secretField', value: 1 },
-					],
+					sorts: [{ path: 'secretField', value: 1 }],
 				},
 				model: mockModel as any,
 				item: u => u,

@@ -6,6 +6,13 @@ import { useDataKit } from '../hooks/useDataKit';
 import { usePagination } from '../hooks/usePagination';
 import {
      Button,
+     Pagination,
+     PaginationContent,
+     PaginationEllipsis,
+     PaginationItem,
+     PaginationLink,
+     PaginationNext,
+     PaginationPrevious,
      Popover,
      PopoverContent,
      PopoverTrigger,
@@ -44,6 +51,7 @@ const DataKitInner = <
      refetchInterval?: number;
      state?: TDataKitStateMode;
      manual?: boolean;
+     pagination?: 'SIMPLE' | 'NUMBER';
      children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
 }>, ref: React.ForwardedRef<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>) => {
      // ** Deconstruct Props
@@ -60,6 +68,7 @@ const DataKitInner = <
           refetchInterval,
           state: stateMode = 'memory',
           manual = false,
+          pagination: paginationType = 'NUMBER',
           children,
      } = props;
 
@@ -95,6 +104,14 @@ const DataKitInner = <
           },
      });
      const pagination = usePagination({ page: dataKit.page, limit: dataKit.limit, total: dataKit.total, siblingCount: 1 });
+     const limitOptions = React.useMemo(() => {
+          const standardOptions = [10, 25, 50, 100];
+          const currentLimit = dataKit.limit;
+          if (!standardOptions.includes(currentLimit)) {
+               return [...standardOptions, currentLimit].sort((a, b) => a - b);
+          }
+          return standardOptions;
+     }, [dataKit.limit]);
 
      // ** Imperative Handle
      React.useImperativeHandle(ref, () => dataKit as unknown as TDataKitRef<unknown, TItem>, [dataKit]);
@@ -199,7 +216,7 @@ const DataKitInner = <
                          <Select value={String(dataKit.limit)} onValueChange={(v) => dataKit.actions.setLimit(Number(v))} disabled={dataKit.state.isLoading}>
                               <SelectTrigger className="w-16"><SelectValue /></SelectTrigger>
                               <SelectContent container={overlayContainer}>
-                                   {[10, 25, 50, 100].map((v) => (
+                                   {limitOptions.map((v) => (
                                         <SelectItem key={v} value={String(v)}>{v}</SelectItem>
                                    ))}
                               </SelectContent>
@@ -231,24 +248,79 @@ const DataKitInner = <
                     <p className="text-sm text-muted-foreground">
                          Page {dataKit.page} of {pagination.totalPages}
                     </p>
-                    <div className="flex items-center gap-1">
-                         <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
-                              onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
-                         >
-                              <ChevronLeft className="size-4" />
-                         </Button>
-                         <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={!pagination.hasNextPage || dataKit.state.isLoading}
-                              onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
-                         >
-                              <ChevronRight className="size-4" />
-                         </Button>
-                    </div>
+                    {paginationType === 'SIMPLE' ? (
+                         <div className="flex items-center gap-1">
+                              <Button
+                                   variant="outline"
+                                   size="icon"
+                                   disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                   onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                              >
+                                   <ChevronLeft className="size-4" />
+                              </Button>
+                              <Button
+                                   variant="outline"
+                                   size="icon"
+                                   disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                   onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                              >
+                                   <ChevronRight className="size-4" />
+                              </Button>
+                         </div>
+                    ) : (
+                         <Pagination className="mx-0 w-auto">
+                              <PaginationContent>
+                                   <PaginationItem className="hidden sm:block">
+                                        <PaginationPrevious
+                                             disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                        />
+                                   </PaginationItem>
+                                   <PaginationItem className="sm:hidden">
+                                        <PaginationLink
+                                             disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                        >
+                                             <ChevronLeft className="size-4" />
+                                        </PaginationLink>
+                                   </PaginationItem>
+                                   {pagination.pages.map((pageNum, idx) => (
+                                        <PaginationItem key={idx} className="hidden sm:block">
+                                             {pageNum === 'ellipsis' ? (
+                                                  <PaginationEllipsis />
+                                             ) : (
+                                                  <PaginationLink
+                                                       isActive={pageNum === dataKit.page}
+                                                       disabled={dataKit.state.isLoading}
+                                                       onClick={() => dataKit.actions.setPage(pageNum)}
+                                                  >
+                                                       {pageNum}
+                                                  </PaginationLink>
+                                             )}
+                                        </PaginationItem>
+                                   ))}
+                                   <PaginationItem className="sm:hidden">
+                                        <span className="flex size-9 items-center justify-center text-sm">
+                                             {dataKit.page}
+                                        </span>
+                                   </PaginationItem>
+                                   <PaginationItem className="hidden sm:block">
+                                        <PaginationNext
+                                             disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                        />
+                                   </PaginationItem>
+                                   <PaginationItem className="sm:hidden">
+                                        <PaginationLink
+                                             disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                        >
+                                             <ChevronRight className="size-4" />
+                                        </PaginationLink>
+                                   </PaginationItem>
+                              </PaginationContent>
+                         </Pagination>
+                    )}
                </div>
           </div>
      );
@@ -270,6 +342,7 @@ export const DataKit = React.forwardRef(DataKitInner) as unknown as <
           refetchInterval?: number;
           state?: TDataKitStateMode;
           manual?: boolean;
+          pagination?: 'SIMPLE' | 'NUMBER';
           children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
           ref?: React.Ref<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>;
      }>

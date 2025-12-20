@@ -12,6 +12,13 @@ import {
      DropdownMenuContent,
      DropdownMenuItem,
      DropdownMenuTrigger,
+     Pagination,
+     PaginationContent,
+     PaginationEllipsis,
+     PaginationItem,
+     PaginationLink,
+     PaginationNext,
+     PaginationPrevious,
      Popover,
      PopoverContent,
      PopoverTrigger,
@@ -62,6 +69,7 @@ const DataKitRoot = <
      bordered?: boolean | 'rounded';
      refetchInterval?: number;
      state?: TDataKitStateMode;
+     pagination?: 'SIMPLE' | 'NUMBER';
      controller?: React.MutableRefObject<TDataKitController<TExtractDataKitItemType<TAction>> | null>;
 }>) => {
      // ** Deconstruct Props
@@ -80,6 +88,7 @@ const DataKitRoot = <
           bordered,
           refetchInterval,
           state: stateMode = 'memory',
+          pagination: paginationType = 'NUMBER',
           controller,
      } = props;
 
@@ -127,6 +136,14 @@ const DataKitRoot = <
      // ** Variable
      const selectedCount = selection.selectedIds.size;
      const colSpan = columns.length + (selectable?.enabled ? 1 : 0);
+     const limitOptions = React.useMemo(() => {
+          const standardOptions = [10, 25, 50, 100];
+          const currentLimit = dataKit.limit;
+          if (!standardOptions.includes(currentLimit)) {
+               return [...standardOptions, currentLimit].sort((a, b) => a - b);
+          }
+          return standardOptions;
+     }, [dataKit.limit]);
 
      // ** Handlers
      const handleSort = useCallback((path: string) => {
@@ -269,7 +286,7 @@ const DataKitRoot = <
                          <Select value={String(dataKit.limit)} onValueChange={(v) => dataKit.actions.setLimit(Number(v))} disabled={dataKit.state.isLoading}>
                               <SelectTrigger className="w-16"><SelectValue /></SelectTrigger>
                               <SelectContent container={overlayContainer}>
-                                   {[10, 25, 50, 100].map((v) => (
+                                   {limitOptions.map((v) => (
                                         <SelectItem key={v} value={String(v)}>{v}</SelectItem>
                                    ))}
                               </SelectContent>
@@ -392,24 +409,79 @@ const DataKitRoot = <
                               <span className="ml-2 text-foreground">({selectedCount} selected)</span>
                          )}
                     </p>
-                    <div className="flex items-center gap-1">
-                         <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
-                              onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
-                         >
-                              <ChevronLeft className="size-4" />
-                         </Button>
-                         <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={!pagination.hasNextPage || dataKit.state.isLoading}
-                              onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
-                         >
-                              <ChevronRight className="size-4" />
-                         </Button>
-                    </div>
+                    {paginationType === 'SIMPLE' ? (
+                         <div className="flex items-center gap-1">
+                              <Button
+                                   variant="outline"
+                                   size="icon"
+                                   disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                   onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                              >
+                                   <ChevronLeft className="size-4" />
+                              </Button>
+                              <Button
+                                   variant="outline"
+                                   size="icon"
+                                   disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                   onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                              >
+                                   <ChevronRight className="size-4" />
+                              </Button>
+                         </div>
+                    ) : (
+                         <Pagination className="mx-0 w-auto">
+                              <PaginationContent>
+                                   <PaginationItem className="hidden sm:block">
+                                        <PaginationPrevious
+                                             disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                        />
+                                   </PaginationItem>
+                                   <PaginationItem className="sm:hidden">
+                                        <PaginationLink
+                                             disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                        >
+                                             <ChevronLeft className="size-4" />
+                                        </PaginationLink>
+                                   </PaginationItem>
+                                   {pagination.pages.map((pageNum, idx) => (
+                                        <PaginationItem key={idx} className="hidden sm:block">
+                                             {pageNum === 'ellipsis' ? (
+                                                  <PaginationEllipsis />
+                                             ) : (
+                                                  <PaginationLink
+                                                       isActive={pageNum === dataKit.page}
+                                                       disabled={dataKit.state.isLoading}
+                                                       onClick={() => dataKit.actions.setPage(pageNum)}
+                                                  >
+                                                       {pageNum}
+                                                  </PaginationLink>
+                                             )}
+                                        </PaginationItem>
+                                   ))}
+                                   <PaginationItem className="sm:hidden">
+                                        <span className="flex size-9 items-center justify-center text-sm">
+                                             {dataKit.page}
+                                        </span>
+                                   </PaginationItem>
+                                   <PaginationItem className="hidden sm:block">
+                                        <PaginationNext
+                                             disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                        />
+                                   </PaginationItem>
+                                   <PaginationItem className="sm:hidden">
+                                        <PaginationLink
+                                             disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                             onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                        >
+                                             <ChevronRight className="size-4" />
+                                        </PaginationLink>
+                                   </PaginationItem>
+                              </PaginationContent>
+                         </Pagination>
+                    )}
                </div>
           </div>
      );
