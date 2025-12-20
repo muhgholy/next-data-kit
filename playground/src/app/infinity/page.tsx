@@ -23,31 +23,28 @@ export default function InfinityDemo() {
                     <h1 className="text-3xl font-bold mb-4">DataKitInfinity Demo</h1>
                     <div className="flex gap-2">
                          <button
-                              className={`px-4 py-2 rounded-md ${
-                                   mode === 'normal'
+                              className={`px-4 py-2 rounded-md ${mode === 'normal'
                                         ? 'bg-primary text-primary-foreground'
                                         : 'bg-secondary text-secondary-foreground'
-                              }`}
+                                   }`}
                               onClick={() => setMode('normal')}
                          >
                               Normal Mode
                          </button>
                          <button
-                              className={`px-4 py-2 rounded-md ${
-                                   mode === 'inverse'
+                              className={`px-4 py-2 rounded-md ${mode === 'inverse'
                                         ? 'bg-primary text-primary-foreground'
                                         : 'bg-secondary text-secondary-foreground'
-                              }`}
+                                   }`}
                               onClick={() => setMode('inverse')}
                          >
                               Inverse Mode (Chat)
                          </button>
                          <button
-                              className={`px-4 py-2 rounded-md ${
-                                   mode === 'manual'
+                              className={`px-4 py-2 rounded-md ${mode === 'manual'
                                         ? 'bg-primary text-primary-foreground'
                                         : 'bg-secondary text-secondary-foreground'
-                              }`}
+                                   }`}
                               onClick={() => setMode('manual')}
                          >
                               Manual Mode

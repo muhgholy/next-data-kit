@@ -229,11 +229,7 @@ import { fetchMessages } from '@/actions/messages';
 
 export function MessagesFeed() {
 	return (
-		<DataKitInfinity 
-			action={fetchMessages} 
-			limit={{ default: 20 }}
-			filters={[{ id: 'search', label: 'Search', type: 'TEXT' }]}
-		>
+		<DataKitInfinity action={fetchMessages} limit={{ default: 20 }} filters={[{ id: 'search', label: 'Search', type: 'TEXT' }]}>
 			{dataKit => (
 				<div className='space-y-4'>
 					{dataKit.items.map(message => (
@@ -242,12 +238,8 @@ export function MessagesFeed() {
 							<p>{message.content}</p>
 						</div>
 					))}
-					{!dataKit.state.hasNextPage && dataKit.items.length > 0 && (
-						<p className='text-center text-muted-foreground'>You're all set</p>
-					)}
-					{dataKit.state.isLoading && (
-						<p className='text-center text-muted-foreground'>Loading...</p>
-					)}
+					{!dataKit.state.hasNextPage && dataKit.items.length > 0 && <p className='text-center text-muted-foreground'>You're all set</p>}
+					{dataKit.state.isLoading && <p className='text-center text-muted-foreground'>Loading...</p>}
 				</div>
 			)}
 		</DataKitInfinity>
@@ -258,11 +250,7 @@ export function MessagesFeed() {
 **Inverse mode** - for chat interfaces where new messages load at the top:
 
 ```tsx
-<DataKitInfinity 
-	action={fetchChatMessages}
-	inverse={true}
-	defaultSort={[{ path: 'createdAt', value: -1 }]}
->
+<DataKitInfinity action={fetchChatMessages} inverse={true} defaultSort={[{ path: 'createdAt', value: -1 }]}>
 	{dataKit => (
 		<div className='flex flex-col-reverse gap-2'>
 			{dataKit.items.map(message => (
@@ -276,7 +264,7 @@ export function MessagesFeed() {
 **Pull-to-refresh** - mobile-friendly refresh gesture:
 
 ```tsx
-<DataKitInfinity 
+<DataKitInfinity
 	action={fetchPosts}
 	pullDownToRefresh={{
 		isActive: true,
@@ -288,6 +276,7 @@ export function MessagesFeed() {
 ```
 
 **Key Features:**
+
 - ✅ Automatic infinite scroll using intersection observer
 - ✅ Accumulates items across all pages
 - ✅ Inverse mode for chat/timeline interfaces
@@ -565,21 +554,22 @@ Headless component for custom layouts (grids, cards, etc).
 
 Infinite scroll component for feeds, chat interfaces, and dynamic content loading.
 
-| Prop                 | Type                                | Description                                           |
-| -------------------- | ----------------------------------- | ----------------------------------------------------- |
-| `action`             | `(input) => Promise<Result>`        | Server action function                                |
-| `filters`            | `FilterItem[]`                      | Filter configurations                                 |
-| `limit`              | `{ default: number }`               | Items per page (default: 10)                          |
-| `defaultSort`        | `TSortEntry[]`                      | Initial sort configuration                            |
-| `inverse`            | `boolean`                           | Load more at top (chat mode, default: false)          |
-| `pullDownToRefresh`  | `{ isActive, threshold? }`          | Pull-to-refresh config (threshold default: 50)        |
-| `autoFetch`          | `boolean`                           | Auto-fetch on mount (default: true)                   |
-| `debounce`           | `number`                            | Filter debounce in ms (default: 300)                  |
-| `state`              | `'memory' \| 'search-params'`       | State management mode (default: 'memory')             |
-| `className`          | `string`                            | Container class                                       |
-| `children`           | `(dataKit) => ReactNode`            | Render function with accumulated items                |
+| Prop                | Type                          | Description                                    |
+| ------------------- | ----------------------------- | ---------------------------------------------- |
+| `action`            | `(input) => Promise<Result>`  | Server action function                         |
+| `filters`           | `FilterItem[]`                | Filter configurations                          |
+| `limit`             | `{ default: number }`         | Items per page (default: 10)                   |
+| `defaultSort`       | `TSortEntry[]`                | Initial sort configuration                     |
+| `inverse`           | `boolean`                     | Load more at top (chat mode, default: false)   |
+| `pullDownToRefresh` | `{ isActive, threshold? }`    | Pull-to-refresh config (threshold default: 50) |
+| `autoFetch`         | `boolean`                     | Auto-fetch on mount (default: true)            |
+| `debounce`          | `number`                      | Filter debounce in ms (default: 300)           |
+| `state`             | `'memory' \| 'search-params'` | State management mode (default: 'memory')      |
+| `className`         | `string`                      | Container class                                |
+| `children`          | `(dataKit) => ReactNode`      | Render function with accumulated items         |
 
 **Features:**
+
 - Automatically accumulates items across pages as user scrolls
 - Uses `react-intersection-observer` for efficient scroll detection
 - Inverse mode for chat-like interfaces (loads at top)
@@ -619,7 +609,7 @@ Returns:
 - `state`
      - `isLoading` - Loading state
      - `error` - Error state
-     - `hasNextPage` - Whether more pages exist (page * limit < total)
+     - `hasNextPage` - Whether more pages exist (page \* limit < total)
 - `actions`
      - `setPage(page)` - Go to a specific page
      - `setLimit(limit)` - Set items per page

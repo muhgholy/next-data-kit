@@ -320,7 +320,7 @@ const DataKitInfinityInner = <
                <div ref={scrollContainerRef} className="relative flex-1 overflow-auto">
                     {/* Pull to refresh indicator */}
                     {pullDownToRefresh?.isActive && pullDistance > 0 && (
-                         <div 
+                         <div
                               className="absolute left-0 right-0 top-0 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all"
                               style={{ height: `${pullDistance}px` }}
                          >
