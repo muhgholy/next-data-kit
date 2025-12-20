@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Filter, Loader2, RefreshCw } from 'lucide-react';
+import { Filter, Loader2 } from 'lucide-react';
 import { useDataKit } from '../hooks/useDataKit';
 import {
      Button,
@@ -25,7 +25,6 @@ import type {
      TExtractDataKitItemType,
      TFilterConfig,
      TUseDataKitReturn,
-     TDataKitRef,
 } from '../../types';
 
 
@@ -42,14 +41,10 @@ const DataKitInfinityInner = <
      autoFetch?: boolean;
      debounce?: number;
      state?: TDataKitStateMode;
-     inverse?: boolean;
      manual?: boolean;
-     pullDownToRefresh?: {
-          isActive: boolean;
-          threshold?: number;
-     };
+     fullHeight?: boolean;
      children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
-}>, ref: React.ForwardedRef<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>) => {
+}>) => {
      // ** Deconstruct Props
      const {
           action,
@@ -62,9 +57,8 @@ const DataKitInfinityInner = <
           autoFetch = true,
           debounce = 300,
           state: stateMode = 'memory',
-          inverse = false,
           manual = false,
-          pullDownToRefresh,
+          fullHeight = true,
           children,
      } = props;
 
@@ -78,13 +72,9 @@ const DataKitInfinityInner = <
 
      // ** State
      const [isFilterOpen, setIsFilterOpen] = useState(false);
-     const [isPullRefreshing, setIsPullRefreshing] = useState(false);
-     const [pullStartY, setPullStartY] = useState(0);
-     const [pullDistance, setPullDistance] = useState(0);
 
      // ** Variable
      const overlayContainer = containerRef.current;
-     const pullThreshold = pullDownToRefresh?.threshold ?? 50;
 
      // ** Hooks
      const dataKit = useDataKit<unknown, TItem>({
@@ -110,14 +100,6 @@ const DataKitInfinityInner = <
           rootMargin: '100px',
      });
 
-     const { ref: loadMoreTopRef, inView: inViewTop } = useInView({
-          threshold: 0,
-          rootMargin: '100px',
-     });
-
-     // ** Imperative Handle
-     React.useImperativeHandle(ref, () => dataKit as unknown as TDataKitRef<unknown, TItem>, [dataKit]);
-
      // ** Handlers
      const handleResetFilters = useCallback(() => {
           filters.forEach((f) => {
@@ -125,107 +107,35 @@ const DataKitInfinityInner = <
           });
      }, [filters, dataKit.actions]);
 
-     const loadMore = useCallback(async () => {
+     const loadMore = useCallback(() => {
           if (dataKit.state.isLoading || !dataKit.state.hasNextPage) return;
-
           dataKit.actions.setPage(dataKit.page + 1);
-     }, [dataKit]);
-
-     const resetAndFetch = useCallback(async () => {
-          setAllItems([]);
-          dataKit.actions.setPage(1);
-          await dataKit.actions.refresh();
-     }, [dataKit.actions]);
-
-     // ** Pull to refresh handlers
-     const handleTouchStart = useCallback((e: TouchEvent) => {
-          if (!pullDownToRefresh?.isActive) return;
-          const scrollTop = scrollContainerRef.current?.scrollTop ?? 0;
-          if (scrollTop === 0 && e.touches && e.touches[0]) {
-               setPullStartY(e.touches[0].clientY);
-          }
-     }, [pullDownToRefresh?.isActive]);
-
-     const handleTouchMove = useCallback((e: TouchEvent) => {
-          if (!pullDownToRefresh?.isActive || pullStartY === 0) return;
-          if (!e.touches || !e.touches[0]) return;
-          const scrollTop = scrollContainerRef.current?.scrollTop ?? 0;
-          if (scrollTop === 0) {
-               const distance = e.touches[0].clientY - pullStartY;
-               if (distance > 0) {
-                    setPullDistance(Math.min(distance, pullThreshold * 2));
-                    if (distance > pullThreshold * 2) {
-                         e.preventDefault();
-                    }
-               }
-          }
-     }, [pullDownToRefresh?.isActive, pullStartY, pullThreshold]);
-
-     const handleTouchEnd = useCallback(async () => {
-          if (!pullDownToRefresh?.isActive) return;
-          if (pullDistance > pullThreshold) {
-               setIsPullRefreshing(true);
-               await resetAndFetch();
-               setIsPullRefreshing(false);
-          }
-          setPullStartY(0);
-          setPullDistance(0);
-     }, [pullDownToRefresh?.isActive, pullDistance, pullThreshold, resetAndFetch]);
-
-     // ** Effects
-     useEffect(() => {
-          if (!pullDownToRefresh?.isActive) return;
-
-          const container = scrollContainerRef.current;
-          if (!container) return;
-
-          container.addEventListener('touchstart', handleTouchStart);
-          container.addEventListener('touchmove', handleTouchMove, { passive: false });
-          container.addEventListener('touchend', handleTouchEnd);
-
-          return () => {
-               container.removeEventListener('touchstart', handleTouchStart);
-               container.removeEventListener('touchmove', handleTouchMove);
-               container.removeEventListener('touchend', handleTouchEnd);
-          };
-     }, [pullDownToRefresh?.isActive, handleTouchStart, handleTouchMove, handleTouchEnd]);
+     }, [dataKit.state.isLoading, dataKit.state.hasNextPage, dataKit.page, dataKit.actions]);
 
      // ** Initial fetch
      useEffect(() => {
-          if (autoFetch && dataKit.page === 1 && allItems.length === 0) {
-               dataKit.actions.refresh();
-          }
+          if (autoFetch) dataKit.actions.refresh();
+
      }, [autoFetch]);
 
      // ** Append new items when dataKit items change
      useEffect(() => {
           if (dataKit.items.length > 0) {
                setAllItems((prev) => {
-                    if (dataKit.page === 1) {
-                         return dataKit.items;
-                    }
-                    // Check if items are already in the list to avoid duplicates
-                    const newItems = dataKit.items.filter(
-                         (newItem) => !prev.some((existingItem) => (existingItem as any).id === (newItem as any).id)
-                    );
-                    return inverse ? [...newItems, ...prev] : [...prev, ...newItems];
+                    if (dataKit.page === 1) return dataKit.items;
+                    return [...prev, ...dataKit.items];
                });
+          } else if (dataKit.page === 1) {
+               setAllItems([]);
           }
-     }, [dataKit.items, dataKit.page, inverse]);
+     }, [dataKit.items, dataKit.page]);
 
-     // ** Load more when in view
+     // ** Infinite scroll trigger
      useEffect(() => {
-          if (inViewBottom && !inverse) {
+          if (inViewBottom && !dataKit.state.isLoading && dataKit.state.hasNextPage) {
                loadMore();
           }
-     }, [inViewBottom, inverse, loadMore]);
-
-     // ** Load more for inverse mode when top trigger is in view
-     useEffect(() => {
-          if (inViewTop && inverse) {
-               loadMore();
-          }
-     }, [inViewTop, inverse, loadMore]);
+     }, [inViewBottom, dataKit.state.isLoading, dataKit.state.hasNextPage]);
 
      // ** Create enhanced dataKit with all accumulated items
      const enhancedDataKit = {
@@ -235,10 +145,13 @@ const DataKitInfinityInner = <
 
      // ** Render
      return (
-          <div ref={containerRef} className={`flex flex-col ${className ?? ''}`}>
+          <div
+               ref={containerRef}
+               className={`flex flex-col ${fullHeight ? 'h-full' : ''}`}
+          >
                {/* Toolbar */}
                {filters.length > 0 && (
-                    <div className="mb-3">
+                    <div className="shrink-0 px-4 pt-4 pb-3">
                          <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                               <PopoverTrigger asChild>
                                    <Button variant="outline" size="sm">
@@ -246,107 +159,81 @@ const DataKitInfinityInner = <
                                         Filters
                                    </Button>
                               </PopoverTrigger>
-                                   <PopoverContent align="start" className="w-80" container={overlayContainer}>
-                                        <div className="grid gap-3">
-                                             {filters.map((f) => (
-                                                  <div key={f.id} className="grid gap-1.5">
-                                                       <label className="text-sm font-medium">{f.label}</label>
-                                                       {f.type === 'TEXT' && (
-                                                            <input
-                                                                 type="text"
-                                                                 className="h-9 w-full rounded-md border bg-transparent px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                                                                 placeholder={f.placeholder}
-                                                                 value={(dataKit.filter[f.id] as string) ?? ''}
-                                                                 onChange={(e) => dataKit.actions.setFilter(f.id, e.target.value)}
+                              <PopoverContent align="start" className="w-80" container={overlayContainer}>
+                                   <div className="grid gap-3">
+                                        {filters.map((f) => (
+                                             <div key={f.id} className="grid gap-1.5">
+                                                  <label className="text-sm font-medium">{f.label}</label>
+                                                  {f.type === 'TEXT' && (
+                                                       <input
+                                                            type="text"
+                                                            className="h-9 w-full rounded-md border bg-transparent px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                                                            placeholder={f.placeholder}
+                                                            value={(dataKit.filter[f.id] as string) ?? ''}
+                                                            onChange={(e) => dataKit.actions.setFilter(f.id, e.target.value)}
+                                                       />
+                                                  )}
+                                                  {f.type === 'SELECT' && (
+                                                       <Select
+                                                            value={String(dataKit.filter[f.id] || '__all__')}
+                                                            onValueChange={(v) => dataKit.actions.setFilter(f.id, v === '__all__' ? '' : v)}
+                                                       >
+                                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                                            <SelectContent container={overlayContainer}>
+                                                                 <SelectItem value="__all__">All</SelectItem>
+                                                                 {f.dataset?.map((d) => (
+                                                                      <SelectItem key={d.id} value={d.id}>{d.label}</SelectItem>
+                                                                 ))}
+                                                            </SelectContent>
+                                                       </Select>
+                                                  )}
+                                                  {f.type === 'BOOLEAN' && (
+                                                       <div className="flex items-center justify-between">
+                                                            <span className="text-sm text-muted-foreground">{f.placeholder ?? 'Enable'}</span>
+                                                            <Switch
+                                                                 checked={Boolean(dataKit.filter[f.id])}
+                                                                 onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
                                                             />
-                                                       )}
-                                                       {f.type === 'SELECT' && (
-                                                            <Select
-                                                                 value={String(dataKit.filter[f.id] || '__all__')}
-                                                                 onValueChange={(v) => dataKit.actions.setFilter(f.id, v === '__all__' ? '' : v)}
-                                                            >
-                                                                 <SelectTrigger><SelectValue /></SelectTrigger>
-                                                                 <SelectContent container={overlayContainer}>
-                                                                      <SelectItem value="__all__">All</SelectItem>
-                                                                      {f.dataset?.map((d) => (
-                                                                           <SelectItem key={d.id} value={d.id}>{d.label}</SelectItem>
-                                                                      ))}
-                                                                 </SelectContent>
-                                                            </Select>
-                                                       )}
-                                                       {f.type === 'BOOLEAN' && (
-                                                            <div className="flex items-center justify-between">
-                                                                 <span className="text-sm text-muted-foreground">{f.placeholder ?? 'Enable'}</span>
-                                                                 <Switch
-                                                                      checked={Boolean(dataKit.filter[f.id])}
-                                                                      onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
-                                                                 />
-                                                            </div>
-                                                       )}
-                                                  </div>
-                                             ))}
-                                        </div>
-                                        <div className="mt-4 flex justify-between border-t pt-3">
-                                             <Button variant="outline" size="sm" onClick={handleResetFilters}>Reset</Button>
-                                             <Button size="sm" onClick={() => setIsFilterOpen(false)}>Done</Button>
-                                        </div>
-                                   </PopoverContent>
-                              </Popover>
-                         </div>
-                    )}
-               
-
-               {/* Scrollable Content */ }
-     <div ref={scrollContainerRef} className="relative flex-1 overflow-auto">
-          {/* Pull to refresh indicator */}
-          {pullDownToRefresh?.isActive && pullDistance > 0 && (
-               <div
-                    className="absolute left-0 right-0 top-0 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all"
-                    style={{ height: `${pullDistance}px` }}
-               >
-                    {pullDistance > pullThreshold ? (
-                         <RefreshCw className="size-5 text-primary" />
-                    ) : (
-                         <span className="text-sm text-muted-foreground">Pull to refresh</span>
-                    )}
-               </div>
-          )}
-
-          {!manual && isPullRefreshing && (
-               <div className="flex items-center justify-center py-4">
-                    <Loader2 className="size-6 animate-spin text-muted-foreground" />
-               </div>
-          )}
-
-          {/* Load more trigger at top for inverse mode */}
-          {inverse && <div ref={loadMoreTopRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
-               {!manual && dataKit.state.hasNextPage && dataKit.state.isLoading && (
-                    <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                                                       </div>
+                                                  )}
+                                             </div>
+                                        ))}
+                                   </div>
+                                   <div className="mt-4 flex justify-between border-t pt-3">
+                                        <Button variant="outline" size="sm" onClick={handleResetFilters}>Reset</Button>
+                                        <Button size="sm" onClick={() => setIsFilterOpen(false)}>Done</Button>
+                                   </div>
+                              </PopoverContent>
+                         </Popover>
+                    </div>
                )}
-          </div>}
 
-          {/* User content */}
-          {children(enhancedDataKit)}
 
-          {/* Load more trigger at bottom for normal mode */}
-          {!inverse && (
-               <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
-                    {!manual && (
-                         <>
-                              {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
-                              {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
-                                   <p className="text-sm text-muted-foreground">You're all set</p>
-                              )}
-                         </>
-                    )}
+               {/* Scrollable Content */}
+               <div
+                    ref={scrollContainerRef}
+                    className={`relative flex-1 ${fullHeight ? 'min-h-0' : ''} overflow-y-auto overflow-x-hidden ${className ?? ''}`}
+               >
+                    {/* User content */}
+                    {children(enhancedDataKit)}
+
+                    {/* Load more trigger at bottom */}
+                    <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+                         {!manual && (
+                              <>
+                                   {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
+                                   {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
+                                        <p className="text-sm text-muted-foreground">You're all set</p>
+                                   )}
+                              </>
+                         )}
+                    </div>
                </div>
-          )}
-     </div>
           </div >
      );
 };
 
-export const DataKitInfinity = React.forwardRef(DataKitInfinityInner) as unknown as <
+export const DataKitInfinity = DataKitInfinityInner as unknown as <
      TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>
 >(
      props: Readonly<{
@@ -360,13 +247,8 @@ export const DataKitInfinity = React.forwardRef(DataKitInfinityInner) as unknown
           autoFetch?: boolean;
           debounce?: number;
           state?: TDataKitStateMode;
-          inverse?: boolean;
           manual?: boolean;
-          pullDownToRefresh?: {
-               isActive: boolean;
-               threshold?: number;
-          };
+          fullHeight?: boolean;
           children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
-          ref?: React.Ref<TDataKitRef<unknown, TExtractDataKitItemType<TAction>>>;
      }>
 ) => React.ReactElement;

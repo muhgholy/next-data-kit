@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-import { UserModel } from './src/models/User';
+import UserModel from './src/models/User.ts';
+
+const User = UserModel.default || UserModel;
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/next-data-kit-demo';
 
@@ -32,11 +34,11 @@ async function seed() {
           console.log('Connected to MongoDB');
 
           // Clear existing users
-          await UserModel.deleteMany({});
+          await User.deleteMany({});
           console.log('Cleared existing users');
 
           // Insert sample users
-          await UserModel.insertMany(sampleUsers);
+          await User.insertMany(sampleUsers);
           console.log(`Inserted ${sampleUsers.length} sample users`);
 
           console.log('Seed completed successfully!');

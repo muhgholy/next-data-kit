@@ -1,67 +1,77 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { DataKitInfinity } from '../../../../src/client';
+import { DataKitInfinity } from 'next-data-kit/client';
 import { fetchUsers } from '@/actions/users';
 
 export default function InfinityDemo() {
-     const [mode, setMode] = useState<'normal' | 'inverse' | 'manual'>('normal');
+     const [mode, setMode] = useState<'normal' | 'manual'>('normal');
 
      return (
-          <div className="container mx-auto py-10">
-               <div className="mb-8">
-                    <Link
-                         href="/"
-                         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
-                    >
+          <div className="container mx-auto px-4 md:px-8 py-8">
+               {/* Hero Section */}
+               <div className="mb-8 space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                          </svg>
-                         <span>Back to Table Demo</span>
-                    </Link>
-                    <h1 className="text-3xl font-bold mb-4">DataKitInfinity Demo</h1>
-                    <div className="flex gap-2">
+                         DataKitInfinity Component
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                         Infinity Scroll Demo
+                    </h1>
+                    <p className="text-lg text-muted-foreground max-w-3xl">
+                         Explore different infinite scrolling modes: normal feed scrolling and manual control with custom loading states.
+                    </p>
+
+                    {/* Mode Selector */}
+                    <div className="flex flex-wrap gap-2 pt-2">
                          <button
-                              className={`px-4 py-2 rounded-md ${mode === 'normal'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground'
+                              className={`px-4 py-2 rounded-lg font-medium transition-all ${mode === 'normal'
+                                   ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                    }`}
                               onClick={() => setMode('normal')}
                          >
-                              Normal Mode
+                              <div className="flex items-center gap-2">
+                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                   </svg>
+                                   Normal Mode
+                              </div>
                          </button>
                          <button
-                              className={`px-4 py-2 rounded-md ${mode === 'inverse'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground'
-                                   }`}
-                              onClick={() => setMode('inverse')}
-                         >
-                              Inverse Mode (Chat)
-                         </button>
-                         <button
-                              className={`px-4 py-2 rounded-md ${mode === 'manual'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground'
+                              className={`px-4 py-2 rounded-lg font-medium transition-all ${mode === 'manual'
+                                   ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                    }`}
                               onClick={() => setMode('manual')}
                          >
-                              Manual Mode
+                              <div className="flex items-center gap-2">
+                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                   </svg>
+                                   Manual Mode
+                              </div>
                          </button>
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                         {mode === 'normal' && 'Scroll down to load more items'}
-                         {mode === 'inverse' && 'Scroll up to load more items (like a chat)'}
-                         {mode === 'manual' && 'Custom loading and empty states'}
+
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                         </svg>
+                         {mode === 'normal' && 'Scroll down to load more items automatically'}
+                         {mode === 'manual' && 'Custom loading and empty states with grid layout'}
                     </p>
                </div>
 
                {mode === 'normal' && (
-                    <div className="border rounded-lg p-4 h-[600px]">
+                    <div className="border rounded-lg overflow-hidden shadow-sm bg-card">
                          <DataKitInfinity
+                              fullHeight={true}
                               action={fetchUsers}
                               limit={{ default: 5 }}
+                              className="p-4 md:p-6"
                               filters={[
                                    {
                                         id: 'search',
@@ -80,103 +90,41 @@ export default function InfinityDemo() {
                                         ],
                                    },
                               ]}
-                              pullDownToRefresh={{
-                                   isActive: true,
-                                   threshold: 50,
-                              }}
                          >
                               {dataKit => (
-                                   <div className="space-y-4">
+                                   <div className="space-y-3">
                                         {dataKit.items.map(user => (
                                              <div
                                                   key={user.id}
-                                                  className="border rounded-lg p-4 hover:bg-accent transition-colors"
+                                                  className="group border rounded-lg p-4 hover:shadow-md transition-all bg-background hover:border-primary/50"
                                              >
-                                                  <div className="flex items-start justify-between">
-                                                       <div>
-                                                            <h3 className="font-semibold text-lg">{user.name}</h3>
-                                                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                                                  <div className="flex items-start justify-between gap-3">
+                                                       <div className="flex-1 min-w-0">
+                                                            <h3 className="font-semibold text-base truncate group-hover:text-primary transition-colors">
+                                                                 {user.name}
+                                                            </h3>
+                                                            <p className="text-sm text-muted-foreground truncate mt-0.5">
+                                                                 {user.email}
+                                                            </p>
+                                                            <div className="mt-3 flex gap-3 text-xs">
+                                                                 <span className="inline-flex items-center gap-1 text-muted-foreground">
+                                                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                      </svg>
+                                                                      Age: {user.age}
+                                                                 </span>
+                                                                 <span className={`inline-flex items-center gap-1.5 ${user.active ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                                                      <span className={`h-1.5 w-1.5 rounded-full ${user.active ? 'bg-green-600 dark:bg-green-400' : 'bg-red-600 dark:bg-red-400'}`}></span>
+                                                                      {user.active ? 'Active' : 'Inactive'}
+                                                                 </span>
+                                                            </div>
                                                        </div>
-                                                       <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
+                                                       <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-primary/10 text-primary flex-shrink-0">
                                                             {user.role}
                                                        </span>
                                                   </div>
-                                                  <div className="mt-2 flex gap-4 text-sm text-muted-foreground">
-                                                       <span>Age: {user.age}</span>
-                                                       <span>Status: {user.active ? '🟢 Active' : '🔴 Inactive'}</span>
-                                                  </div>
                                              </div>
                                         ))}
-                                        {!dataKit.state.hasNextPage && dataKit.items.length > 0 && (
-                                             <div className="text-center py-8 text-muted-foreground">
-                                                  <p className="text-lg">✨ You're all set!</p>
-                                                  <p className="text-sm mt-1">No more users to load</p>
-                                             </div>
-                                        )}
-                                        {dataKit.state.isLoading && (
-                                             <div className="text-center py-8 text-muted-foreground">
-                                                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-current border-r-transparent"></div>
-                                                  <p className="mt-2">Loading more users...</p>
-                                             </div>
-                                        )}
-                                   </div>
-                              )}
-                         </DataKitInfinity>
-                    </div>
-               )}
-
-               {mode === 'inverse' && (
-                    <div className="border rounded-lg p-4 h-[600px]">
-                         <DataKitInfinity
-                              action={fetchUsers}
-                              limit={{ default: 5 }}
-                              inverse={true}
-                              defaultSort={[{ path: 'createdAt', value: -1 }]}
-                              filters={[
-                                   {
-                                        id: 'search',
-                                        label: 'Search',
-                                        type: 'TEXT',
-                                        placeholder: 'Search by name...',
-                                   },
-                              ]}
-                         >
-                              {dataKit => (
-                                   <div className="flex flex-col-reverse gap-4">
-                                        {dataKit.items.map(user => (
-                                             <div
-                                                  key={user.id}
-                                                  className="border rounded-lg p-4 bg-card hover:bg-accent transition-colors"
-                                             >
-                                                  <div className="flex items-start gap-3">
-                                                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                                                            {user.name.charAt(0).toUpperCase()}
-                                                       </div>
-                                                       <div className="flex-1">
-                                                            <div className="flex items-center gap-2">
-                                                                 <span className="font-semibold">{user.name}</span>
-                                                                 <span className="text-xs text-muted-foreground">
-                                                                      {new Date().toLocaleTimeString()}
-                                                                 </span>
-                                                            </div>
-                                                            <p className="text-sm mt-1">{user.email}</p>
-                                                            <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                                                                 {user.role}
-                                                            </span>
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        ))}
-                                        {dataKit.state.isLoading && (
-                                             <div className="text-center py-4 text-muted-foreground">
-                                                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-4 border-solid border-current border-r-transparent"></div>
-                                             </div>
-                                        )}
-                                        {!dataKit.state.hasNextPage && dataKit.items.length > 0 && (
-                                             <div className="text-center py-4 text-muted-foreground text-sm">
-                                                  No more messages
-                                             </div>
-                                        )}
                                    </div>
                               )}
                          </DataKitInfinity>
@@ -184,10 +132,11 @@ export default function InfinityDemo() {
                )}
 
                {mode === 'manual' && (
-                    <div className="border rounded-lg p-4 h-[600px]">
+                    <div className="border rounded-lg overflow-hidden h-[600px]">
                          <DataKitInfinity
                               action={fetchUsers}
                               limit={{ default: 5 }}
+                              className="p-4"
                               manual={true}
                               filters={[
                                    {

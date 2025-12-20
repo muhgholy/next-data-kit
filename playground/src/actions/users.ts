@@ -1,8 +1,8 @@
 'use server';
 
 import User from '@/models/User';
-import { dataKitServerAction, createSearchFilter } from '../../../src/server';
-import type { TDataKitInput } from '../../../src/types';
+import { dataKitServerAction, createSearchFilter } from 'next-data-kit/server';
+import type { TDataKitInput } from 'next-data-kit/types';
 import dbConnect from '@/lib/mongodb';
 
 export async function fetchUsers(input: TDataKitInput) {
