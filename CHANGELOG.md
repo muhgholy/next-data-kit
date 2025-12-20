@@ -1,3 +1,10 @@
+## [7.6.6](https://github.com/muhgholy/next-data-kit/compare/v7.6.5...v7.6.6) (2025-12-20)
+
+
+### Bug Fixes
+
+* export DataKitInfinity from client index ([1a1c091](https://github.com/muhgholy/next-data-kit/commit/1a1c091cc69512af4621737c4261e83942be99fb))
+
 ## [7.6.5](https://github.com/muhgholy/next-data-kit/compare/v7.6.4...v7.6.5) (2025-12-20)
 
 
