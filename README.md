@@ -169,6 +169,52 @@ export function UsersTable() {
 }
 ```
 
+#### Pagination Modes
+
+Both `DataKit` and `DataKitTable` support two pagination modes:
+
+```tsx
+// NUMBER (default) - Full numbered pagination with mobile responsiveness
+<DataKitTable
+	action={fetchUsers}
+	pagination="NUMBER"  // Default - shows page numbers
+	table={columns}
+/>
+
+// SIMPLE - Basic prev/next buttons only
+<DataKitTable
+	action={fetchUsers}
+	pagination="SIMPLE"
+	table={columns}
+/>
+```
+
+**NUMBER mode features:**
+- Desktop: Shows Previous, page numbers (1, 2, ... 10), Next
+- Mobile: Shows prev icon, current page number, next icon
+- Automatically adds ellipsis for skipped pages
+- Fully responsive with Tailwind CSS
+
+**Dynamic Limit Options:**
+
+When you set a custom limit, it's automatically added to the dropdown:
+
+```tsx
+<DataKitTable
+	action={fetchUsers}
+	limit={{ default: 15 }}  // 15 will appear in dropdown alongside 10, 25, 50, 100
+	table={columns}
+/>
+
+// Works with any custom value
+<DataKit
+	action={fetchUsers}
+	limit={{ default: 30 }}  // Dropdown will show: 10, 25, 30, 50, 100
+>
+	{dataKit => /* ... */}
+</DataKit>
+```
+
 ### Client-side (DataKit Component - Custom Layout)
 
 Use `DataKit` for grids, cards, or any custom layout. It provides toolbar/pagination but lets you render content:
@@ -406,29 +452,33 @@ setFilter('priceRange', 100);
 
 Full-featured table component with built-in UI.
 
-| Prop              | Type                         | Description                |
-| ----------------- | ---------------------------- | -------------------------- |
-| `action`          | `(input) => Promise<Result>` | Server action function     |
-| `table`           | `Column[]`                   | Column definitions         |
-| `filters`         | `FilterItem[]`               | Filter configurations      |
-| `selectable`      | `{ enabled, actions? }`      | Selection & bulk actions   |
-| `limit`           | `{ default: number }`        | Items per page             |
-| `controller`      | `Ref<Controller>`            | External control ref       |
-| `className`       | `string`                     | Container class            |
-| `bordered`        | `boolean \| 'rounded'`       | Border style               |
-| `refetchInterval` | `number`                     | Auto-refresh interval (ms) |
+| Prop              | Type                         | Description                                        |
+| ----------------- | ---------------------------- | -------------------------------------------------- |
+| `action`          | `(input) => Promise<Result>` | Server action function                             |
+| `table`           | `Column[]`                   | Column definitions                                 |
+| `filters`         | `FilterItem[]`               | Filter configurations                              |
+| `selectable`      | `{ enabled, actions? }`      | Selection & bulk actions                           |
+| `limit`           | `{ default: number }`        | Items per page (auto-added to dropdown)            |
+| `defaultSort`     | `TSortEntry[]`               | Initial sort configuration                         |
+| `pagination`      | `'SIMPLE' \| 'NUMBER'`       | Pagination mode (default: `'NUMBER'`)              |
+| `controller`      | `Ref<Controller>`            | External control ref                               |
+| `className`       | `string`                     | Container class                                    |
+| `bordered`        | `boolean \| 'rounded'`       | Border style                                       |
+| `refetchInterval` | `number`                     | Auto-refresh interval (ms)                         |
 
 #### `<DataKit>` Component
 
 Headless component for custom layouts (grids, cards, etc).
 
-| Prop       | Type                         | Description                       |
-| ---------- | ---------------------------- | --------------------------------- |
-| `action`   | `(input) => Promise<Result>` | Server action function            |
-| `filters`  | `FilterItem[]`               | Filter configurations             |
-| `limit`    | `{ default: number }`        | Items per page                    |
-| `manual`   | `boolean`                    | Skip loading/empty state handling |
-| `children` | `(dataKit) => ReactNode`     | Render function                   |
+| Prop          | Type                         | Description                                 |
+| ------------- | ---------------------------- | ------------------------------------------- |
+| `action`      | `(input) => Promise<Result>` | Server action function                      |
+| `filters`     | `FilterItem[]`               | Filter configurations                       |
+| `limit`       | `{ default: number }`        | Items per page (auto-added to dropdown)     |
+| `defaultSort` | `TSortEntry[]`               | Initial sort configuration                  |
+| `pagination`  | `'SIMPLE' \| 'NUMBER'`       | Pagination mode (default: `'NUMBER'`)       |
+| `manual`      | `boolean`                    | Skip loading/empty state handling           |
+| `children`    | `(dataKit) => ReactNode`     | Render function                             |
 
 #### `useDataKit(options)`
 
