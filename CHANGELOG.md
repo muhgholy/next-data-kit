@@ -1,3 +1,10 @@
+## [7.7.1](https://github.com/muhgholy/next-data-kit/compare/v7.7.0...v7.7.1) (2025-12-20)
+
+
+### Bug Fixes
+
+* correct calculatePagination import path in tests and add coverage dependency ([f1f9104](https://github.com/muhgholy/next-data-kit/commit/f1f9104642157321a8494561c7852e8e8538c1c6))
+
 # [7.7.0](https://github.com/muhgholy/next-data-kit/compare/v7.6.6...v7.7.0) (2025-12-20)
 
 
