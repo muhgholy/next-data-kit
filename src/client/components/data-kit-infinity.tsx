@@ -332,7 +332,7 @@ const DataKitInfinityInner = <
                          </div>
                     )}
 
-                    {isPullRefreshing && (
+                    {!manual && isPullRefreshing && (
                          <div className="flex items-center justify-center py-4">
                               <Loader2 className="size-6 animate-spin text-muted-foreground" />
                          </div>
