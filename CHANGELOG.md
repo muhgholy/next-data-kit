@@ -1,3 +1,10 @@
+# [7.4.0](https://github.com/muhgholy/next-data-kit/compare/v7.3.0...v7.4.0) (2025-12-20)
+
+
+### Features
+
+* add numbered pagination with mobile responsiveness and dynamic limit options ([56e11a2](https://github.com/muhgholy/next-data-kit/commit/56e11a269e3ce0ef90902c613d07a971460f1efa))
+
 # [7.3.0](https://github.com/muhgholy/next-data-kit/compare/v7.2.0...v7.3.0) (2025-12-20)
 
 
