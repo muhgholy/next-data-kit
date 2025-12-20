@@ -326,20 +326,7 @@ const DataKitInfinityInner = <
           </div>}
 
           {/* User content */}
-          {manual ? (
-               children(enhancedDataKit)
-          ) : (
-               <>
-                    {children(enhancedDataKit)}
-
-                    {/* Empty state */}
-                    {!dataKit.state.isLoading && allItems.length === 0 && (
-                         <div className="flex h-48 items-center justify-center text-muted-foreground">
-                              No results found.
-                         </div>
-                    )}
-               </>
-          )}
+          {children(enhancedDataKit)}
 
           {/* Load more trigger at bottom for normal mode */}
           {!inverse && (
