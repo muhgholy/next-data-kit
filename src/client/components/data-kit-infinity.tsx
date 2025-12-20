@@ -195,7 +195,7 @@ const DataKitInfinityInner = <
           if (autoFetch && dataKit.page === 1 && allItems.length === 0) {
                dataKit.actions.refresh();
           }
-     }, [autoFetch]); // eslint-disable-line react-hooks/exhaustive-deps
+     }, [autoFetch]);
 
      // ** Append new items when dataKit items change
      useEffect(() => {
@@ -237,16 +237,15 @@ const DataKitInfinityInner = <
      return (
           <div ref={containerRef} className={`flex flex-col ${className ?? ''}`}>
                {/* Toolbar */}
-               <div className="mb-3 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                         {filters.length > 0 && (
-                              <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                                   <PopoverTrigger asChild>
-                                        <Button variant="outline" size="sm">
-                                             <Filter className="mr-1.5 size-4" />
-                                             Filters
-                                        </Button>
-                                   </PopoverTrigger>
+               {filters.length > 0 && (
+                    <div className="mb-3">
+                         <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                              <PopoverTrigger asChild>
+                                   <Button variant="outline" size="sm">
+                                        <Filter className="mr-1.5 size-4" />
+                                        Filters
+                                   </Button>
+                              </PopoverTrigger>
                                    <PopoverContent align="start" className="w-80" container={overlayContainer}>
                                         <div className="grid gap-3">
                                              {filters.map((f) => (
@@ -293,80 +292,70 @@ const DataKitInfinityInner = <
                                         </div>
                                    </PopoverContent>
                               </Popover>
-                         )}
-                         <Button variant="outline" size="sm" onClick={resetAndFetch} disabled={dataKit.state.isLoading}>
-                              <RefreshCw className={`mr-1.5 size-4 ${dataKit.state.isLoading ? 'animate-spin' : ''}`} />
-                              Refresh
-                         </Button>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                         <span className="mr-2 text-sm text-muted-foreground">
-                              {allItems.length} loaded
-                         </span>
-                    </div>
-               </div>
-
-               {/* Scrollable Content */}
-               <div ref={scrollContainerRef} className="relative flex-1 overflow-auto">
-                    {/* Pull to refresh indicator */}
-                    {pullDownToRefresh?.isActive && pullDistance > 0 && (
-                         <div
-                              className="absolute left-0 right-0 top-0 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all"
-                              style={{ height: `${pullDistance}px` }}
-                         >
-                              {pullDistance > pullThreshold ? (
-                                   <RefreshCw className="size-5 text-primary" />
-                              ) : (
-                                   <span className="text-sm text-muted-foreground">Pull to refresh</span>
-                              )}
                          </div>
                     )}
+               
 
-                    {!manual && isPullRefreshing && (
-                         <div className="flex items-center justify-center py-4">
-                              <Loader2 className="size-6 animate-spin text-muted-foreground" />
-                         </div>
-                    )}
-
-                    {/* Load more trigger at top for inverse mode */}
-                    {inverse && <div ref={loadMoreTopRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
-                         {!manual && dataKit.state.hasNextPage && dataKit.state.isLoading && (
-                              <Loader2 className="size-6 animate-spin text-muted-foreground" />
-                         )}
-                    </div>}
-
-                    {/* User content */}
-                    {manual ? (
-                         children(enhancedDataKit)
+               {/* Scrollable Content */ }
+     <div ref={scrollContainerRef} className="relative flex-1 overflow-auto">
+          {/* Pull to refresh indicator */}
+          {pullDownToRefresh?.isActive && pullDistance > 0 && (
+               <div
+                    className="absolute left-0 right-0 top-0 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all"
+                    style={{ height: `${pullDistance}px` }}
+               >
+                    {pullDistance > pullThreshold ? (
+                         <RefreshCw className="size-5 text-primary" />
                     ) : (
-                         <>
-                              {children(enhancedDataKit)}
+                         <span className="text-sm text-muted-foreground">Pull to refresh</span>
+                    )}
+               </div>
+          )}
 
-                              {/* Empty state */}
-                              {!dataKit.state.isLoading && allItems.length === 0 && (
-                                   <div className="flex h-48 items-center justify-center text-muted-foreground">
-                                        No results found.
-                                   </div>
+          {!manual && isPullRefreshing && (
+               <div className="flex items-center justify-center py-4">
+                    <Loader2 className="size-6 animate-spin text-muted-foreground" />
+               </div>
+          )}
+
+          {/* Load more trigger at top for inverse mode */}
+          {inverse && <div ref={loadMoreTopRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+               {!manual && dataKit.state.hasNextPage && dataKit.state.isLoading && (
+                    <Loader2 className="size-6 animate-spin text-muted-foreground" />
+               )}
+          </div>}
+
+          {/* User content */}
+          {manual ? (
+               children(enhancedDataKit)
+          ) : (
+               <>
+                    {children(enhancedDataKit)}
+
+                    {/* Empty state */}
+                    {!dataKit.state.isLoading && allItems.length === 0 && (
+                         <div className="flex h-48 items-center justify-center text-muted-foreground">
+                              No results found.
+                         </div>
+                    )}
+               </>
+          )}
+
+          {/* Load more trigger at bottom for normal mode */}
+          {!inverse && (
+               <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+                    {!manual && (
+                         <>
+                              {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
+                              {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
+                                   <p className="text-sm text-muted-foreground">You're all set</p>
                               )}
                          </>
                     )}
-
-                    {/* Load more trigger at bottom for normal mode */}
-                    {!inverse && (
-                         <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
-                              {!manual && (
-                                   <>
-                                        {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
-                                        {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
-                                             <p className="text-sm text-muted-foreground">You're all set</p>
-                                        )}
-                                   </>
-                              )}
-                         </div>
-                    )}
                </div>
-          </div>
+          )}
+     </div>
+          </div >
      );
 };
 
