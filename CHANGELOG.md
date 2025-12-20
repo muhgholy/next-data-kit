@@ -1,3 +1,15 @@
+# [7.7.0](https://github.com/muhgholy/next-data-kit/compare/v7.6.6...v7.7.0) (2025-12-20)
+
+
+### Bug Fixes
+
+* remove automatic empty state message ([0b8127b](https://github.com/muhgholy/next-data-kit/commit/0b8127bb2f87772d6c49cde9c49b825c09dab72e))
+
+
+### Features
+
+* remove refresh button and loaded counter from DataKitInfinity toolbar ([6f12a52](https://github.com/muhgholy/next-data-kit/commit/6f12a52b5b755db9e4aa901f5375ff5749adef2a))
+
 ## [7.6.6](https://github.com/muhgholy/next-data-kit/compare/v7.6.5...v7.6.6) (2025-12-20)
 
 
