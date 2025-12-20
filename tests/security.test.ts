@@ -58,6 +58,24 @@ describe('Security - Whitelist Strictness', () => {
 		).rejects.toThrow(/Query field 'secretField' is not allowed/);
 	});
 
+	it('should throw an ERROR if a disallowed sort field is present', async () => {
+		await expect(
+			dataKitServerAction({
+				input: {
+					action: 'FETCH',
+					page: 1,
+					limit: 10,
+					sorts: [
+						{ path: 'secretField', value: 1 },
+					],
+				},
+				model: mockModel as any,
+				item: u => u,
+				sortAllowed: ['name', 'email', 'createdAt'],
+			}),
+		).rejects.toThrow(/Sort field 'secretField' is not allowed/);
+	});
+
 	it('should allow fields that are whitelisted', async () => {
 		await dataKitServerAction({
 			input: {

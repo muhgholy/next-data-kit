@@ -12,7 +12,7 @@ import type { TDataKitInput, TDataKitResult, TDataKitAdapter, TMongoModel, TExtr
 /**
  * Core execution logic shared by both overloads
  */
-async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDataKitAdapter<TDoc>, item: (item: TDoc) => Promise<R> | R, maxLimit: number, filterAllowed?: string[], queryAllowed?: (keyof TDoc | string)[]): Promise<TDataKitResult<R>> {
+async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDataKitAdapter<TDoc>, item: (item: TDoc) => Promise<R> | R, maxLimit: number, filterAllowed?: string[], queryAllowed?: (keyof TDoc | string)[], sortAllowed?: (keyof TDoc | string)[]): Promise<TDataKitResult<R>> {
 	// Check Query
 	if (input.query) {
 		const safeQuery: Record<string, string | number | boolean> = {};
@@ -47,6 +47,15 @@ async function executeDataKit<TDoc, R>(input: TDataKitInput<TDoc>, adapter: TDat
 			}
 		});
 		input.filter = safeFilter;
+	}
+
+	// Check Sort
+	if (input.sorts && sortAllowed) {
+		input.sorts.forEach(sort => {
+			if (!sortAllowed.includes(sort.path)) {
+				throw new Error(`[Security] Sort field '${sort.path}' is not allowed.`);
+			}
+		});
 	}
 
 	// Handle action
@@ -98,7 +107,7 @@ export async function dataKitServerAction<TDoc, R = unknown>(props: Readonly<TAd
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function dataKitServerAction<M extends Model<any>, TDoc = any, R = unknown>(props: Readonly<TMongooseOptions<M, TDoc, R> | TAdapterOptions<TDoc, R>>): Promise<TDataKitResult<R>> {
-	const { input, item, maxLimit = 100, queryAllowed, filterAllowed: explicitFilterAllowed } = props;
+	const { input, item, maxLimit = 100, queryAllowed, filterAllowed: explicitFilterAllowed, sortAllowed } = props;
 
 	// Determine filterAllowed
 	const filterCustom = 'filterCustom' in props ? props.filterCustom : undefined;
@@ -120,5 +129,5 @@ export async function dataKitServerAction<M extends Model<any>, TDoc = any, R = 
 		throw new Error('Either model or adapter must be provided');
 	}
 
-	return executeDataKit(input, finalAdapter, item, maxLimit, filterAllowed, queryAllowed);
+	return executeDataKit(input, finalAdapter, item, maxLimit, filterAllowed, queryAllowed, sortAllowed);
 }

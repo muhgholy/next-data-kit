@@ -292,6 +292,7 @@ dataKitServerAction({
   maxLimit?: number,          // Default: 100
   queryAllowed?: string[],    // Whitelist for query fields
   filterAllowed?: string[],   // Auto-derived from filterCustom
+  sortAllowed?: string[],     // Whitelist for sortable fields
 });
 ```
 
@@ -320,12 +321,13 @@ dataKitServerAction({
   maxLimit?: number,
   queryAllowed?: string[],
   filterAllowed?: string[],
+  sortAllowed?: string[],
 });
 ```
 
 ### Security & Filtering
 
-**Two ways to query data:**
+**Three security whitelists:**
 
 1. **`filterCustom`** - User-facing filters (search, dropdowns, etc.)
      - Client `filters` prop → validated against `filterCustom` keys
@@ -334,6 +336,10 @@ dataKitServerAction({
 2. **`queryAllowed`** - Direct field matching (fixed filters)
      - Explicit whitelist required
      - Use for: `{ active: true }`, user-specific queries
+
+3. **`sortAllowed`** - Sortable fields whitelist
+     - Prevents sorting on arbitrary/sensitive fields
+     - Recommended for production security
 
 ```typescript
 dataKitServerAction({
@@ -345,6 +351,7 @@ dataKitServerAction({
 		role: value => ({ role: value }),
 	},
 	queryAllowed: ['organizationId', 'active'],
+	sortAllowed: ['name', 'email', 'createdAt'], // Only allow sorting these fields
 });
 ```
 

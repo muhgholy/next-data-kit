@@ -23,6 +23,7 @@ export type TBaseOptions<TDoc, R> = {
 	filterAllowed?: string[];
 	maxLimit?: number;
 	queryAllowed?: (keyof TDoc | string)[];
+	sortAllowed?: (keyof TDoc | string)[];
 };
 
 /**
