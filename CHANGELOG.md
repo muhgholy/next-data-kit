@@ -1,3 +1,10 @@
+## [7.6.4](https://github.com/muhgholy/next-data-kit/compare/v7.6.3...v7.6.4) (2025-12-20)
+
+
+### Bug Fixes
+
+* remove padding from bottom trigger when manual=true ([b92bf9a](https://github.com/muhgholy/next-data-kit/commit/b92bf9a718022579f3c7e238d2e06a8c9120612a))
+
 ## [7.6.3](https://github.com/muhgholy/next-data-kit/compare/v7.6.2...v7.6.3) (2025-12-20)
 
 
