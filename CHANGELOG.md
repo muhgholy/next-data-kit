@@ -1,3 +1,10 @@
+## [7.6.5](https://github.com/muhgholy/next-data-kit/compare/v7.6.4...v7.6.5) (2025-12-20)
+
+
+### Bug Fixes
+
+* use intersection observer for both normal and inverse modes ([a493aa6](https://github.com/muhgholy/next-data-kit/commit/a493aa6eba14fbd6e86f20782b01674c2486f4de))
+
 ## [7.6.4](https://github.com/muhgholy/next-data-kit/compare/v7.6.3...v7.6.4) (2025-12-20)
 
 
