@@ -1,3 +1,10 @@
+# [7.3.0](https://github.com/muhgholy/next-data-kit/compare/v7.2.0...v7.3.0) (2025-12-20)
+
+
+### Features
+
+* add sortAllowed security whitelist for sorting fields ([5aab85f](https://github.com/muhgholy/next-data-kit/commit/5aab85f093160724cb585be48716d9072d816fa2))
+
 # [7.2.0](https://github.com/muhgholy/next-data-kit/compare/v7.1.0...v7.2.0) (2025-12-20)
 
 
