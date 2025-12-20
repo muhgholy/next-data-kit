@@ -561,7 +561,7 @@ Infinite scroll component for feeds, chat interfaces, and dynamic content loadin
 | `limit`             | `{ default: number }`         | Items per page (default: 10)                   |
 | `defaultSort`       | `TSortEntry[]`                | Initial sort configuration                     |
 | `inverse`           | `boolean`                     | Load more at top (chat mode, default: false)   |
-| `manual`            | `boolean`                     | Skip loading/empty state handling               |
+| `manual`            | `boolean`                     | Skip loading/empty state handling              |
 | `pullDownToRefresh` | `{ isActive, threshold? }`    | Pull-to-refresh config (threshold default: 50) |
 | `autoFetch`         | `boolean`                     | Auto-fetch on mount (default: true)            |
 | `debounce`          | `number`                      | Filter debounce in ms (default: 300)           |
