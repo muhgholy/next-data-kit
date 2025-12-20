@@ -105,7 +105,12 @@ const DataKitInfinityInner = <
      });
 
      // ** Intersection Observer for infinite scroll
-     const { ref: loadMoreRef, inView } = useInView({
+     const { ref: loadMoreBottomRef, inView: inViewBottom } = useInView({
+          threshold: 0,
+          rootMargin: '100px',
+     });
+
+     const { ref: loadMoreTopRef, inView: inViewTop } = useInView({
           threshold: 0,
           rootMargin: '100px',
      });
@@ -210,31 +215,17 @@ const DataKitInfinityInner = <
 
      // ** Load more when in view
      useEffect(() => {
-          if (inView && !inverse) {
+          if (inViewBottom && !inverse) {
                loadMore();
           }
-     }, [inView, inverse, loadMore]);
+     }, [inViewBottom, inverse, loadMore]);
 
-     // ** Trigger load more on scroll for inverse mode
+     // ** Load more for inverse mode when top trigger is in view
      useEffect(() => {
-          if (!inverse) return;
-
-          const handleScroll = () => {
-               const container = scrollContainerRef.current;
-               if (!container) return;
-
-               if (container.scrollTop === 0 && !dataKit.state.isLoading && dataKit.state.hasNextPage) {
-                    loadMore();
-               }
-          };
-
-          const container = scrollContainerRef.current;
-          if (container) {
-               container.addEventListener('scroll', handleScroll);
-               return () => container.removeEventListener('scroll', handleScroll);
+          if (inViewTop && inverse) {
+               loadMore();
           }
-          return undefined;
-     }, [inverse, loadMore, dataKit.state.isLoading, dataKit.state.hasNextPage]);
+     }, [inViewTop, inverse, loadMore]);
 
      // ** Create enhanced dataKit with all accumulated items
      const enhancedDataKit = {
@@ -339,11 +330,11 @@ const DataKitInfinityInner = <
                     )}
 
                     {/* Load more trigger at top for inverse mode */}
-                    {!manual && inverse && dataKit.state.hasNextPage && dataKit.state.isLoading && (
-                         <div className="flex items-center justify-center py-4">
+                    {inverse && <div ref={loadMoreTopRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+                         {!manual && dataKit.state.hasNextPage && dataKit.state.isLoading && (
                               <Loader2 className="size-6 animate-spin text-muted-foreground" />
-                         </div>
-                    )}
+                         )}
+                    </div>}
 
                     {/* User content */}
                     {manual ? (
@@ -363,7 +354,7 @@ const DataKitInfinityInner = <
 
                     {/* Load more trigger at bottom for normal mode */}
                     {!inverse && (
-                         <div ref={loadMoreRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+                         <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
                               {!manual && (
                                    <>
                                         {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
