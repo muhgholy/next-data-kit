@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/muhgholy/next-data-kit/compare/v7.1.0...v7.2.0) (2025-12-20)
+
+
+### Features
+
+* add defaultSort prop to DataKit component ([e555790](https://github.com/muhgholy/next-data-kit/commit/e5557907c43d9b62c4eec719524d98b8a1d6badc))
+
 # [7.1.0](https://github.com/muhgholy/next-data-kit/compare/v7.0.0...v7.1.0) (2025-12-19)
 
 
