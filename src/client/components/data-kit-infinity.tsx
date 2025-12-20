@@ -43,6 +43,7 @@ const DataKitInfinityInner = <
      debounce?: number;
      state?: TDataKitStateMode;
      inverse?: boolean;
+     manual?: boolean;
      pullDownToRefresh?: {
           isActive: boolean;
           threshold?: number;
@@ -62,6 +63,7 @@ const DataKitInfinityInner = <
           debounce = 300,
           state: stateMode = 'memory',
           inverse = false,
+          manual = false,
           pullDownToRefresh,
           children,
      } = props;
@@ -344,7 +346,20 @@ const DataKitInfinityInner = <
                     )}
 
                     {/* User content */}
-                    {children(enhancedDataKit)}
+                    {manual ? (
+                         children(enhancedDataKit)
+                    ) : (
+                         <>
+                              {children(enhancedDataKit)}
+
+                              {/* Empty state */}
+                              {!dataKit.state.isLoading && allItems.length === 0 && (
+                                   <div className="flex h-48 items-center justify-center text-muted-foreground">
+                                        No results found.
+                                   </div>
+                              )}
+                         </>
+                    )}
 
                     {/* Load more trigger at bottom for normal mode */}
                     {!inverse && (
@@ -353,13 +368,6 @@ const DataKitInfinityInner = <
                               {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
                                    <p className="text-sm text-muted-foreground">You're all set</p>
                               )}
-                         </div>
-                    )}
-
-                    {/* Empty state */}
-                    {!dataKit.state.isLoading && allItems.length === 0 && (
-                         <div className="flex h-48 items-center justify-center text-muted-foreground">
-                              No results found.
                          </div>
                     )}
                </div>
@@ -382,6 +390,7 @@ export const DataKitInfinity = React.forwardRef(DataKitInfinityInner) as unknown
           debounce?: number;
           state?: TDataKitStateMode;
           inverse?: boolean;
+          manual?: boolean;
           pullDownToRefresh?: {
                isActive: boolean;
                threshold?: number;

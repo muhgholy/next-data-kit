@@ -1,12 +1,26 @@
 'use client';
 
+import Link from 'next/link';
 import { DataKitTable } from '../../../src/client';
 import { fetchUsers, deleteUsers } from '@/actions/users';
 
 export default function TableDemo() {
      return (
           <div className="container mx-auto py-10">
-               <h1 className="text-3xl font-bold mb-8">DataKitTable Demo</h1>
+               <div className="mb-8">
+                    <h1 className="text-3xl font-bold mb-2">DataKitTable Demo</h1>
+                    <div className="flex gap-2">
+                         <Link
+                              href="/infinity"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                         >
+                              <span>View Infinity Demo</span>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                              </svg>
+                         </Link>
+                    </div>
+               </div>
 
                <DataKitTable
                     action={fetchUsers}
