@@ -37,6 +37,7 @@ const DataKitInner = <
      filterConfig?: TFilterConfig;
      filters?: TDataKitFilterItem[];
      limit?: { default: number };
+     defaultSort?: { path: string; value: 1 | -1 }[];
      className?: string;
      autoFetch?: boolean;
      debounce?: number;
@@ -52,6 +53,7 @@ const DataKitInner = <
           filterConfig,
           filters = [],
           limit: limitConfig,
+          defaultSort = [],
           className,
           autoFetch = true,
           debounce = 300,
@@ -85,7 +87,7 @@ const DataKitInner = <
           initial: {
                limit: limitConfig?.default ?? 10,
                query: query ?? {},
-               sorts: [],
+               sorts: defaultSort,
                filter: filters.reduce<Record<string, unknown>>((acc, f) => {
                     if (f.defaultValue !== undefined) acc[f.id] = f.defaultValue;
                     return acc;
@@ -261,6 +263,7 @@ export const DataKit = React.forwardRef(DataKitInner) as unknown as <
           filterConfig?: TFilterConfig;
           filters?: TDataKitFilterItem[];
           limit?: { default: number };
+          defaultSort?: { path: string; value: 1 | -1 }[];
           className?: string;
           autoFetch?: boolean;
           debounce?: number;

@@ -287,12 +287,25 @@ dataKitServerAction({
   input: TDataKitInput,
   item: user => ({ ... }),    // user is typed from model
   filterCustom?: { ... },     // Custom filter handlers
-  filter?: (input) => query,  // Custom filter function
+  filter?: { ... } | (input) => query,  // Base filter (object or function)
   defaultSort?: { ... },
   maxLimit?: number,          // Default: 100
   queryAllowed?: string[],    // Whitelist for query fields
   filterAllowed?: string[],   // Auto-derived from filterCustom
 });
+```
+
+**Filter Options:**
+
+```typescript
+// As a plain object (static base filter)
+filter: { isActive: true, deletedAt: null }
+
+// As a function (dynamic filter based on input)
+filter: (filterInput) => ({
+  organizationId: filterInput?.orgId,
+  isActive: true
+})
 ```
 
 **With Custom Adapter** (for testing or non-mongoose):
