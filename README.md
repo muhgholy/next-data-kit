@@ -7,8 +7,9 @@ A powerful table utility for server-side pagination, filtering, and sorting with
 - 🚀 **Server-side pagination** - Efficient data fetching with page-based navigation
 - 🔍 **Flexible filtering** - Support for regex, exact match, and custom filters
 - 📊 **Multi-column sorting** - Sort by multiple columns with customizable order
+- ♾️ **Infinite scroll** - DataKitInfinity component with pull-to-refresh support
 - ⚛️ **React hooks** - `useDataKit`, `useSelection`, `usePagination` for state management
-- 🎨 **Components** - `DataKitTable` for tables, `DataKit` for custom layouts
+- 🎨 **Components** - `DataKitTable` for tables, `DataKit` for custom layouts, `DataKitInfinity` for feeds
 - 📝 **TypeScript** - Fully typed with generics support
 - 🔌 **Framework agnostic** - Works with any database ORM/ODM (Mongoose, Prisma, etc.)
 - 📦 **Tree-shakeable** - Import only what you need
@@ -215,6 +216,85 @@ When you set a custom limit, it's automatically added to the dropdown:
 	{dataKit => /* ... */}
 </DataKit>
 ```
+
+### Client-side (DataKitInfinity Component - Infinite Scroll)
+
+Use `DataKitInfinity` for infinite scrolling feeds, chat interfaces, or any content that loads more as you scroll. No pagination controls - content loads automatically.
+
+```tsx
+'use client';
+
+import { DataKitInfinity } from 'next-data-kit/client';
+import { fetchMessages } from '@/actions/messages';
+
+export function MessagesFeed() {
+	return (
+		<DataKitInfinity 
+			action={fetchMessages} 
+			limit={{ default: 20 }}
+			filters={[{ id: 'search', label: 'Search', type: 'TEXT' }]}
+		>
+			{dataKit => (
+				<div className='space-y-4'>
+					{dataKit.items.map(message => (
+						<div key={message.id} className='rounded-lg border p-4'>
+							<p className='font-medium'>{message.author}</p>
+							<p>{message.content}</p>
+						</div>
+					))}
+					{!dataKit.state.hasNextPage && dataKit.items.length > 0 && (
+						<p className='text-center text-muted-foreground'>You're all set</p>
+					)}
+					{dataKit.state.isLoading && (
+						<p className='text-center text-muted-foreground'>Loading...</p>
+					)}
+				</div>
+			)}
+		</DataKitInfinity>
+	);
+}
+```
+
+**Inverse mode** - for chat interfaces where new messages load at the top:
+
+```tsx
+<DataKitInfinity 
+	action={fetchChatMessages}
+	inverse={true}
+	defaultSort={[{ path: 'createdAt', value: -1 }]}
+>
+	{dataKit => (
+		<div className='flex flex-col-reverse gap-2'>
+			{dataKit.items.map(message => (
+				<ChatBubble key={message.id} message={message} />
+			))}
+		</div>
+	)}
+</DataKitInfinity>
+```
+
+**Pull-to-refresh** - mobile-friendly refresh gesture:
+
+```tsx
+<DataKitInfinity 
+	action={fetchPosts}
+	pullDownToRefresh={{
+		isActive: true,
+		threshold: 50  // pixels to pull before refresh triggers
+	}}
+>
+	{dataKit => /* your content */}
+</DataKitInfinity>
+```
+
+**Key Features:**
+- ✅ Automatic infinite scroll using intersection observer
+- ✅ Accumulates items across all pages
+- ✅ Inverse mode for chat/timeline interfaces
+- ✅ Pull-to-refresh with customizable threshold
+- ✅ Built-in loading and end-of-list indicators
+- ✅ Same filter/toolbar functionality as DataKit
+- ✅ Access to `state.hasNextPage` for custom UI
 
 ### Client-side (DataKit Component - Custom Layout)
 
@@ -481,6 +561,32 @@ Headless component for custom layouts (grids, cards, etc).
 | `manual`      | `boolean`                    | Skip loading/empty state handling       |
 | `children`    | `(dataKit) => ReactNode`     | Render function                         |
 
+#### `<DataKitInfinity>` Component
+
+Infinite scroll component for feeds, chat interfaces, and dynamic content loading.
+
+| Prop                 | Type                                | Description                                           |
+| -------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `action`             | `(input) => Promise<Result>`        | Server action function                                |
+| `filters`            | `FilterItem[]`                      | Filter configurations                                 |
+| `limit`              | `{ default: number }`               | Items per page (default: 10)                          |
+| `defaultSort`        | `TSortEntry[]`                      | Initial sort configuration                            |
+| `inverse`            | `boolean`                           | Load more at top (chat mode, default: false)          |
+| `pullDownToRefresh`  | `{ isActive, threshold? }`          | Pull-to-refresh config (threshold default: 50)        |
+| `autoFetch`          | `boolean`                           | Auto-fetch on mount (default: true)                   |
+| `debounce`           | `number`                            | Filter debounce in ms (default: 300)                  |
+| `state`              | `'memory' \| 'search-params'`       | State management mode (default: 'memory')             |
+| `className`          | `string`                            | Container class                                       |
+| `children`           | `(dataKit) => ReactNode`            | Render function with accumulated items                |
+
+**Features:**
+- Automatically accumulates items across pages as user scrolls
+- Uses `react-intersection-observer` for efficient scroll detection
+- Inverse mode for chat-like interfaces (loads at top)
+- Pull-to-refresh support with customizable threshold
+- Built-in toolbar with filters and manual refresh
+- Access to `state.hasNextPage` for end-of-list detection
+
 #### `useDataKit(options)`
 
 React hook for managing next-data-kit state.
@@ -513,6 +619,7 @@ Returns:
 - `state`
      - `isLoading` - Loading state
      - `error` - Error state
+     - `hasNextPage` - Whether more pages exist (page * limit < total)
 - `actions`
      - `setPage(page)` - Go to a specific page
      - `setLimit(limit)` - Set items per page
