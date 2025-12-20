@@ -248,6 +248,9 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 		};
 	}, []);
 
+	// ** Calculate hasNextPage
+	const hasNextPage = page * limit < total;
+
 	return {
 		page,
 		limit,
@@ -257,7 +260,7 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 		query,
 		items,
 		total,
-		state: { isLoading, error },
+		state: { isLoading, error, hasNextPage },
 		actions: {
 			setPage,
 			setLimit,

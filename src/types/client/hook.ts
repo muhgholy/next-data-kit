@@ -95,6 +95,7 @@ export type TUseDataKitReturn<T = unknown, R = unknown> = {
 	state: {
 		isLoading: boolean;
 		error: Error | null;
+		hasNextPage: boolean;
 	};
 	// ** Controller actions
 	actions: TDataKitActions<T, R>;

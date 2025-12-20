@@ -57,8 +57,5 @@ export type TMongoQuery<T> = {
 	sort(sort: Record<string, TSortOrder>): TMongoQuery<T>;
 	limit(limit: number): TMongoQuery<T>;
 	skip(skip: number): TMongoQuery<T>;
-	then<TResult1 = T[], TResult2 = never>(
-		onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null,
-		onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
-	): Promise<TResult1 | TResult2>;
+	then<TResult1 = T[], TResult2 = never>(onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null, onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null): Promise<TResult1 | TResult2>;
 };
