@@ -1,3 +1,15 @@
+# [7.6.0](https://github.com/muhgholy/next-data-kit/compare/v7.5.0...v7.6.0) (2025-12-20)
+
+
+### Bug Fixes
+
+* respect manual prop in DataKitInfinity bottom trigger ([d080358](https://github.com/muhgholy/next-data-kit/commit/d08035821159a307894f355345a9c65ad7edf98f))
+
+
+### Features
+
+* add manual prop to DataKitInfinity and create playground demo ([d574797](https://github.com/muhgholy/next-data-kit/commit/d574797a9582111ebad3a9d709808c7ae4b59ad5))
+
 # [7.5.0](https://github.com/muhgholy/next-data-kit/compare/v7.4.1...v7.5.0) (2025-12-20)
 
 
