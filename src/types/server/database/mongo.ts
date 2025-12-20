@@ -45,8 +45,20 @@ export type TMongoFilterQuery<T> = {
 /**
  * Minimal Mongoose Model interface for the adapter.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TMongoModel<_TRawDocType = unknown, _TQueryHelpers = object> = {
-	countDocuments(filter?: any): Promise<number>;
-	find(filter?: any, projection?: any, options?: any): any;
+export type TMongoModel<T = unknown> = {
+	countDocuments(filter?: TMongoFilterQuery<T>): Promise<number>;
+	find(filter?: TMongoFilterQuery<T>, projection?: unknown, options?: unknown): TMongoQuery<T>;
+};
+
+/**
+ * Mongoose Query interface.
+ */
+export type TMongoQuery<T> = {
+	sort(sort: Record<string, TSortOrder>): TMongoQuery<T>;
+	limit(limit: number): TMongoQuery<T>;
+	skip(skip: number): TMongoQuery<T>;
+	then<TResult1 = T[], TResult2 = never>(
+		onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null,
+		onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
+	): Promise<TResult1 | TResult2>;
 };

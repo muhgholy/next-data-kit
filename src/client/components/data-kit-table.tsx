@@ -45,11 +45,12 @@ import type {
      TDataKitStateMode,
      TExtractDataKitItemType,
      TFilterConfig,
+     TDataKitSelectableItem,
 } from '../../types';
 
 
 const DataKitRoot = <
-     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<any>>,
+     TAction extends (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TDataKitSelectableItem>>,
      TRowState = unknown
 >(props: Readonly<{
      action: TAction;
