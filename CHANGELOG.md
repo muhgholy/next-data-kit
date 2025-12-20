@@ -1,3 +1,10 @@
+## [7.6.3](https://github.com/muhgholy/next-data-kit/compare/v7.6.2...v7.6.3) (2025-12-20)
+
+
+### Bug Fixes
+
+* remove empty div in inverse mode loading trigger ([8267f28](https://github.com/muhgholy/next-data-kit/commit/8267f282b0382bacdfabde4bf7ba46725425bd19))
+
 ## [7.6.2](https://github.com/muhgholy/next-data-kit/compare/v7.6.1...v7.6.2) (2025-12-20)
 
 
