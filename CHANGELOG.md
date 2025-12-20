@@ -1,3 +1,10 @@
+## [7.4.1](https://github.com/muhgholy/next-data-kit/compare/v7.4.0...v7.4.1) (2025-12-20)
+
+
+### Bug Fixes
+
+* resolve ESLint errors and warnings ([f67e0b2](https://github.com/muhgholy/next-data-kit/commit/f67e0b24ee6d6106cbadbf41b76d22a26fd54f9b))
+
 # [7.4.0](https://github.com/muhgholy/next-data-kit/compare/v7.3.0...v7.4.0) (2025-12-20)
 
 
