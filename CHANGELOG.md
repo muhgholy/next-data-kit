@@ -1,3 +1,10 @@
+# [7.5.0](https://github.com/muhgholy/next-data-kit/compare/v7.4.1...v7.5.0) (2025-12-20)
+
+
+### Features
+
+* add DataKitInfinity component with infinite scroll and pull-to-refresh ([4a1c4b8](https://github.com/muhgholy/next-data-kit/commit/4a1c4b8b0ca3745e9d325beaf04bef763cec326d))
+
 ## [7.4.1](https://github.com/muhgholy/next-data-kit/compare/v7.4.0...v7.4.1) (2025-12-20)
 
 
