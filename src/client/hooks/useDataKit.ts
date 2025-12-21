@@ -12,7 +12,7 @@ import { parseUrlParams, stateToUrlParams } from '../utils';
 
 export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKitOptions<T, R>>): TUseDataKitReturn<T, R> => {
 	// ** Deconstruct Props
-	const { initial = {}, state: stateMode = 'memory', filterConfig, action, onSuccess, onError, autoFetch = true, debounce: debounceDelay = 300 } = props;
+	const { initial = {}, memory: memoryMode = 'memory', filterConfig, action, onSuccess, onError, autoFetch = true, debounce: debounceDelay = 300 } = props;
 
 	const { page: initialPage = 1, limit: initialLimit = 10, sorts: initialSorts = [], filter: initialFilter = {}, query: initialQuery = {} } = initial;
 
@@ -187,9 +187,9 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 		setQueryState(initialQuery);
 	}, [initialPage, initialLimit, initialSorts, initialFilter, initialQuery]);
 
-	// ** Sync with URL if stateMode is 'search-params'
+	// ** Sync with URL if memoryMode is 'search-params'
 	useEffect(() => {
-		if (stateMode !== 'search-params' || typeof window === 'undefined') return;
+		if (memoryMode !== 'search-params' || typeof window === 'undefined') return;
 
 		// ** Initial load from URL
 		const urlState = parseUrlParams(window.location.search);
@@ -219,11 +219,11 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 
 		window.addEventListener('popstate', handlePopState);
 		return () => window.removeEventListener('popstate', handlePopState);
-	}, [stateMode, initialPage, initialLimit, initialSorts, initialFilter, initialQuery]);
+	}, [memoryMode, initialPage, initialLimit, initialSorts, initialFilter, initialQuery]);
 
 	// ** Update URL when state changes
 	useEffect(() => {
-		if (stateMode !== 'search-params' || typeof window === 'undefined') return;
+		if (memoryMode !== 'search-params' || typeof window === 'undefined') return;
 
 		const params = stateToUrlParams({ page, limit, sorts, filter, query });
 		const newSearch = params.toString();
@@ -233,7 +233,7 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 			const newUrl = newSearch ? `?${newSearch}` : window.location.pathname;
 			window.history.pushState(null, '', newUrl);
 		}
-	}, [page, limit, sorts, filter, query, stateMode]);
+	}, [page, limit, sorts, filter, query, memoryMode]);
 
 	// ** Auto-fetch on mount and when dependencies change
 	useEffect(() => {

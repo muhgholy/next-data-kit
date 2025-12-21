@@ -21,7 +21,7 @@ import type {
      TDataKitResult,
      TDataKitFilterItem,
      TDataKitSelectableItem,
-     TDataKitStateMode,
+     TDataKitMemoryMode,
      TExtractDataKitItemType,
      TFilterConfig,
      TUseDataKitReturn,
@@ -40,7 +40,7 @@ const DataKitInfinityInner = <
      className?: string;
      autoFetch?: boolean;
      debounce?: number;
-     state?: TDataKitStateMode;
+     memory?: TDataKitMemoryMode;
      manual?: boolean;
      fullHeight?: boolean;
      children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
@@ -56,7 +56,7 @@ const DataKitInfinityInner = <
           className,
           autoFetch = true,
           debounce = 300,
-          state: stateMode = 'memory',
+          memory: memoryMode = 'memory',
           manual = false,
           fullHeight = true,
           children,
@@ -82,7 +82,7 @@ const DataKitInfinityInner = <
           filterConfig,
           autoFetch: false, // We'll control fetching manually
           debounce,
-          state: stateMode,
+          memory: memoryMode,
           initial: {
                limit: limitConfig?.default ?? 10,
                query: query ?? {},
@@ -246,7 +246,7 @@ export const DataKitInfinity = DataKitInfinityInner as unknown as <
           className?: string;
           autoFetch?: boolean;
           debounce?: number;
-          state?: TDataKitStateMode;
+          memory?: TDataKitMemoryMode;
           manual?: boolean;
           fullHeight?: boolean;
           children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;

@@ -109,9 +109,9 @@ export type TDataKitSelectableItem = {
 };
 
 /**
- * State persistence mode
+ * Memory persistence mode
  */
-export type TDataKitStateMode = 'memory' | 'search-params';
+export type TDataKitMemoryMode = 'memory' | 'search-params';
 
 /**
  * DataKit Component Ref Type

@@ -39,5 +39,5 @@ export type {
 	TDataKitBulkAction,
 	TDataKitController,
 	TDataKitSelectableItem,
-	TDataKitStateMode,
+	TDataKitMemoryMode,
 } from '../types';

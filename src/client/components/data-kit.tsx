@@ -28,7 +28,7 @@ import type {
      TDataKitResult,
      TDataKitFilterItem,
      TDataKitSelectableItem,
-     TDataKitStateMode,
+     TDataKitMemoryMode,
      TExtractDataKitItemType,
      TFilterConfig,
      TUseDataKitReturn,
@@ -49,7 +49,7 @@ const DataKitInner = <
      autoFetch?: boolean;
      debounce?: number;
      refetchInterval?: number;
-     state?: TDataKitStateMode;
+     memory?: TDataKitMemoryMode;
      manual?: boolean;
      pagination?: 'SIMPLE' | 'NUMBER';
      children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;
@@ -66,7 +66,7 @@ const DataKitInner = <
           autoFetch = true,
           debounce = 300,
           refetchInterval,
-          state: stateMode = 'memory',
+          memory: memoryMode = 'memory',
           manual = false,
           pagination: paginationType = 'NUMBER',
           children,
@@ -92,7 +92,7 @@ const DataKitInner = <
           filterConfig,
           autoFetch,
           debounce,
-          state: stateMode,
+          memory: memoryMode,
           initial: {
                limit: limitConfig?.default ?? 10,
                query: query ?? {},
@@ -340,7 +340,7 @@ export const DataKit = React.forwardRef(DataKitInner) as unknown as <
           autoFetch?: boolean;
           debounce?: number;
           refetchInterval?: number;
-          state?: TDataKitStateMode;
+          memory?: TDataKitMemoryMode;
           manual?: boolean;
           pagination?: 'SIMPLE' | 'NUMBER';
           children: (dataKit: TUseDataKitReturn<unknown, TExtractDataKitItemType<TAction>>) => React.ReactNode;

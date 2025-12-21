@@ -20,4 +20,4 @@ export type { TDataKitState, TDataKitActions, TUseDataKitReturn, TUseDataKitOpti
 export type { TSelectionState, TSelectionActions, TUseSelectionReturn, TSelectionMode, TSelectable } from './client/selectable';
 
 // ** Client - Component types
-export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitController, TDataKitSelectableItem, TDataKitStateMode, TDataKitRef } from './client/component';
+export type { TExtractDataKitItemType, TDataKitComponentColumn, TDataKitFilterItem, TDataKitBulkAction, TDataKitController, TDataKitSelectableItem, TDataKitMemoryMode, TDataKitRef } from './client/component';

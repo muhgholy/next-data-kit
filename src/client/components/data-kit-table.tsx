@@ -42,7 +42,7 @@ import type {
      TDataKitFilterItem,
      TDataKitBulkAction,
      TDataKitController,
-     TDataKitStateMode,
+     TDataKitMemoryMode,
      TExtractDataKitItemType,
      TFilterConfig,
      TDataKitSelectableItem,
@@ -62,14 +62,14 @@ const DataKitRoot = <
           enabled: boolean;
           actions?: Record<string, TDataKitBulkAction<TExtractDataKitItemType<TAction>>>;
      };
-     initialState?: TRowState;
+     state?: TRowState;
      limit?: { default: number };
      className?: string;
      autoFetch?: boolean;
      debounce?: number;
      bordered?: boolean | 'rounded';
      refetchInterval?: number;
-     state?: TDataKitStateMode;
+     memory?: TDataKitMemoryMode;
      pagination?: 'SIMPLE' | 'NUMBER';
      controller?: React.MutableRefObject<TDataKitController<TExtractDataKitItemType<TAction>> | null>;
 }>) => {
@@ -81,14 +81,14 @@ const DataKitRoot = <
           table: columns,
           filters = [],
           selectable,
-          initialState,
+          state: initialState,
           limit: limitConfig,
           className,
           autoFetch = true,
           debounce = 300,
           bordered,
           refetchInterval,
-          state: stateMode = 'memory',
+          memory: memoryMode = 'memory',
           pagination: paginationType = 'NUMBER',
           controller,
      } = props;
@@ -105,9 +105,27 @@ const DataKitRoot = <
      const [isFilterOpen, setIsFilterOpen] = useState(false);
      const [actionLoading, setActionLoading] = useState<string | null>(null);
      const [actionsMenuOpen, setActionsMenuOpen] = useState(false);
+     const [rowStates, setRowStates] = useState<Map<string | number, TRowState>>(new Map());
 
      // ** Variable
      const overlayContainer = tableRef.current;
+
+     // ** Helper functions for row state management
+     const getRowState = useCallback((rowId: string | number): TRowState => {
+          return rowStates.get(rowId) ?? (initialState as TRowState);
+     }, [rowStates, initialState]);
+
+     const setRowState = useCallback((rowId: string | number, updater: React.SetStateAction<TRowState>) => {
+          setRowStates(prev => {
+               const current = prev.get(rowId) ?? (initialState as TRowState);
+               const newState = typeof updater === 'function'
+                    ? (updater as (prevState: TRowState) => TRowState)(current)
+                    : updater;
+               const newMap = new Map(prev);
+               newMap.set(rowId, newState);
+               return newMap;
+          });
+     }, [initialState]);
 
      // ** Hooks
      const dataKit = useDataKit<unknown, TItem>({
@@ -115,7 +133,7 @@ const DataKitRoot = <
           filterConfig,
           autoFetch,
           debounce,
-          state: stateMode,
+          memory: memoryMode,
           initial: {
                limit: limitConfig?.default ?? 10,
                query: query ?? {},
@@ -373,30 +391,33 @@ const DataKitRoot = <
                                         </TableCell>
                                    </TableRow>
                               ) : (
-                                   dataKit.items.map((item, idx) => (
-                                        <TableRow key={item.id ?? idx}>
-                                             {selectable?.enabled && (
-                                                  <TableCell>
-                                                       <Checkbox
-                                                            checked={selection.isSelected(item.id)}
-                                                            onCheckedChange={() => selection.toggle(item.id)}
-                                                       />
-                                                  </TableCell>
-                                             )}
-                                             {columns.map((col, colIdx) => (
-                                                  <React.Fragment key={colIdx}>
-                                                       {col.body({
-                                                            item,
-                                                            index: idx,
-                                                            state: initialState as TRowState,
-                                                            setState: () => { },
-                                                            setItem: (updatedItem) => dataKit.actions.setItemAt(idx, updatedItem),
-                                                            deleteItem: () => dataKit.actions.deleteItemAt(idx),
-                                                       })}
-                                                  </React.Fragment>
-                                             ))}
-                                        </TableRow>
-                                   ))
+                                   dataKit.items.map((item, idx) => {
+                                        const rowId = item.id ?? idx;
+                                        return (
+                                             <TableRow key={rowId}>
+                                                  {selectable?.enabled && (
+                                                       <TableCell>
+                                                            <Checkbox
+                                                                 checked={selection.isSelected(item.id)}
+                                                                 onCheckedChange={() => selection.toggle(item.id)}
+                                                            />
+                                                       </TableCell>
+                                                  )}
+                                                  {columns.map((col, colIdx) => (
+                                                       <React.Fragment key={colIdx}>
+                                                            {col.body({
+                                                                 item,
+                                                                 index: idx,
+                                                                 state: getRowState(rowId),
+                                                                 setState: (updater) => setRowState(rowId, updater),
+                                                                 setItem: (updatedItem) => dataKit.actions.setItemAt(idx, updatedItem),
+                                                                 deleteItem: () => dataKit.actions.deleteItemAt(idx),
+                                                            })}
+                                                       </React.Fragment>
+                                                  ))}
+                                             </TableRow>
+                                        );
+                                   })
                               )}
                          </TableBody>
                     </Table>

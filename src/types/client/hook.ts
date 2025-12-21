@@ -113,8 +113,8 @@ export type TUseDataKitOptions<T = unknown, R = unknown> = {
 		filter?: Record<string, unknown>;
 		query?: Record<string, unknown>;
 	};
-	// ** State management mode
-	state?: 'memory' | 'search-params';
+	// ** Memory management mode
+	memory?: 'memory' | 'search-params';
 	// ** Filter configuration
 	filterConfig?: TFilterConfig;
 	// ** Server action to fetch data
