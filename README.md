@@ -247,44 +247,6 @@ export function MessagesFeed() {
 }
 ```
 
-**Inverse mode** - for chat interfaces where new messages load at the top:
-
-```tsx
-<DataKitInfinity action={fetchChatMessages} inverse={true} defaultSort={[{ path: 'createdAt', value: -1 }]}>
-	{dataKit => (
-		<div className='flex flex-col-reverse gap-2'>
-			{dataKit.items.map(message => (
-				<ChatBubble key={message.id} message={message} />
-			))}
-		</div>
-	)}
-</DataKitInfinity>
-```
-
-**Pull-to-refresh** - mobile-friendly refresh gesture:
-
-```tsx
-<DataKitInfinity
-	action={fetchPosts}
-	pullDownToRefresh={{
-		isActive: true,
-		threshold: 50  // pixels to pull before refresh triggers
-	}}
->
-	{dataKit => /* your content */}
-</DataKitInfinity>
-```
-
-**Key Features:**
-
-- ✅ Automatic infinite scroll using intersection observer
-- ✅ Accumulates items across all pages
-- ✅ Inverse mode for chat/timeline interfaces
-- ✅ Pull-to-refresh with customizable threshold
-- ✅ Built-in loading and end-of-list indicators
-- ✅ Same filter/toolbar functionality as DataKit
-- ✅ Access to `state.hasNextPage` for custom UI
-
 ### Client-side (DataKit Component - Custom Layout)
 
 Use `DataKit` for grids, cards, or any custom layout. It provides toolbar/pagination but lets you render content:
@@ -554,18 +516,18 @@ Headless component for custom layouts (grids, cards, etc).
 
 Infinite scroll component for feeds, chat interfaces, and dynamic content loading.
 
-| Prop                | Type                          | Description                                    |
-| ------------------- | ----------------------------- | ---------------------------------------------- |
-| `action`            | `(input) => Promise<Result>`  | Server action function                         |
-| `filters`           | `FilterItem[]`                | Filter configurations                          |
-| `limit`             | `{ default: number }`         | Items per page (default: 10)                   |
-| `defaultSort`       | `TSortEntry[]`                | Initial sort configuration                     |
-| `manual`            | `boolean`                     | Skip loading/empty state handling              |
-| `autoFetch`         | `boolean`                     | Auto-fetch on mount (default: true)            |
-| `debounce`          | `number`                      | Filter debounce in ms (default: 300)           |
-| `memory`            | `'memory' \| 'search-params'` | Memory management mode (default: 'memory')     |
-| `className`         | `string`                      | Container class                                |
-| `children`          | `(dataKit) => ReactNode`      | Render function with accumulated items         |
+| Prop          | Type                          | Description                                |
+| ------------- | ----------------------------- | ------------------------------------------ |
+| `action`      | `(input) => Promise<Result>`  | Server action function                     |
+| `filters`     | `FilterItem[]`                | Filter configurations                      |
+| `limit`       | `{ default: number }`         | Items per page (default: 10)               |
+| `defaultSort` | `TSortEntry[]`                | Initial sort configuration                 |
+| `manual`      | `boolean`                     | Skip loading/empty state handling          |
+| `autoFetch`   | `boolean`                     | Auto-fetch on mount (default: true)        |
+| `debounce`    | `number`                      | Filter debounce in ms (default: 300)       |
+| `memory`      | `'memory' \| 'search-params'` | Memory management mode (default: 'memory') |
+| `className`   | `string`                      | Container class                            |
+| `children`    | `(dataKit) => ReactNode`      | Render function with accumulated items     |
 
 **Features:**
 
