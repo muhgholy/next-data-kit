@@ -133,7 +133,7 @@ export function UsersTable() {
 
 #### Row State Management
 
-Use `initialState` and `setState` for per-row state (e.g., expanded rows, inline editing, loading states):
+Use `state` and `setState` for per-row state (e.g., expanded rows, inline editing, loading states):
 
 ```tsx
 'use client';
@@ -145,7 +145,7 @@ export function UsersTable() {
 	return (
 		<DataKitTable
 			action={fetchUsers}
-			initialState={{ isExpanded: false, isEditing: false }}
+			state={{ isExpanded: false, isEditing: false }}
 			table={[
 				{
 					head: <DataKitTable.Head>Name</DataKitTable.Head>,
@@ -560,12 +560,10 @@ Infinite scroll component for feeds, chat interfaces, and dynamic content loadin
 | `filters`           | `FilterItem[]`                | Filter configurations                          |
 | `limit`             | `{ default: number }`         | Items per page (default: 10)                   |
 | `defaultSort`       | `TSortEntry[]`                | Initial sort configuration                     |
-| `inverse`           | `boolean`                     | Load more at top (chat mode, default: false)   |
 | `manual`            | `boolean`                     | Skip loading/empty state handling              |
-| `pullDownToRefresh` | `{ isActive, threshold? }`    | Pull-to-refresh config (threshold default: 50) |
 | `autoFetch`         | `boolean`                     | Auto-fetch on mount (default: true)            |
 | `debounce`          | `number`                      | Filter debounce in ms (default: 300)           |
-| `state`             | `'memory' \| 'search-params'` | State management mode (default: 'memory')      |
+| `memory`            | `'memory' \| 'search-params'` | Memory management mode (default: 'memory')     |
 | `className`         | `string`                      | Container class                                |
 | `children`          | `(dataKit) => ReactNode`      | Render function with accumulated items         |
 
@@ -573,8 +571,6 @@ Infinite scroll component for feeds, chat interfaces, and dynamic content loadin
 
 - Automatically accumulates items across pages as user scrolls
 - Uses `react-intersection-observer` for efficient scroll detection
-- Inverse mode for chat-like interfaces (loads at top)
-- Pull-to-refresh support with customizable threshold
 - Built-in toolbar with filters and manual refresh
 - Access to `state.hasNextPage` for end-of-list detection
 
