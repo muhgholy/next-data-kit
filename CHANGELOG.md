@@ -1,3 +1,10 @@
+## [8.2.1](https://github.com/muhgholy/next-data-kit/compare/v8.2.0...v8.2.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* resolve path alias in switch component ([fd94686](https://github.com/muhgholy/next-data-kit/commit/fd9468610d04b6646630ef0d89bfb4e47ab84306))
+
 # [8.2.0](https://github.com/muhgholy/next-data-kit/compare/v8.1.0...v8.2.0) (2025-12-24)
 
 
