@@ -1,6 +1,6 @@
 {
      "name": "next-data-kit",
-     "version": "8.0.0",
+     "version": "8.0.1",
      "description": "A powerful table utility for server-side pagination, filtering, and sorting with React components",
      "type": "module",
      "main": "./dist/index.cjs",

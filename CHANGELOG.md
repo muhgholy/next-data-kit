@@ -1,3 +1,11 @@
+## [8.0.1](https://github.com/muhgholy/next-data-kit/compare/v8.0.0...v8.0.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* configure semantic-release for npm trusted publishing ([484a9d8](https://github.com/muhgholy/next-data-kit/commit/484a9d8cc6d856b9659b067bb84ed8597a52e43e))
+* use exec plugin for npm publish with trusted publishing ([5a6773d](https://github.com/muhgholy/next-data-kit/commit/5a6773d5aca59b15f36de8d3b93a07f018a7f682))
+
 # [8.0.0](https://github.com/muhgholy/next-data-kit/compare/v7.7.1...v8.0.0) (2025-12-24)
 
 
