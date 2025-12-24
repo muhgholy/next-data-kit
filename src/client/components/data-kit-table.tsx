@@ -423,7 +423,7 @@ const DataKitRoot = <
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 justify-between">
                 <div className="min-w-[140px]">
                     <p className="text-sm text-muted-foreground">
                         Page {dataKit.page} of {pagination.totalPages}
@@ -435,79 +435,81 @@ const DataKitRoot = <
                     )}
                 </div>
                 <div className="flex-1" />
-                {paginationType === 'SIMPLE' ? (
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
-                            onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
-                        >
-                            <ChevronLeft className="size-4" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            disabled={!pagination.hasNextPage || dataKit.state.isLoading}
-                            onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
-                        >
-                            <ChevronRight className="size-4" />
-                        </Button>
-                    </div>
-                ) : (
-                    <Pagination className="mx-0 w-auto">
-                        <PaginationContent>
-                            <PaginationItem className="hidden sm:block">
-                                <PaginationPrevious
-                                    disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
-                                    onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
-                                />
-                            </PaginationItem>
-                            <PaginationItem className="sm:hidden">
-                                <PaginationLink
-                                    disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
-                                    onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
-                                >
-                                    <ChevronLeft className="size-4" />
-                                </PaginationLink>
-                            </PaginationItem>
-                            {pagination.pages.map((pageNum, idx) => (
-                                <PaginationItem key={idx} className="hidden sm:block">
-                                    {pageNum === 'ellipsis' ? (
-                                        <PaginationEllipsis />
-                                    ) : (
-                                        <PaginationLink
-                                            isActive={pageNum === dataKit.page}
-                                            disabled={dataKit.state.isLoading}
-                                            onClick={() => dataKit.actions.setPage(pageNum as number)}
-                                        >
-                                            {pageNum}
-                                        </PaginationLink>
-                                    )}
+                <div className="flex justify-end w-full">
+                    {paginationType === 'SIMPLE' ? (
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                            >
+                                <ChevronLeft className="size-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                            >
+                                <ChevronRight className="size-4" />
+                            </Button>
+                        </div>
+                    ) : (
+                        <Pagination className="w-auto">
+                            <PaginationContent>
+                                <PaginationItem className="hidden sm:block">
+                                    <PaginationPrevious
+                                        disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                        onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                    />
                                 </PaginationItem>
-                            ))}
-                            <PaginationItem className="sm:hidden">
-                                <span className="flex size-9 items-center justify-center text-sm">
-                                    {dataKit.page}
-                                </span>
-                            </PaginationItem>
-                            <PaginationItem className="hidden sm:block">
-                                <PaginationNext
-                                    disabled={!pagination.hasNextPage || dataKit.state.isLoading}
-                                    onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
-                                />
-                            </PaginationItem>
-                            <PaginationItem className="sm:hidden">
-                                <PaginationLink
-                                    disabled={!pagination.hasNextPage || dataKit.state.isLoading}
-                                    onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
-                                >
-                                    <ChevronRight className="size-4" />
-                                </PaginationLink>
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                )}
+                                <PaginationItem className="sm:hidden">
+                                    <PaginationLink
+                                        disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
+                                        onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                    </PaginationLink>
+                                </PaginationItem>
+                                {pagination.pages.map((pageNum, idx) => (
+                                    <PaginationItem key={idx} className="hidden sm:block">
+                                        {pageNum === 'ellipsis' ? (
+                                            <PaginationEllipsis />
+                                        ) : (
+                                            <PaginationLink
+                                                isActive={pageNum === dataKit.page}
+                                                disabled={dataKit.state.isLoading}
+                                                onClick={() => dataKit.actions.setPage(pageNum as number)}
+                                            >
+                                                {pageNum}
+                                            </PaginationLink>
+                                        )}
+                                    </PaginationItem>
+                                ))}
+                                <PaginationItem className="sm:hidden">
+                                    <span className="flex size-9 items-center justify-center text-sm">
+                                        {dataKit.page}
+                                    </span>
+                                </PaginationItem>
+                                <PaginationItem className="hidden sm:block">
+                                    <PaginationNext
+                                        disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                        onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                    />
+                                </PaginationItem>
+                                <PaginationItem className="sm:hidden">
+                                    <PaginationLink
+                                        disabled={!pagination.hasNextPage || dataKit.state.isLoading}
+                                        onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
+                                    >
+                                        <ChevronRight className="size-4" />
+                                    </PaginationLink>
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    )}
+                </div>
             </div>
         </div>
     );
