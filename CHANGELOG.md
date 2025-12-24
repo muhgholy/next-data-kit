@@ -1,3 +1,10 @@
+# [8.2.0](https://github.com/muhgholy/next-data-kit/compare/v8.1.0...v8.2.0) (2025-12-24)
+
+
+### Features
+
+* update types definitions ([cc489dc](https://github.com/muhgholy/next-data-kit/commit/cc489dcc1b93c52c469611426aa7abf1344b639b))
+
 # [8.1.0](https://github.com/muhgholy/next-data-kit/compare/v8.0.1...v8.1.0) (2025-12-24)
 
 
