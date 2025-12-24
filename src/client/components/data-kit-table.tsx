@@ -44,7 +44,7 @@ import type {
      TDataKitController,
      TDataKitMemoryMode,
      TExtractDataKitItemType,
-     TFilterConfig,
+
      TDataKitSelectableItem,
 } from '../../types';
 
@@ -55,7 +55,7 @@ const DataKitRoot = <
 >(props: Readonly<{
      action: TAction;
      query?: Record<string, unknown>;
-     filterConfig?: TFilterConfig;
+
      table: TDataKitComponentColumn<TExtractDataKitItemType<TAction>, TRowState>[];
      filters?: TDataKitFilterItem[];
      selectable?: {
@@ -77,7 +77,6 @@ const DataKitRoot = <
      const {
           action,
           query,
-          filterConfig,
           table: columns,
           filters = [],
           selectable,
@@ -130,7 +129,7 @@ const DataKitRoot = <
      // ** Hooks
      const dataKit = useDataKit<unknown, TItem>({
           action: action as unknown as (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TItem>>,
-          filterConfig,
+          filters,
           autoFetch,
           debounce,
           memory: memoryMode,

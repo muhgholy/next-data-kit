@@ -23,7 +23,6 @@ import type {
      TDataKitSelectableItem,
      TDataKitMemoryMode,
      TExtractDataKitItemType,
-     TFilterConfig,
      TUseDataKitReturn,
 } from '../../types';
 
@@ -33,7 +32,6 @@ const DataKitInfinityInner = <
 >(props: Readonly<{
      action: TAction;
      query?: Record<string, unknown>;
-     filterConfig?: TFilterConfig;
      filters?: TDataKitFilterItem[];
      limit?: { default: number };
      defaultSort?: { path: string; value: 1 | -1 }[];
@@ -49,7 +47,7 @@ const DataKitInfinityInner = <
      const {
           action,
           query,
-          filterConfig,
+
           filters = [],
           limit: limitConfig,
           defaultSort = [],
@@ -79,7 +77,7 @@ const DataKitInfinityInner = <
      // ** Hooks
      const dataKit = useDataKit<unknown, TItem>({
           action: action as unknown as (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TItem>>,
-          filterConfig,
+          filters,
           autoFetch: false, // We'll control fetching manually
           debounce,
           memory: memoryMode,
@@ -239,7 +237,7 @@ export const DataKitInfinity = DataKitInfinityInner as unknown as <
      props: Readonly<{
           action: TAction;
           query?: Record<string, unknown>;
-          filterConfig?: TFilterConfig;
+
           filters?: TDataKitFilterItem[];
           limit?: { default: number };
           defaultSort?: { path: string; value: 1 | -1 }[];

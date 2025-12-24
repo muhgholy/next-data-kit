@@ -4,7 +4,7 @@
  * Types for the React Data Kit component and related UI elements.
  */
 
-import type { TDataKitInput, TDataKitResult } from '../next-data-kit';
+import type { TDataKitInput, TDataKitResult, TFilterConfiguration } from '../next-data-kit';
 import type { TUseDataKitReturn } from './hook';
 
 /**
@@ -45,6 +45,7 @@ type TDataKitFilterItemBase = {
 	id: string;
 	label: string;
 	placeholder?: string;
+	configuration?: TFilterConfiguration;
 };
 
 /**

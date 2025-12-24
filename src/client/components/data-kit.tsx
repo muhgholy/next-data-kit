@@ -30,7 +30,6 @@ import type {
      TDataKitSelectableItem,
      TDataKitMemoryMode,
      TExtractDataKitItemType,
-     TFilterConfig,
      TUseDataKitReturn,
      TDataKitRef,
 } from '../../types';
@@ -41,7 +40,6 @@ const DataKitInner = <
 >(props: Readonly<{
      action: TAction;
      query?: Record<string, unknown>;
-     filterConfig?: TFilterConfig;
      filters?: TDataKitFilterItem[];
      limit?: { default: number };
      defaultSort?: { path: string; value: 1 | -1 }[];
@@ -58,7 +56,6 @@ const DataKitInner = <
      const {
           action,
           query,
-          filterConfig,
           filters = [],
           limit: limitConfig,
           defaultSort = [],
@@ -89,7 +86,7 @@ const DataKitInner = <
      // ** Hooks
      const dataKit = useDataKit<unknown, TItem>({
           action: action as unknown as (input: TDataKitInput<unknown>) => Promise<TDataKitResult<TItem>>,
-          filterConfig,
+          filters,
           autoFetch,
           debounce,
           memory: memoryMode,
@@ -332,7 +329,6 @@ export const DataKit = React.forwardRef(DataKitInner) as unknown as <
      props: Readonly<{
           action: TAction;
           query?: Record<string, unknown>;
-          filterConfig?: TFilterConfig;
           filters?: TDataKitFilterItem[];
           limit?: { default: number };
           defaultSort?: { path: string; value: 1 | -1 }[];

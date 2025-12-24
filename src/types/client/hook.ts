@@ -4,7 +4,7 @@
  * Types for the next-data-kit hooks and state management.
  */
 
-import type { TSortEntry, TFilterConfig, TDataKitInput, TDataKitResult } from '../next-data-kit';
+import type { TSortEntry, TFilterConfig, TDataKitInput, TDataKitResult, TFilterConfiguration } from '../next-data-kit';
 
 /**
  * React Data Kit controller state
@@ -115,8 +115,11 @@ export type TUseDataKitOptions<T = unknown, R = unknown> = {
 	};
 	// ** Memory management mode
 	memory?: 'memory' | 'search-params';
-	// ** Filter configuration
-	filterConfig?: TFilterConfig;
+	// ** Filter items with configuration
+	filters?: {
+		id: string;
+		configuration?: TFilterConfiguration;
+	}[];
 	// ** Server action to fetch data
 	action: (input: TDataKitInput<T>) => Promise<TDataKitResult<R>>;
 	// ** Called when data is fetched successfully

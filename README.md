@@ -550,7 +550,14 @@ interface TUseDataKitOptions<T, R> {
 		filter?: Record<string, unknown>;
 		query?: Record<string, unknown>;
 	};
-	filterConfig?: TFilterConfig;
+	// ** Filter items with configuration
+	filters?: {
+		id: string;
+		configuration?: {
+			type: 'REGEX' | 'EXACT';
+			field?: string;
+		};
+	}[];
 	onSuccess?: (result: TDataKitResult<R>) => void;
 	onError?: (error: Error) => void;
 	autoFetch?: boolean;
@@ -624,7 +631,14 @@ interface TDataKitInput<T = unknown> {
 	sorts?: TSortEntry[];
 	query?: Record<string, unknown>;
 	filter?: Record<string, unknown>;
-	filterConfig?: TFilterConfig;
+	// ** Filter items with configuration
+	filters?: {
+		id: string;
+		configuration?: {
+			type: 'REGEX' | 'EXACT';
+			field?: string;
+		};
+	}[];
 }
 ```
 

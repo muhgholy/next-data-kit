@@ -57,6 +57,9 @@ export const mongooseAdapter = <DocType = unknown>(
 		if (filter && !customFilter) {
 			if (input.filterConfig) {
 				Object.entries(filter).forEach(([key, value]) => {
+					// Skip if handled by filterCustom
+					if (filterCustom && filterCustom[key]) return;
+
 					if (isProvided(value) && isSafeKey(key) && input.filterConfig?.[key]) {
 						const config = input.filterConfig[key];
 						const fieldName = config?.field ?? key;
@@ -74,6 +77,9 @@ export const mongooseAdapter = <DocType = unknown>(
 			} else {
 				// ** Default automatic filtering
 				Object.entries(filter).forEach(([key, value]) => {
+					// Skip if handled by filterCustom
+					if (filterCustom && filterCustom[key]) return;
+
 					if (isProvided(value) && isSafeKey(key)) {
 						if (typeof value === 'string') {
 							(filterQuery as Record<string, unknown>)[key] = {

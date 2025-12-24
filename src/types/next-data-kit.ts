@@ -22,15 +22,20 @@ export type TSortEntry = {
 };
 
 /**
+ * Filter configuration item
+ */
+export type TFilterConfiguration = {
+	// ** Type of filter matching
+	type: 'REGEX' | 'EXACT';
+	// ** Optional: different database field name
+	field?: string;
+};
+
+/**
  * Filter configuration for automatic filtering
  */
 export type TFilterConfig = {
-	[key: string]: {
-		// ** Type of filter matching
-		type: 'REGEX' | 'EXACT';
-		// ** Optional: different database field name
-		field?: string;
-	};
+	[key: string]: TFilterConfiguration;
 };
 
 /**

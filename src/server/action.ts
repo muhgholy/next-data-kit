@@ -110,8 +110,7 @@ export async function dataKitServerAction<M extends Model<any>, TDoc = any, R = 
 	const { input, item, maxLimit = 100, queryAllowed, filterAllowed: explicitFilterAllowed, sortAllowed } = props;
 
 	// Determine filterAllowed
-	const filterCustom = 'filterCustom' in props ? props.filterCustom : undefined;
-	const filterAllowed = explicitFilterAllowed ?? (filterCustom ? Object.keys(filterCustom) : undefined);
+	const filterAllowed = explicitFilterAllowed;
 
 	// Determine adapter
 	let finalAdapter: TDataKitAdapter<TDoc>;

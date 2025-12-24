@@ -7,12 +7,12 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { TDataKitInput, TDataKitResult, TUseDataKitOptions, TSortEntry, TUseDataKitReturn } from '../../types';
+import type { TDataKitInput, TDataKitResult, TUseDataKitOptions, TSortEntry, TUseDataKitReturn, TFilterConfig } from '../../types';
 import { parseUrlParams, stateToUrlParams } from '../utils';
 
 export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKitOptions<T, R>>): TUseDataKitReturn<T, R> => {
 	// ** Deconstruct Props
-	const { initial = {}, memory: memoryMode = 'memory', filterConfig, action, onSuccess, onError, autoFetch = true, debounce: debounceDelay = 300 } = props;
+	const { initial = {}, memory: memoryMode = 'memory', filters, action, onSuccess, onError, autoFetch = true, debounce: debounceDelay = 300 } = props;
 
 	const { page: initialPage = 1, limit: initialLimit = 10, sorts: initialSorts = [], filter: initialFilter = {}, query: initialQuery = {} } = initial;
 
@@ -37,13 +37,13 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 	const actionRef = useRef(action);
 	const onSuccessRef = useRef(onSuccess);
 	const onErrorRef = useRef(onError);
-	const filterConfigRef = useRef(filterConfig);
+	const filtersRef = useRef(filters);
 
 	// ** Update refs on every render
 	actionRef.current = action;
 	onSuccessRef.current = onSuccess;
 	onErrorRef.current = onError;
-	filterConfigRef.current = filterConfig;
+	filtersRef.current = filters;
 
 	// ** Get current input
 	const getInput = useCallback((): TDataKitInput<T> => {
@@ -56,8 +56,11 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 			query: query as Record<string, string | number | boolean>,
 		};
 
-		if (filterConfigRef.current) {
-			input.filterConfig = filterConfigRef.current;
+		if (filtersRef.current) {
+			input.filterConfig = filtersRef.current.reduce<TFilterConfig>((acc, f) => {
+				if (f.configuration) acc[f.id] = f.configuration;
+				return acc;
+			}, {});
 		}
 
 		return input;
@@ -256,7 +259,10 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 		limit,
 		sorts,
 		filter,
-		filterConfig,
+		filterConfig: filters?.reduce<TFilterConfig>((acc, f) => {
+			if (f.configuration) acc[f.id] = f.configuration;
+			return acc;
+		}, {}),
 		query,
 		items,
 		total,
