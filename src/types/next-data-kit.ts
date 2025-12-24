@@ -41,21 +41,17 @@ export type TFilterConfig = {
 /**
  * Custom filter configuration
  * Allows defining custom filter functions for specific filter keys
- * The value parameter can be typed by using a type assertion in the function definition
  */
 export type TFilterCustomConfig<T = unknown> = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [id: string]: (data: any) => TMongoFilterQuery<T>;
+    [id: string]: (data: unknown) => TMongoFilterQuery<T>;
 };
 
 /**
  * Variant of TFilterCustomConfig that allows customizing the returned filter shape.
  * Useful for Mongo (operator-based) vs. other ORMs (where clauses) in the future.
- * The value parameter can be typed by using a type assertion in the function definition
  */
 export type TFilterCustomConfigWithFilter<TDoc = unknown, TFilter = TMongoFilterQuery<TDoc>> = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [id: string]: (data: any) => TFilter;
+    [id: string]: (data: unknown) => TFilter;
 };
 
 /**
