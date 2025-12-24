@@ -44,6 +44,7 @@ export type TFilterConfig = {
  * The value parameter can be typed by using a type assertion in the function definition
  */
 export type TFilterCustomConfig<T = unknown> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [id: string]: (data: any) => TMongoFilterQuery<T>;
 };
 
@@ -53,6 +54,7 @@ export type TFilterCustomConfig<T = unknown> = {
  * The value parameter can be typed by using a type assertion in the function definition
  */
 export type TFilterCustomConfigWithFilter<TDoc = unknown, TFilter = TMongoFilterQuery<TDoc>> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [id: string]: (data: any) => TFilter;
 };
 
