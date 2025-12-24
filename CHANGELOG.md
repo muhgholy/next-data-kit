@@ -1,3 +1,13 @@
+# [8.0.0](https://github.com/muhgholy/next-data-kit/compare/v7.7.1...v8.0.0) (2025-12-24)
+
+
+* feat!: major API improvements and type safety enhancements ([5170eef](https://github.com/muhgholy/next-data-kit/commit/5170eefdfd9e7f8097070d59c9ad46d90b48e8e8))
+
+
+### BREAKING CHANGES
+
+* Updated component props and hook signatures for improved type safety and consistency. This may require updates to existing implementations.
+
 ## [7.7.1](https://github.com/muhgholy/next-data-kit/compare/v7.7.0...v7.7.1) (2025-12-20)
 
 
