@@ -1,3 +1,10 @@
+## [8.2.2](https://github.com/muhgholy/next-data-kit/compare/v8.2.1...v8.2.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* update table and pagination components ([099bcd0](https://github.com/muhgholy/next-data-kit/commit/099bcd02df850c38d6f1b7c406feb1fbd2c36ffb))
+
 ## [8.2.1](https://github.com/muhgholy/next-data-kit/compare/v8.2.0...v8.2.1) (2025-12-24)
 
 
