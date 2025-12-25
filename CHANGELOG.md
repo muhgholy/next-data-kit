@@ -1,3 +1,10 @@
+# [8.3.0](https://github.com/muhgholy/next-data-kit/compare/v8.2.2...v8.3.0) (2025-12-25)
+
+
+### Features
+
+* implement shift+click range selection for table rows ([801f0b7](https://github.com/muhgholy/next-data-kit/commit/801f0b7e9d9109c190933959f81ac8cff6379fea))
+
 ## [8.2.2](https://github.com/muhgholy/next-data-kit/compare/v8.2.1...v8.2.2) (2025-12-24)
 
 
