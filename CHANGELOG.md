@@ -1,3 +1,10 @@
+## [8.3.1](https://github.com/muhgholy/next-data-kit/compare/v8.3.0...v8.3.1) (2025-12-25)
+
+
+### Bug Fixes
+
+* add dark mode hover border style for table rows ([f738c06](https://github.com/muhgholy/next-data-kit/commit/f738c06fbb7f7315f88378004333bedea1f97c2b))
+
 # [8.3.0](https://github.com/muhgholy/next-data-kit/compare/v8.2.2...v8.3.0) (2025-12-25)
 
 
