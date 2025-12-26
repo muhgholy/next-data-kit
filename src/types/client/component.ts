@@ -81,10 +81,14 @@ export type TDataKitFilterItem = TDataKitFilterItemText | TDataKitFilterItemSele
 /**
  * Bulk action definition for selectable tables
  */
-export type TDataKitBulkAction<TItem> = {
-	name: string;
-	function: (selectedItems: TItem[]) => Promise<[boolean, { deselectAll?: boolean; updatedItems?: TItem[] } | string]>;
-};
+export type TDataKitBulkAction<TItem> =
+	| { type: 'SEPARATOR' }
+	| {
+		type?: 'MENU';
+		name: string;
+		icon?: React.ReactNode;
+		function: (selectedItems: TItem[]) => Promise<[boolean, { deselectAll?: boolean; updatedItems?: TItem[] } | string]>;
+	};
 
 /**
  * Controller ref for external DataKitTable manipulation

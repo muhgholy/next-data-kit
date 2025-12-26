@@ -11,6 +11,7 @@ import {
      DropdownMenu,
      DropdownMenuContent,
      DropdownMenuItem,
+     DropdownMenuSeparator,
      DropdownMenuTrigger,
      Pagination,
      PaginationContent,
@@ -172,12 +173,13 @@ const DataKitRoot = <
      }, [dataKit.sorts, dataKit.actions]);
 
      const handleSelectionAction = useCallback(async (actionKey: string) => {
-          if (!selectable?.actions?.[actionKey] || actionLoading) return;
+          const action = selectable?.actions?.[actionKey];
+          if (!action || action.type === 'SEPARATOR' || actionLoading) return;
           setActionLoading(actionKey);
           setActionsMenuOpen(false);
           try {
                const selectedItems = dataKit.items.filter((item) => selection.isSelected(item.id));
-               const result = await selectable.actions[actionKey].function(selectedItems);
+               const result = await action.function(selectedItems);
                if (result[0]) {
                     const data = result[1] as { deselectAll?: boolean };
                     if (data.deselectAll) selection.deselectAll();
@@ -359,11 +361,15 @@ const DataKitRoot = <
                                                                  </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="start" container={overlayContainer}>
-                                                                 {Object.entries(selectable.actions).map(([key, action]) => (
-                                                                      <DropdownMenuItem key={key} disabled={!!actionLoading} onSelect={() => handleSelectionAction(key)}>
-                                                                           {actionLoading === key ? 'Working…' : action.name}
-                                                                      </DropdownMenuItem>
-                                                                 ))}
+                                                                 {Object.entries(selectable.actions).map(([key, action]) =>
+                                                                      action.type === 'SEPARATOR' ? (
+                                                                           <DropdownMenuSeparator key={key} />
+                                                                      ) : (
+                                                                           <DropdownMenuItem key={key} disabled={!!actionLoading} onSelect={() => handleSelectionAction(key)}>
+                                                                                {actionLoading === key ? 'Working…' : <>{action.icon}{action.name}</>}
+                                                                           </DropdownMenuItem>
+                                                                      )
+                                                                 )}
                                                             </DropdownMenuContent>
                                                        </DropdownMenu>
                                                   )}
@@ -377,7 +383,7 @@ const DataKitRoot = <
                                                        <Button
                                                             variant="ghost"
                                                             size="sm"
-                                                            className="-ml-3"
+                                                            className="-ml-4 h-auto py-0"
                                                             onClick={() => handleSort(col.sortable!.path)}
                                                        >
                                                             {React.isValidElement(col.head) ? (col.head as React.ReactElement<{ children?: React.ReactNode }>).props.children : col.head}

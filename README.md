@@ -106,8 +106,15 @@ export function UsersTable() {
 			selectable={{
 				enabled: true,
 				actions: {
+					export: {
+						name: 'Export',
+						icon: <Download className="mr-2 size-4" />,
+						function: async items => [true, {}],
+					},
+					sep1: { type: 'SEPARATOR' },
 					delete: {
 						name: 'Delete Selected',
+						icon: <Trash className="mr-2 size-4" />,
 						function: async items => {
 							await deleteUsers(items.map(i => i.id));
 							return [true, { deselectAll: true }];
@@ -133,7 +140,10 @@ export function UsersTable() {
 
 #### Row State Management
 
-Use `state` and `setState` for per-row state (e.g., expanded rows, inline editing, loading states):
+Use `state` and `setState` for per-row state (e.g., expanded rows, inline editing, loading states).
+
+> [!NOTE]
+> Each row has its own independent state instance. The `state` prop defines the initial value, but each row maintains its own copy. Changing one row's state does not affect other rows.
 
 ```tsx
 'use client';
