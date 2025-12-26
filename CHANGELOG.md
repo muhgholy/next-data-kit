@@ -1,3 +1,15 @@
+# [9.0.0](https://github.com/muhgholy/next-data-kit/compare/v8.3.1...v9.0.0) (2025-12-26)
+
+
+### Features
+
+* **DataKitTable:** add icon and separator support for bulk actions ([4e366fa](https://github.com/muhgholy/next-data-kit/commit/4e366fa1a34569cb67032631df8bf975c91823e5))
+
+
+### BREAKING CHANGES
+
+* **DataKitTable:** TDataKitBulkAction is now a discriminated union. Separators only need `{ type: 'SEPARATOR' }` without other fields.
+
 ## [8.3.1](https://github.com/muhgholy/next-data-kit/compare/v8.3.0...v8.3.1) (2025-12-25)
 
 
