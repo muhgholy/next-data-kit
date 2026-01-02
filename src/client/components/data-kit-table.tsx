@@ -321,19 +321,6 @@ const DataKitRoot = <
                          )}
                     </div>
 
-                    <div className="flex items-center gap-1">
-                         <span className="mr-2 text-sm text-muted-foreground">
-                              {dataKit.items.length} of {dataKit.total}
-                         </span>
-                         <Select value={String(dataKit.limit)} onValueChange={(v) => dataKit.actions.setLimit(Number(v))} disabled={dataKit.state.isLoading}>
-                              <SelectTrigger className="w-16"><SelectValue /></SelectTrigger>
-                              <SelectContent container={overlayContainer}>
-                                   {limitOptions.map((v) => (
-                                        <SelectItem key={v} value={String(v)}>{v}</SelectItem>
-                                   ))}
-                              </SelectContent>
-                         </Select>
-                    </div>
                </div>
 
                {/* Table */}
@@ -453,8 +440,16 @@ const DataKitRoot = <
 
                {/* Footer */}
                <div className="flex items-center gap-4 justify-between">
-                    <div className="min-w-[140px]">
-                         <p className="text-sm text-muted-foreground">
+                    <div className="flex items-center gap-3">
+                         <Select value={String(dataKit.limit)} onValueChange={(v) => dataKit.actions.setLimit(Number(v))} disabled={dataKit.state.isLoading}>
+                              <SelectTrigger className="w-16"><SelectValue /></SelectTrigger>
+                              <SelectContent container={overlayContainer}>
+                                   {limitOptions.map((v) => (
+                                        <SelectItem key={v} value={String(v)}>{v}</SelectItem>
+                                   ))}
+                              </SelectContent>
+                         </Select>
+                         <p className="text-sm text-muted-foreground whitespace-nowrap">
                               Page {dataKit.page} of {pagination.totalPages}
                          </p>
                          {selectable?.enabled && selectedCount > 0 && (
@@ -463,8 +458,7 @@ const DataKitRoot = <
                               </p>
                          )}
                     </div>
-                    <div className="flex-1" />
-                    <div className="flex justify-end w-full">
+                    <div className="flex justify-end">
                          {paginationType === 'SIMPLE' ? (
                               <div className="flex items-center gap-1">
                                    <Button

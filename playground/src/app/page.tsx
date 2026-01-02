@@ -61,115 +61,113 @@ export default function TableDemo() {
                </div>
 
                {/* Data Table */}
-               <div className="rounded-xl border bg-card overflow-hidden shadow-lg">
-                    <DataKitTable
-                         action={fetchUsers}
-                         limit={{ default: 10 }}
-                         query={{ active: true }}
-                         filters={[
-                              {
-                                   id: 'search',
-                                   label: 'Search',
-                                   type: 'TEXT',
-                                   placeholder: 'Search by name or email...',
-                              },
-                              {
-                                   id: 'role',
-                                   label: 'Role',
-                                   type: 'SELECT',
-                                   dataset: [
-                                        { id: 'admin', name: 'admin', label: 'Admin' },
-                                        { id: 'user', name: 'user', label: 'User' },
-                                        { id: 'guest', name: 'guest', label: 'Guest' },
-                                   ],
-                              },
-                              {
-                                   id: 'age',
-                                   label: 'Min Age',
-                                   type: 'TEXT',
-                                   placeholder: '18',
-                              },
-                         ]}
-                         selectable={{
-                              enabled: true,
-                              actions: {
-                                   delete: {
-                                        name: 'Delete Selected',
-                                        function: async items => {
-                                             await deleteUsers(items.map(i => String(i.id)));
-                                             return [true, { deselectAll: true }];
-                                        },
+               <DataKitTable
+                    action={fetchUsers}
+                    limit={{ default: 10 }}
+                    query={{ active: true }}
+                    // filters={[
+                    //      {
+                    //           id: 'search',
+                    //           label: 'Search',
+                    //           type: 'TEXT',
+                    //           placeholder: 'Search by name or email...',
+                    //      },
+                    //      {
+                    //           id: 'role',
+                    //           label: 'Role',
+                    //           type: 'SELECT',
+                    //           dataset: [
+                    //                { id: 'admin', name: 'admin', label: 'Admin' },
+                    //                { id: 'user', name: 'user', label: 'User' },
+                    //                { id: 'guest', name: 'guest', label: 'Guest' },
+                    //           ],
+                    //      },
+                    //      {
+                    //           id: 'age',
+                    //           label: 'Min Age',
+                    //           type: 'TEXT',
+                    //           placeholder: '18',
+                    //      },
+                    // ]}
+                    selectable={{
+                         enabled: true,
+                         actions: {
+                              delete: {
+                                   name: 'Delete Selected',
+                                   function: async items => {
+                                        await deleteUsers(items.map(i => String(i.id)));
+                                        return [true, { deselectAll: true }];
                                    },
                               },
-                         }}
-                         table={[
-                              {
-                                   head: <DataKitTable.Head>Name</DataKitTable.Head>,
-                                   body: ({ item }) => (
-                                        <DataKitTable.Cell>
-                                             <div className="flex items-center gap-2">
-                                                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-purple-600/20 flex items-center justify-center text-primary font-semibold text-sm">
-                                                       {item.name.charAt(0).toUpperCase()}
-                                                  </div>
-                                                  <span className="font-medium text-foreground">{item.name}</span>
+                         },
+                    }}
+                    table={[
+                         {
+                              head: <DataKitTable.Head>Name</DataKitTable.Head>,
+                              body: ({ item }) => (
+                                   <DataKitTable.Cell>
+                                        <div className="flex items-center gap-2">
+                                             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-purple-600/20 flex items-center justify-center text-primary font-semibold text-sm">
+                                                  {item.name.charAt(0).toUpperCase()}
                                              </div>
-                                        </DataKitTable.Cell>
-                                   ),
-                                   sortable: { path: 'name', default: 0 },
-                              },
-                              {
-                                   head: <DataKitTable.Head>Email</DataKitTable.Head>,
-                                   body: ({ item }) => (
-                                        <DataKitTable.Cell>
-                                             <span className="text-sm text-muted-foreground">{item.email}</span>
-                                        </DataKitTable.Cell>
-                                   ),
-                                   sortable: { path: 'email', default: 0 },
-                              },
-                              {
-                                   head: <DataKitTable.Head>Role</DataKitTable.Head>,
-                                   body: ({ item }) => (
-                                        <DataKitTable.Cell>
-                                             <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${item.role === 'admin'
-                                                       ? 'bg-destructive/10 text-destructive border border-destructive/20'
-                                                       : item.role === 'user'
-                                                            ? 'bg-primary/10 text-primary border border-primary/20'
-                                                            : 'bg-muted text-muted-foreground border border-border'
-                                                  }`}>
-                                                  {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
-                                             </span>
-                                        </DataKitTable.Cell>
-                                   ),
-                                   sortable: { path: 'role', default: 0 },
-                              },
-                              {
-                                   head: <DataKitTable.Head>Age</DataKitTable.Head>,
-                                   body: ({ item }) => (
-                                        <DataKitTable.Cell>
-                                             <span className="text-sm font-medium text-foreground">{item.age}</span>
-                                        </DataKitTable.Cell>
-                                   ),
-                                   sortable: { path: 'age', default: 0 },
-                              },
-                              {
-                                   head: <DataKitTable.Head>Status</DataKitTable.Head>,
-                                   body: ({ item }) => (
-                                        <DataKitTable.Cell>
-                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${item.active
-                                                       ? 'bg-success/10 text-success border border-success/20'
-                                                       : 'bg-muted text-muted-foreground border border-border'
-                                                  }`}>
-                                                  <span className={`h-1.5 w-1.5 rounded-full ${item.active ? 'bg-success animate-pulse' : 'bg-muted-foreground'
-                                                       }`}></span>
-                                                  {item.active ? 'Active' : 'Inactive'}
-                                             </span>
-                                        </DataKitTable.Cell>
-                                   ),
-                              },
-                         ]}
-                         bordered="rounded"
-                    />
-               </div>
+                                             <span className="font-medium text-foreground">{item.name}</span>
+                                        </div>
+                                   </DataKitTable.Cell>
+                              ),
+                              sortable: { path: 'name', default: 0 },
+                         },
+                         {
+                              head: <DataKitTable.Head>Email</DataKitTable.Head>,
+                              body: ({ item }) => (
+                                   <DataKitTable.Cell>
+                                        <span className="text-sm text-muted-foreground">{item.email}</span>
+                                   </DataKitTable.Cell>
+                              ),
+                              sortable: { path: 'email', default: 0 },
+                         },
+                         {
+                              head: <DataKitTable.Head>Role</DataKitTable.Head>,
+                              body: ({ item }) => (
+                                   <DataKitTable.Cell>
+                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${item.role === 'admin'
+                                             ? 'bg-destructive/10 text-destructive border border-destructive/20'
+                                             : item.role === 'user'
+                                                  ? 'bg-primary/10 text-primary border border-primary/20'
+                                                  : 'bg-muted text-muted-foreground border border-border'
+                                             }`}>
+                                             {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
+                                        </span>
+                                   </DataKitTable.Cell>
+                              ),
+                              sortable: { path: 'role', default: 0 },
+                         },
+                         {
+                              head: <DataKitTable.Head>Age</DataKitTable.Head>,
+                              body: ({ item }) => (
+                                   <DataKitTable.Cell>
+                                        <span className="text-sm font-medium text-foreground">{item.age}</span>
+                                   </DataKitTable.Cell>
+                              ),
+                              sortable: { path: 'age', default: 0 },
+                         },
+                         {
+                              head: <DataKitTable.Head>Status</DataKitTable.Head>,
+                              body: ({ item }) => (
+                                   <DataKitTable.Cell>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${item.active
+                                             ? 'bg-success/10 text-success border border-success/20'
+                                             : 'bg-muted text-muted-foreground border border-border'
+                                             }`}>
+                                             <span className={`h-1.5 w-1.5 rounded-full ${item.active ? 'bg-success animate-pulse' : 'bg-muted-foreground'
+                                                  }`}></span>
+                                             {item.active ? 'Active' : 'Inactive'}
+                                        </span>
+                                   </DataKitTable.Cell>
+                              ),
+                         },
+                    ]}
+                    bordered="rounded"
+               />
           </div>
      );
 }

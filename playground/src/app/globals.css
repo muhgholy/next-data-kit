@@ -1,6 +1,5 @@
 @import 'tailwindcss';
-@source "../../src";
-@source "../../../src";
+@import '../../../dist/styles.css';
 
 :root {
 	--background: 240 10% 98%;
