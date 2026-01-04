@@ -1,3 +1,10 @@
+## [9.0.2](https://github.com/muhgholy/next-data-kit/compare/v9.0.1...v9.0.2) (2026-01-04)
+
+
+### Bug Fixes
+
+* **client:** replace Switch with Checkbox for consistency and remove switch component ([6e81318](https://github.com/muhgholy/next-data-kit/commit/6e81318a5bcf41fdc282ea73e7483d9e7e0f3cc8))
+
 ## [9.0.1](https://github.com/muhgholy/next-data-kit/compare/v9.0.0...v9.0.1) (2026-01-04)
 
 
