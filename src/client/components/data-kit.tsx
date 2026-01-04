@@ -187,7 +187,6 @@ const DataKitInner = <
                                             )}
                                             {f.type === 'BOOLEAN' && (
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-sm text-muted-foreground">{f.placeholder ?? 'Enable'}</span>
                                                     <Switch
                                                         checked={Boolean(dataKit.filter[f.id])}
                                                         onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
