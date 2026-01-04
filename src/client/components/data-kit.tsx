@@ -21,7 +21,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-    Switch,
+    Checkbox,
 } from './ui';
 import type {
     TDataKitInput,
@@ -187,7 +187,7 @@ const DataKitInner = <
                                             )}
                                             {f.type === 'BOOLEAN' && (
                                                 <div className="flex items-center justify-between">
-                                                    <Switch
+                                                    <Checkbox
                                                         checked={Boolean(dataKit.filter[f.id])}
                                                         onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
                                                     />

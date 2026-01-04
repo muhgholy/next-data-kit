@@ -28,7 +28,6 @@ import {
      SelectItem,
      SelectTrigger,
      SelectValue,
-     Switch,
      Table,
      TableBody,
      TableCell,
@@ -302,8 +301,7 @@ const DataKitRoot = <
                                                        )}
                                                        {f.type === 'BOOLEAN' && (
                                                             <div className="flex items-center justify-between">
-                                                                 <span className="text-sm text-muted-foreground">{f.placeholder ?? 'Enable'}</span>
-                                                                 <Switch
+                                                                 <Checkbox
                                                                       checked={Boolean(dataKit.filter[f.id])}
                                                                       onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
                                                                  />

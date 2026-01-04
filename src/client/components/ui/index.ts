@@ -31,7 +31,7 @@ export {
      DropdownMenuSubContent,
 } from './dropdown-menu';
 
-export { Switch } from './switch';
+
 
 export { Button, buttonVariants } from './button';
 
