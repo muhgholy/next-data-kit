@@ -1,3 +1,10 @@
+## [9.0.1](https://github.com/muhgholy/next-data-kit/compare/v9.0.0...v9.0.1) (2026-01-04)
+
+
+### Bug Fixes
+
+* **client:** resolve transparent switch issue and remove redundant enable text ([67f8e19](https://github.com/muhgholy/next-data-kit/commit/67f8e1941fd3bb6ca02aeee9f0ff8a4f2d6cb66e))
+
 # [9.0.0](https://github.com/muhgholy/next-data-kit/compare/v8.3.1...v9.0.0) (2025-12-26)
 
 
