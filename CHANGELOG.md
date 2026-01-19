@@ -1,3 +1,10 @@
+# [9.1.0](https://github.com/muhgholy/next-data-kit/compare/v9.0.2...v9.1.0) (2026-01-19)
+
+
+### Features
+
+* add sorts prop to DataKitTable for default sorting ([44b2684](https://github.com/muhgholy/next-data-kit/commit/44b268461c2d45638ceb6a612760aa249cb5dabf))
+
 ## [9.0.2](https://github.com/muhgholy/next-data-kit/compare/v9.0.1...v9.0.2) (2026-01-04)
 
 
