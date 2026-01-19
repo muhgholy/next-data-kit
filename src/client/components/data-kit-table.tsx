@@ -72,6 +72,7 @@ const DataKitRoot = <
      memory?: TDataKitMemoryMode;
      pagination?: 'SIMPLE' | 'NUMBER';
      controller?: React.MutableRefObject<TDataKitController<TExtractDataKitItemType<TAction>> | null>;
+     sorts?: { path: string; value: 1 | -1 }[];
 }>) => {
      // ** Deconstruct Props
      const {
@@ -90,6 +91,7 @@ const DataKitRoot = <
           memory: memoryMode = 'memory',
           pagination: paginationType = 'NUMBER',
           controller,
+          sorts: defaultSorts = [],
      } = props;
 
      // ** Type
@@ -137,12 +139,21 @@ const DataKitRoot = <
           initial: {
                limit: limitConfig?.default ?? 10,
                query: query ?? {},
-               sorts: columns.reduce<{ path: string; value: 1 | -1 }[]>((acc, col) => {
-                    if (col.sortable && col.sortable.default !== 0) {
-                         acc.push({ path: col.sortable.path, value: col.sortable.default as 1 | -1 });
-                    }
-                    return acc;
-               }, []),
+               sorts: (() => {
+                    // Collect column-based sorts
+                    const columnSorts = columns.reduce<{ path: string; value: 1 | -1 }[]>((acc, col) => {
+                         if (col.sortable && col.sortable.default !== 0) {
+                              acc.push({ path: col.sortable.path, value: col.sortable.default as 1 | -1 });
+                         }
+                         return acc;
+                    }, []);
+
+                    // Merge with default sorts, avoiding duplicates (column sorts take priority)
+                    const columnPaths = new Set(columnSorts.map(s => s.path));
+                    const additionalSorts = defaultSorts.filter(s => !columnPaths.has(s.path));
+
+                    return [...columnSorts, ...additionalSorts];
+               })(),
                filter: filters.reduce<Record<string, unknown>>((acc, f) => {
                     if (f.defaultValue !== undefined) acc[f.id] = f.defaultValue;
                     return acc;

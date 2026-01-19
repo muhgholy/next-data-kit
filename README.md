@@ -133,6 +133,9 @@ export function UsersTable() {
 					body: ({ item }) => <DataKitTable.Cell>{item.email}</DataKitTable.Cell>,
 				},
 			]}
+			sorts={[
+				{ path: '_id', value: -1 }, // Default sort by ID descending (consistent ordering)
+			]}
 		/>
 	);
 }
@@ -206,6 +209,58 @@ Both `DataKit` and `DataKitTable` support two pagination modes:
 - Mobile: Shows prev icon, current page number, next icon
 - Automatically adds ellipsis for skipped pages
 - Fully responsive with Tailwind CSS
+
+#### Sorting
+
+DataKitTable supports two types of sorting:
+
+**1. Column-based sorting** - Interactive sorting via column headers:
+
+```tsx
+table={[
+  {
+    head: <DataKitTable.Head>Name</DataKitTable.Head>,
+    body: ({ item }) => <DataKitTable.Cell>{item.name}</DataKitTable.Cell>,
+    sortable: {
+      path: 'name',      // MongoDB field path
+      default: 1         // 1 (asc), -1 (desc), or 0 (no default)
+    }
+  }
+]}
+```
+
+**2. Default sorts** - Hidden sorts for consistent ordering:
+
+```tsx
+<DataKitTable
+  action={fetchUsers}
+  table={columns}
+  sorts={[
+    { path: '_id', value: -1 }  // Sort by ID descending (tie-breaker)
+  ]}
+/>
+```
+
+**Sort priority and ordering:**
+
+MongoDB processes sorts in order. Column sorts take priority over default sorts:
+
+```tsx
+<DataKitTable
+  table={[
+    {
+      head: <DataKitTable.Head>Priority</DataKitTable.Head>,
+      body: ({ item }) => <DataKitTable.Cell>{item.priority}</DataKitTable.Cell>,
+      sortable: { path: 'priority', default: -1 }  // Sort #1: High priority first
+    }
+  ]}
+  sorts={[
+    { path: 'createdAt', value: -1 },  // Sort #2: Newest within same priority
+    { path: '_id', value: -1 }          // Sort #3: Consistent ordering
+  ]}
+/>
+// Result: sorts = [{ path: 'priority', value: -1 }, { path: 'createdAt', value: -1 }, { path: '_id', value: -1 }]
+```
 
 **Dynamic Limit Options:**
 
@@ -501,6 +556,7 @@ Full-featured table component with built-in UI.
 | `filters`         | `FilterItem[]`               | Filter configurations                   |
 | `selectable`      | `{ enabled, actions? }`      | Selection & bulk actions                |
 | `limit`           | `{ default: number }`        | Items per page (auto-added to dropdown) |
+| `sorts`           | `{ path, value }[]`          | Default sorts (hidden fields like `_id`)|
 | `defaultSort`     | `TSortEntry[]`               | Initial sort configuration              |
 | `pagination`      | `'SIMPLE' \| 'NUMBER'`       | Pagination mode (default: `'NUMBER'`)   |
 | `controller`      | `Ref<Controller>`            | External control ref                    |
