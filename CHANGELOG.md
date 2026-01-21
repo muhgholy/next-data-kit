@@ -1,3 +1,10 @@
+# [9.3.0](https://github.com/muhgholy/next-data-kit/compare/v9.2.0...v9.3.0) (2026-01-21)
+
+
+### Features
+
+* ensure css injection for client entry point ([db759e7](https://github.com/muhgholy/next-data-kit/commit/db759e7d2f8444732bb85976ecb79bbc3ab593c7))
+
 # [9.2.0](https://github.com/muhgholy/next-data-kit/compare/v9.1.0...v9.2.0) (2026-01-21)
 
 
