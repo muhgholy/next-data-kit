@@ -12,7 +12,7 @@ function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
             role="navigation"
             aria-label="pagination"
             data-slot="pagination"
-            className={cn('flex', className)}
+            className={cn('ndk:flex', className)}
             {...props}
         />
     );
@@ -25,7 +25,7 @@ function PaginationContent({
     return (
         <ul
             data-slot="pagination-content"
-            className={cn('flex flex-row items-center gap-1', className)}
+            className={cn('ndk:flex ndk:flex-row ndk:items-center ndk:gap-1', className)}
             {...props}
         />
     );
@@ -73,11 +73,11 @@ function PaginationPrevious({
         <PaginationLink
             aria-label="Go to previous page"
             size="default"
-            className={cn('gap-1 px-2.5 sm:pl-2.5', className)}
+            className={cn('ndk:gap-1 ndk:px-2.5 ndk:sm:pl-2.5', className)}
             {...props}
         >
-            <ChevronLeft className="size-4" aria-hidden="true" />
-            <span className="hidden sm:block">Previous</span>
+            <ChevronLeft className="ndk:size-4" aria-hidden="true" />
+            <span className="ndk:hidden ndk:sm:block">Previous</span>
         </PaginationLink>
     );
 }
@@ -90,11 +90,11 @@ function PaginationNext({
         <PaginationLink
             aria-label="Go to next page"
             size="default"
-            className={cn('gap-1 px-2.5 sm:pr-2.5', className)}
+            className={cn('ndk:gap-1 ndk:px-2.5 ndk:sm:pr-2.5', className)}
             {...props}
         >
-            <span className="hidden sm:block">Next</span>
-            <ChevronRight className="size-4" aria-hidden="true" />
+            <span className="ndk:hidden ndk:sm:block">Next</span>
+            <ChevronRight className="ndk:size-4" aria-hidden="true" />
         </PaginationLink>
     );
 }
@@ -107,11 +107,11 @@ function PaginationEllipsis({
         <span
             aria-hidden="true"
             data-slot="pagination-ellipsis"
-            className={cn('flex size-9 items-center justify-center', className)}
+            className={cn('ndk:flex ndk:size-9 ndk:items-center ndk:justify-center', className)}
             {...props}
         >
-            <MoreHorizontal className="size-4" aria-hidden="true" />
-            <span className="sr-only">More pages</span>
+            <MoreHorizontal className="ndk:size-4" aria-hidden="true" />
+            <span className="ndk:sr-only">More pages</span>
         </span>
     );
 }

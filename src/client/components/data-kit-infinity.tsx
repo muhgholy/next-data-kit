@@ -145,27 +145,27 @@ const DataKitInfinityInner = <
      return (
           <div
                ref={containerRef}
-               className={`flex flex-col ${fullHeight ? 'h-full' : ''}`}
+               className={`ndk:flex ndk:flex-col ${fullHeight ? 'ndk:h-full' : ''}`}
           >
                {/* Toolbar */}
                {filters.length > 0 && (
-                    <div className="shrink-0 px-4 pt-4 pb-3">
+                    <div className="ndk:shrink-0 ndk:px-4 ndk:pt-4 ndk:pb-3">
                          <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                               <PopoverTrigger asChild>
                                    <Button variant="outline" size="sm">
-                                        <Filter className="mr-1.5 size-4" />
+                                        <Filter className="ndk:mr-1.5 ndk:size-4" />
                                         Filters
                                    </Button>
                               </PopoverTrigger>
-                              <PopoverContent align="start" className="w-80" container={overlayContainer}>
-                                   <div className="grid gap-3">
+                              <PopoverContent align="start" className="ndk:w-80" container={overlayContainer}>
+                                   <div className="ndk:grid ndk:gap-3">
                                         {filters.map((f) => (
-                                             <div key={f.id} className="grid gap-1.5">
-                                                  <label className="text-sm font-medium">{f.label}</label>
+                                             <div key={f.id} className="ndk:grid ndk:gap-1.5">
+                                                  <label className="ndk:text-sm ndk:font-medium">{f.label}</label>
                                                   {f.type === 'TEXT' && (
                                                        <input
                                                             type="text"
-                                                            className="h-9 w-full rounded-md border bg-transparent px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                                                            className="ndk:h-9 ndk:w-full ndk:rounded-md ndk:border ndk:bg-transparent ndk:px-3 ndk:text-sm ndk:outline-none ndk:focus:ring-2 ndk:focus:ring-ring"
                                                             placeholder={f.placeholder}
                                                             value={(dataKit.filter[f.id] as string) ?? ''}
                                                             onChange={(e) => dataKit.actions.setFilter(f.id, e.target.value)}
@@ -186,7 +186,7 @@ const DataKitInfinityInner = <
                                                        </Select>
                                                   )}
                                                   {f.type === 'BOOLEAN' && (
-                                                       <div className="flex items-center justify-between">
+                                                       <div className="ndk:flex ndk:items-center ndk:justify-between">
                                                             <Checkbox
                                                                  checked={Boolean(dataKit.filter[f.id])}
                                                                  onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
@@ -196,7 +196,7 @@ const DataKitInfinityInner = <
                                              </div>
                                         ))}
                                    </div>
-                                   <div className="mt-4 flex justify-between border-t pt-3">
+                                   <div className="ndk:mt-4 ndk:flex ndk:justify-between ndk:border-t ndk:pt-3">
                                         <Button variant="outline" size="sm" onClick={handleResetFilters}>Reset</Button>
                                         <Button size="sm" onClick={() => setIsFilterOpen(false)}>Done</Button>
                                    </div>
@@ -209,18 +209,18 @@ const DataKitInfinityInner = <
                {/* Scrollable Content */}
                <div
                     ref={scrollContainerRef}
-                    className={`relative flex-1 ${fullHeight ? 'min-h-0' : ''} overflow-y-auto overflow-x-hidden ${className ?? ''}`}
+                    className={`ndk:relative ndk:flex-1 ${fullHeight ? 'ndk:min-h-0' : ''} ndk:overflow-y-auto ndk:overflow-x-hidden ${className ?? ''}`}
                >
                     {/* User content */}
                     {children(enhancedDataKit)}
 
                     {/* Load more trigger at bottom */}
-                    <div ref={loadMoreBottomRef} className={manual ? '' : 'flex items-center justify-center py-4'}>
+                    <div ref={loadMoreBottomRef} className={manual ? '' : 'ndk:flex ndk:items-center ndk:justify-center ndk:py-4'}>
                          {!manual && (
                               <>
-                                   {dataKit.state.isLoading && <Loader2 className="size-6 animate-spin text-muted-foreground" />}
+                                   {dataKit.state.isLoading && <Loader2 className="ndk:size-6 ndk:animate-spin ndk:text-muted-foreground" />}
                                    {!dataKit.state.isLoading && !dataKit.state.hasNextPage && allItems.length > 0 && (
-                                        <p className="text-sm text-muted-foreground">You're all set</p>
+                                        <p className="ndk:text-sm ndk:text-muted-foreground">You're all set</p>
                                    )}
                               </>
                          )}

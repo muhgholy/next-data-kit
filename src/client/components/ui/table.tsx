@@ -5,10 +5,10 @@ import { cn } from '../../utils';
 
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
      return (
-          <div data-slot="table-container" className="relative w-full overflow-x-auto">
+          <div data-slot="table-container" className="ndk:relative ndk:w-full ndk:overflow-x-auto">
                <table
                     data-slot="table"
-                    className={cn('w-full caption-bottom text-sm', className)}
+                    className={cn('ndk:w-full ndk:caption-bottom ndk:text-sm', className)}
                     {...props}
                />
           </div>
@@ -19,7 +19,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
      return (
           <thead
                data-slot="table-header"
-               className={cn('[&_tr]:border-b', className)}
+               className={cn('ndk:[&_tr]:border-b', className)}
                {...props}
           />
      );
@@ -29,7 +29,7 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
      return (
           <tbody
                data-slot="table-body"
-               className={cn('[&_tr:last-child]:border-0', className)}
+               className={cn('ndk:[&_tr:last-child]:border-0', className)}
                {...props}
           />
      );
@@ -40,7 +40,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
           <tfoot
                data-slot="table-footer"
                className={cn(
-                    'bg-gray-50/70 dark:bg-gray-900/40 border-t border-gray-200 dark:border-gray-800 font-medium [&>tr]:last:border-b-0',
+                    'ndk:bg-gray-50/70 ndk:dark:bg-gray-900/40 ndk:border-t ndk:border-gray-200 ndk:dark:border-gray-800 ndk:font-medium ndk:[&>tr]:last:border-b-0',
                     className
                )}
                {...props}
@@ -53,7 +53,7 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
           <tr
                data-slot="table-row"
                className={cn(
-                    'hover:bg-gray-50 dark:hover:bg-gray-900 data-[state=selected]:bg-gray-50 dark:data-[state=selected]:bg-gray-900 border-b border-gray-100 dark:border-gray-800 transition-colors',
+                    'ndk:hover:bg-gray-50 ndk:dark:hover:bg-gray-900 ndk:data-[state=selected]:bg-gray-50 ndk:dark:data-[state=selected]:bg-gray-900 ndk:border-b ndk:border-gray-100 ndk:dark:border-gray-800 ndk:transition-colors',
                     className
                )}
                {...props}
@@ -66,7 +66,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
           <th
                data-slot="table-head"
                className={cn(
-                    'text-gray-900 dark:text-gray-100 h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+                    'ndk:text-gray-900 ndk:dark:text-gray-100 ndk:h-10 ndk:px-2 ndk:text-left ndk:align-middle ndk:font-medium ndk:whitespace-nowrap ndk:[&:has([role=checkbox])]:pr-0 ndk:[&>[role=checkbox]]:translate-y-[2px]',
                     className
                )}
                {...props}
@@ -79,7 +79,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
           <td
                data-slot="table-cell"
                className={cn(
-                    'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+                    'ndk:p-2 ndk:align-middle ndk:whitespace-nowrap ndk:[&:has([role=checkbox])]:pr-0 ndk:[&>[role=checkbox]]:translate-y-[2px]',
                     className
                )}
                {...props}
@@ -91,7 +91,7 @@ function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) 
      return (
           <caption
                data-slot="table-caption"
-               className={cn('text-gray-500 dark:text-gray-400 mt-4 text-sm', className)}
+               className={cn('ndk:text-gray-500 ndk:dark:text-gray-400 ndk:mt-4 ndk:text-sm', className)}
                {...props}
           />
      );

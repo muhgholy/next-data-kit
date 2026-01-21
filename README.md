@@ -59,6 +59,16 @@ You can use the built-in Zod schema to validate inputs before processing:
 ```typescript
 'use server';
 
+## Styling
+Next Data Kit ships with its own Tailwind CSS styles which are **automatically injected** into your application. You do not need to import any CSS files manually.
+
+### Prefixing
+To prevent class name conflicts with your application, all Next Data Kit utility classes are prefixed with `ndk:`. For example, instead of `flex`, components use `ndk:flex`.
+
+If you need to override styles or use Data Kit's class names in your own custom components that interact with the library's internal state, remember to use the `ndk:` prefix.
+
+### Tailwind Configuration (Optional)
+Since styles are injected, you generally don't need to configure your Tailwind setup to be aware of Next Data Kit unless you are building custom components that rely on the library's internal theme variables.
 import { dataKitServerAction, dataKitSchemaZod } from 'next-data-kit/server';
 
 export async function fetchUsers(input: unknown) {
@@ -564,6 +574,50 @@ Full-featured table component with built-in UI.
 | `bordered`        | `boolean \| 'rounded'`       | Border style                            |
 | `refetchInterval` | `number`                     | Auto-refresh interval (ms)              |
 
+**Controller Ref:**
+
+The `controller` prop allows external manipulation of the table. Pass a ref and access these methods:
+
+```tsx
+import { useRef } from 'react';
+import { DataKitTable } from 'next-data-kit/client';
+import type { TDataKitController } from 'next-data-kit/types';
+
+function MyTable() {
+	const controllerRef = useRef<TDataKitController<User> | null>(null);
+
+	const handleAddUser = () => {
+		controllerRef.current?.itemPush({ id: '123', name: 'New User' }, 0);
+	};
+
+	const handleUpdateUser = () => {
+		// Update by index
+		controllerRef.current?.itemUpdate({ index: 0, data: { name: 'Updated Name' } });
+		// Or update by id
+		controllerRef.current?.itemUpdate({ id: '123', data: { name: 'Updated Name' } });
+	};
+
+	const handleDeleteUser = () => {
+		// Delete by index
+		controllerRef.current?.itemDelete({ index: 0 });
+		// Or delete by id
+		controllerRef.current?.itemDelete({ id: '123' });
+	};
+
+	return <DataKitTable action={fetchUsers} controller={controllerRef} table={columns} />;
+}
+```
+
+Available methods:
+- `itemPush(item, position?)` - Add new item (0 = start, 1 = end)
+- `itemUpdate(props)` - Update item by index or id with partial data
+- `itemDelete(props)` - Delete item by index or id
+- `refetchData()` - Refresh table data from server
+- `deleteBulk(items)` - Delete multiple items
+- `getSelectedItems()` - Get currently selected items
+- `clearSelection()` - Clear all selections
+
+
 #### `<DataKit>` Component
 
 Headless component for custom layouts (grids, cards, etc).
@@ -650,6 +704,17 @@ Returns:
      - `clearFilters()` - Clear all filters
      - `refresh()` - Refresh the table data
      - `reset()` - Reset to initial state
+     - `setItems(items)` - Replace all items
+     - `setItemAt(index, item)` - Replace item at index
+     - `itemUpdate(props)` - Update item by index or id with partial data
+          - By index: `itemUpdate({ index: 0, data: { name: 'New Name' } })`
+          - By id: `itemUpdate({ id: '123', data: { name: 'New Name' } })`
+     - `deleteItemAt(index)` - Delete item at index
+     - `itemDelete(props)` - Delete item by index or id
+          - By index: `itemDelete({ index: 0 })`
+          - By id: `itemDelete({ id: '123' })`
+     - `itemPush(item, position)` - Add item (position: 0 = start, 1 = end)
+     - `deleteBulk(items)` - Delete multiple items
 
 #### `useSelection<T>()`
 

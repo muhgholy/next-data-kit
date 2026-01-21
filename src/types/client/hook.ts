@@ -63,8 +63,12 @@ export type TDataKitActions<T = unknown, R = unknown> = {
 	setItems: (items: R[]) => void;
 	// ** Update item at index
 	setItemAt: (index: number, item: R) => void;
+	// ** Update an item by index or id
+	itemUpdate: (props: { index: number; data: Partial<R> } | { id: string | number; data: Partial<R> }) => void;
 	// ** Delete item at index
 	deleteItemAt: (index: number) => void;
+	// ** Delete an item by index or id
+	itemDelete: (props: { index: number } | { id: string | number }) => void;
 	// ** Push item (0 = start, 1 = end)
 	itemPush: (item: R, position?: 0 | 1) => void;
 	// ** Delete multiple items (reference equality)

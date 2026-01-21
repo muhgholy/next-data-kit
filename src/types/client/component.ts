@@ -96,6 +96,10 @@ export type TDataKitBulkAction<TItem> =
 export type TDataKitController<TItem> = {
 	// ** Add a new item to the table
 	itemPush: (item: TItem, position?: 0 | 1) => void;
+	// ** Update an item by index or id
+	itemUpdate: (props: { index: number; data: Partial<TItem> } | { id: string | number; data: Partial<TItem> }) => void;
+	// ** Delete an item by index or id
+	itemDelete: (props: { index: number } | { id: string | number }) => void;
 	// ** Refetch data from the server
 	refetchData: () => void;
 	// ** Delete multiple items

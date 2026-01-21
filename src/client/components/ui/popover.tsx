@@ -33,7 +33,7 @@ function PopoverContent({
                     align={align}
                     sideOffset={sideOffset}
                     className={cn(
-                         'bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border border-gray-200 dark:border-gray-800 p-4 shadow-md outline-hidden',
+                         'ndk:bg-white ndk:text-gray-900 ndk:dark:bg-gray-950 ndk:dark:text-gray-100 ndk:data-[state=open]:animate-in ndk:data-[state=closed]:animate-out ndk:data-[state=closed]:fade-out-0 ndk:data-[state=open]:fade-in-0 ndk:data-[state=closed]:zoom-out-95 ndk:data-[state=open]:zoom-in-95 ndk:data-[side=bottom]:slide-in-from-top-2 ndk:data-[side=left]:slide-in-from-right-2 ndk:data-[side=right]:slide-in-from-left-2 ndk:data-[side=top]:slide-in-from-bottom-2 ndk:z-50 ndk:w-72 ndk:origin-(--radix-popover-content-transform-origin) ndk:rounded-md ndk:border ndk:border-gray-200 ndk:dark:border-gray-800 ndk:p-4 ndk:shadow-md ndk:outline-hidden',
                          className
                     )}
                     {...props}

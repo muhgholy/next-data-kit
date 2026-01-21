@@ -7,6 +7,9 @@
  * @packageDocumentation
  */
 
+// Auto-inject styles
+import '../dist/styles.css';
+
 // Re-export everything from types
 export * from './types';
 

@@ -11,7 +11,7 @@ export default defineConfig([
 		dts: true,
 		splitting: false,
 		sourcemap: true,
-		clean: true,
+		clean: false, // Don't clean, handled by build script
 		treeshake: true,
 		external: ['react', 'react-dom', 'zod', '@radix-ui/react-checkbox', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-slot', '@radix-ui/react-switch', 'class-variance-authority', 'lucide-react'],
 	},
@@ -24,7 +24,8 @@ export default defineConfig([
 		dts: true,
 		splitting: false,
 		sourcemap: true,
-		clean: false,
+		clean: false, // Don't clean, we build CSS first
+		injectStyle: true,
 		treeshake: true,
 		external: ['react', 'react-dom', 'zod', '@radix-ui/react-checkbox', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-slot', '@radix-ui/react-switch', 'class-variance-authority', 'lucide-react'],
 	},

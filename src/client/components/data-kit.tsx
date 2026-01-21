@@ -145,27 +145,27 @@ const DataKitInner = <
 
     // ** Render
     return (
-        <div ref={containerRef} className={`space-y-3 ${className ?? ''}`}>
+        <div ref={containerRef} className={`ndk:space-y-3 ${className ?? ''}`}>
             {/* Toolbar */}
-            <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+            <div className="ndk:flex ndk:items-center ndk:justify-between ndk:gap-2">
+                <div className="ndk:flex ndk:items-center ndk:gap-2">
                     {filters.length > 0 && (
                         <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                             <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm">
-                                    <Filter className="mr-1.5 size-4" />
+                                    <Filter className="ndk:mr-1.5 ndk:size-4" />
                                     Filters
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent align="start" className="w-80" container={overlayContainer}>
-                                <div className="grid gap-3">
+                            <PopoverContent align="start" className="ndk:w-80" container={overlayContainer}>
+                                <div className="ndk:grid ndk:gap-3">
                                     {filters.map((f) => (
-                                        <div key={f.id} className="grid gap-1.5">
-                                            <label className="text-sm font-medium">{f.label}</label>
+                                        <div key={f.id} className="ndk:grid ndk:gap-1.5">
+                                            <label className="ndk:text-sm ndk:font-medium">{f.label}</label>
                                             {f.type === 'TEXT' && (
                                                 <input
                                                     type="text"
-                                                    className="h-9 w-full rounded-md border bg-transparent px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                                                    className="ndk:h-9 ndk:w-full ndk:rounded-md ndk:border ndk:bg-transparent ndk:px-3 ndk:text-sm ndk:outline-none ndk:focus:ring-2 ndk:focus:ring-ring"
                                                     placeholder={f.placeholder}
                                                     value={(dataKit.filter[f.id] as string) ?? ''}
                                                     onChange={(e) => dataKit.actions.setFilter(f.id, e.target.value)}
@@ -186,7 +186,7 @@ const DataKitInner = <
                                                 </Select>
                                             )}
                                             {f.type === 'BOOLEAN' && (
-                                                <div className="flex items-center justify-between">
+                                                <div className="ndk:flex ndk:items-center ndk:justify-between">
                                                     <Checkbox
                                                         checked={Boolean(dataKit.filter[f.id])}
                                                         onCheckedChange={(c) => dataKit.actions.setFilter(f.id, c)}
@@ -196,7 +196,7 @@ const DataKitInner = <
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-4 flex justify-between border-t pt-3">
+                                <div className="ndk:mt-4 ndk:flex ndk:justify-between ndk:border-t ndk:pt-3">
                                     <Button variant="outline" size="sm" onClick={handleResetFilters}>Reset</Button>
                                     <Button size="sm" onClick={() => setIsFilterOpen(false)}>Done</Button>
                                 </div>
@@ -205,12 +205,12 @@ const DataKitInner = <
                     )}
                 </div>
 
-                <div className="flex items-center gap-1">
-                    <span className="mr-2 text-sm text-muted-foreground">
+                <div className="ndk:flex ndk:items-center ndk:gap-1">
+                    <span className="ndk:mr-2 ndk:text-sm ndk:text-muted-foreground">
                         {dataKit.items.length} of {dataKit.total}
                     </span>
                     <Select value={String(dataKit.limit)} onValueChange={(v) => dataKit.actions.setLimit(Number(v))} disabled={dataKit.state.isLoading}>
-                        <SelectTrigger className="w-16"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="ndk:w-16"><SelectValue /></SelectTrigger>
                         <SelectContent container={overlayContainer}>
                             {limitOptions.map((v) => (
                                 <SelectItem key={v} value={String(v)}>{v}</SelectItem>
@@ -224,13 +224,13 @@ const DataKitInner = <
             {manual ? (
                 children(dataKit)
             ) : (
-                <div className="min-h-[200px]">
+                <div className="ndk:min-h-[200px]">
                     {dataKit.state.isLoading ? (
-                        <div className="flex h-48 items-center justify-center">
-                            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                        <div className="ndk:flex ndk:h-48 ndk:items-center ndk:justify-center">
+                            <Loader2 className="ndk:size-6 ndk:animate-spin ndk:text-muted-foreground" />
                         </div>
                     ) : dataKit.items.length === 0 ? (
-                        <div className="flex h-48 items-center justify-center text-muted-foreground">
+                        <div className="ndk:flex ndk:h-48 ndk:items-center ndk:justify-center ndk:text-muted-foreground">
                             No results found.
                         </div>
                     ) : (
@@ -240,19 +240,19 @@ const DataKitInner = <
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
+            <div className="ndk:flex ndk:items-center ndk:justify-between">
+                <p className="ndk:text-sm ndk:text-muted-foreground">
                     Page {dataKit.page} of {pagination.totalPages}
                 </p>
                 {paginationType === 'SIMPLE' ? (
-                    <div className="flex items-center gap-1">
+                    <div className="ndk:flex ndk:items-center ndk:gap-1">
                         <Button
                             variant="outline"
                             size="icon"
                             disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
                             onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
                         >
-                            <ChevronLeft className="size-4" />
+                            <ChevronLeft className="ndk:size-4" />
                         </Button>
                         <Button
                             variant="outline"
@@ -260,28 +260,28 @@ const DataKitInner = <
                             disabled={!pagination.hasNextPage || dataKit.state.isLoading}
                             onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
                         >
-                            <ChevronRight className="size-4" />
+                            <ChevronRight className="ndk:size-4" />
                         </Button>
                     </div>
                 ) : (
-                    <Pagination className="mx-0 w-auto">
+                    <Pagination className="ndk:mx-0 ndk:w-auto">
                         <PaginationContent>
-                            <PaginationItem className="hidden sm:block">
+                            <PaginationItem className="ndk:hidden ndk:sm:block">
                                 <PaginationPrevious
                                     disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
                                     onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
                                 />
                             </PaginationItem>
-                            <PaginationItem className="sm:hidden">
+                            <PaginationItem className="ndk:sm:hidden">
                                 <PaginationLink
                                     disabled={!pagination.hasPrevPage || dataKit.state.isLoading}
                                     onClick={() => dataKit.actions.setPage(dataKit.page - 1)}
                                 >
-                                    <ChevronLeft className="size-4" />
+                                    <ChevronLeft className="ndk:size-4" />
                                 </PaginationLink>
                             </PaginationItem>
                             {pagination.pages.map((pageNum, idx) => (
-                                <PaginationItem key={idx} className="hidden sm:block">
+                                <PaginationItem key={idx} className="ndk:hidden ndk:sm:block">
                                     {pageNum === 'ellipsis' ? (
                                         <PaginationEllipsis />
                                     ) : (
@@ -295,23 +295,23 @@ const DataKitInner = <
                                     )}
                                 </PaginationItem>
                             ))}
-                            <PaginationItem className="sm:hidden">
-                                <span className="flex size-9 items-center justify-center text-sm">
+                            <PaginationItem className="ndk:sm:hidden">
+                                <span className="ndk:flex ndk:size-9 ndk:items-center ndk:justify-center ndk:text-sm">
                                     {dataKit.page}
                                 </span>
                             </PaginationItem>
-                            <PaginationItem className="hidden sm:block">
+                            <PaginationItem className="ndk:hidden ndk:sm:block">
                                 <PaginationNext
                                     disabled={!pagination.hasNextPage || dataKit.state.isLoading}
                                     onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
                                 />
                             </PaginationItem>
-                            <PaginationItem className="sm:hidden">
+                            <PaginationItem className="ndk:sm:hidden">
                                 <PaginationLink
                                     disabled={!pagination.hasNextPage || dataKit.state.isLoading}
                                     onClick={() => dataKit.actions.setPage(dataKit.page + 1)}
                                 >
-                                    <ChevronRight className="size-4" />
+                                    <ChevronRight className="ndk:size-4" />
                                 </PaginationLink>
                             </PaginationItem>
                         </PaginationContent>

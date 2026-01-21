@@ -1,7 +1,7 @@
-@import 'tailwindcss';
+@import 'tailwindcss' prefix(ndk);
 @source "../src/client/**/*.tsx";
 
-@theme inline {
+@theme {
     /* 
       * Base theme tokens for next-data-kit components.
       * These provide sensible defaults that can be overridden by the user's theme.

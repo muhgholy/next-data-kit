@@ -167,8 +167,50 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 		});
 	}, []);
 
+	const itemUpdate = useCallback((props: { index: number; data: Partial<R> } | { id: string | number; data: Partial<R> }) => {
+		setItems(prev => {
+			if ('index' in props) {
+				// Update by index
+				const { index, data } = props;
+				if (index < 0 || index >= prev.length) return prev;
+				const next = [...prev];
+				next[index] = { ...next[index], ...data } as R;
+				return next;
+			} else {
+				// Update by id
+				const { id, data } = props;
+				const index = prev.findIndex((item) => {
+					const itemWithId = item as R & { id?: string | number };
+					return itemWithId.id === id;
+				});
+				if (index === -1) return prev;
+				const next = [...prev];
+				next[index] = { ...next[index], ...data } as R;
+				return next;
+			}
+		});
+	}, []);
+
 	const deleteItemAt = useCallback((index: number) => {
 		setItems(prev => prev.filter((_, i) => i !== index));
+	}, []);
+
+	const itemDelete = useCallback((props: { index: number } | { id: string | number }) => {
+		setItems(prev => {
+			if ('index' in props) {
+				// Delete by index
+				const { index } = props;
+				if (index < 0 || index >= prev.length) return prev;
+				return prev.filter((_, i) => i !== index);
+			} else {
+				// Delete by id
+				const { id } = props;
+				return prev.filter((item) => {
+					const itemWithId = item as R & { id?: string | number };
+					return itemWithId.id !== id;
+				});
+			}
+		});
 	}, []);
 
 	const itemPush = useCallback((item: R, position: 0 | 1 = 1) => {
@@ -281,7 +323,9 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 			getInput,
 			setItems: setItemsAction,
 			setItemAt,
+			itemUpdate,
 			deleteItemAt,
+			itemDelete,
 			itemPush,
 			deleteBulk,
 		},

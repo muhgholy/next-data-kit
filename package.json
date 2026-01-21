@@ -49,7 +49,7 @@
           "dist"
      ],
      "scripts": {
-          "build": "tsup && tsc -p tsconfig.client.build.json && npm run build:css",
+          "build": "rm -rf dist && mkdir -p dist && npm run build:css && tsup && tsc -p tsconfig.client.build.json",
           "build:css": "npx @tailwindcss/cli -i ./styles/input.css -o ./dist/styles.css --minify",
           "test": "vitest run",
           "test:coverage": "vitest run --coverage",
