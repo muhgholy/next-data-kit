@@ -1,3 +1,10 @@
+# [9.2.0](https://github.com/muhgholy/next-data-kit/compare/v9.1.0...v9.2.0) (2026-01-21)
+
+
+### Features
+
+* refactor tailwind classes to use ndk prefix and auto-inject styles ([2e363fb](https://github.com/muhgholy/next-data-kit/commit/2e363fbc8cebfb905af6d1769a4bc79af9faff95))
+
 # [9.1.0](https://github.com/muhgholy/next-data-kit/compare/v9.0.2...v9.1.0) (2026-01-19)
 
 
