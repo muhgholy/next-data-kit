@@ -1,5 +1,6 @@
 @import 'tailwindcss' prefix(ndk);
 @source "../src/client/**/*.tsx";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
     /* 
