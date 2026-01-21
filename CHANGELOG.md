@@ -1,3 +1,10 @@
+# [9.4.0](https://github.com/muhgholy/next-data-kit/compare/v9.3.0...v9.4.0) (2026-01-21)
+
+
+### Features
+
+* configure class-based dark mode ([145a759](https://github.com/muhgholy/next-data-kit/commit/145a75963d897c24016efb65b72d3b91e840935b))
+
 # [9.3.0](https://github.com/muhgholy/next-data-kit/compare/v9.2.0...v9.3.0) (2026-01-21)
 
 
