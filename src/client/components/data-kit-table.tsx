@@ -1,5 +1,8 @@
 'use client';
 
+// Auto-inject styles when this component is used
+import '../../../dist/styles.css';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Filter, Loader2, MoreHorizontal } from 'lucide-react';
 import { useDataKit } from '../hooks/useDataKit';

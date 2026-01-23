@@ -20,10 +20,12 @@ export default defineConfig([
 		entry: {
 			index: 'src/index.ts',
 			client: 'src/client.ts',
+			// Internal entry to force splitting of hooks from UI (for tree-shaking CSS)
+			'internal/hooks': 'src/client/hooks/useDataKit.ts',
 		},
 		format: ['cjs', 'esm'],
 		dts: true,
-		splitting: false,
+		splitting: true,
 		sourcemap: true,
 		clean: false, // Don't clean, we build CSS first
 		injectStyle: true,

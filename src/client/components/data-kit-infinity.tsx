@@ -1,5 +1,8 @@
 'use client';
 
+// Auto-inject styles when this component is used
+import '../../../dist/styles.css';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Filter, Loader2 } from 'lucide-react';

@@ -74,6 +74,9 @@
           "mongodb",
           "mongoose"
      ],
+     "sideEffects": [
+          "**/*.css"
+     ],
      "author": "muhgholy",
      "license": "MIT",
      "bugs": {
