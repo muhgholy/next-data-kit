@@ -1,3 +1,10 @@
+# [9.5.0](https://github.com/muhgholy/next-data-kit/compare/v9.4.0...v9.5.0) (2026-01-23)
+
+
+### Features
+
+* conditional css injection via code splitting ([aa2984f](https://github.com/muhgholy/next-data-kit/commit/aa2984fbe92e58570944c7c7c28419c2ec148f06))
+
 # [9.4.0](https://github.com/muhgholy/next-data-kit/compare/v9.3.0...v9.4.0) (2026-01-21)
 
 
