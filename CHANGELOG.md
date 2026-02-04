@@ -1,3 +1,10 @@
+# [9.6.0](https://github.com/muhgholy/next-data-kit/compare/v9.5.0...v9.6.0) (2026-02-04)
+
+
+### Features
+
+* **useDataKit:** fix infinite loop in search-params memory mode ([3f96fbc](https://github.com/muhgholy/next-data-kit/commit/3f96fbcd5a487c1854ed3b091be8e916110bb2c1))
+
 # [9.5.0](https://github.com/muhgholy/next-data-kit/compare/v9.4.0...v9.5.0) (2026-01-23)
 
 
