@@ -32,6 +32,15 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 	const mounted = useRef(true);
 	const fetchIdRef = useRef(0);
 	const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const hasInitializedFromUrl = useRef(false);
+	const isInitialMount = useRef(true);
+
+	// ** Refs for initial values to prevent object reference changes from triggering effects
+	const initialPageRef = useRef(initialPage);
+	const initialLimitRef = useRef(initialLimit);
+	const initialSortsRef = useRef(initialSorts);
+	const initialFilterRef = useRef(initialFilter);
+	const initialQueryRef = useRef(initialQuery);
 
 	// ** Refs for props to prevent infinite loops and stale closures
 	const actionRef = useRef(action);
@@ -236,39 +245,48 @@ export const useDataKit = <T = unknown, R = unknown>(props: Readonly<TUseDataKit
 	useEffect(() => {
 		if (memoryMode !== 'search-params' || typeof window === 'undefined') return;
 
-		// ** Initial load from URL
-		const urlState = parseUrlParams(window.location.search);
+		// ** Initial load from URL - only run once
+		if (!hasInitializedFromUrl.current) {
+			hasInitializedFromUrl.current = true;
+			const urlState = parseUrlParams(window.location.search);
 
-		if (Object.keys(urlState).length > 0) {
-			if (urlState.page) setPageState(urlState.page);
-			if (urlState.limit) setLimitState(urlState.limit);
-			if (urlState.sorts) setSortsState(urlState.sorts);
-			if (urlState.filter) {
-				setFilterState(prev => ({ ...prev, ...urlState.filter }));
-				setDebouncedFilter(prev => ({ ...prev, ...urlState.filter }));
+			if (Object.keys(urlState).length > 0) {
+				if (urlState.page) setPageState(urlState.page);
+				if (urlState.limit) setLimitState(urlState.limit);
+				if (urlState.sorts) setSortsState(urlState.sorts);
+				if (urlState.filter) {
+					setFilterState(prev => ({ ...prev, ...urlState.filter }));
+					setDebouncedFilter(prev => ({ ...prev, ...urlState.filter }));
+				}
+				if (urlState.query) setQueryState(prev => ({ ...prev, ...urlState.query }));
 			}
-			if (urlState.query) setQueryState(prev => ({ ...prev, ...urlState.query }));
 		}
 
 		// ** Listen for popstate (back/forward)
 		const handlePopState = () => {
 			const newUrlState = parseUrlParams(window.location.search);
 
-			setPageState(newUrlState.page ?? initialPage);
-			setLimitState(newUrlState.limit ?? initialLimit);
-			setSortsState(newUrlState.sorts ?? initialSorts);
-			setFilterState({ ...initialFilter, ...newUrlState.filter });
-			setDebouncedFilter({ ...initialFilter, ...newUrlState.filter });
-			setQueryState({ ...initialQuery, ...newUrlState.query });
+			setPageState(newUrlState.page ?? initialPageRef.current);
+			setLimitState(newUrlState.limit ?? initialLimitRef.current);
+			setSortsState(newUrlState.sorts ?? initialSortsRef.current);
+			setFilterState({ ...initialFilterRef.current, ...newUrlState.filter });
+			setDebouncedFilter({ ...initialFilterRef.current, ...newUrlState.filter });
+			setQueryState({ ...initialQueryRef.current, ...newUrlState.query });
 		};
 
 		window.addEventListener('popstate', handlePopState);
 		return () => window.removeEventListener('popstate', handlePopState);
-	}, [memoryMode, initialPage, initialLimit, initialSorts, initialFilter, initialQuery]);
+	}, [memoryMode]);
 
 	// ** Update URL when state changes
 	useEffect(() => {
 		if (memoryMode !== 'search-params' || typeof window === 'undefined') return;
+
+		// ** Skip URL update on initial mount to prevent loop with initial URL read
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+			return;
+		}
 
 		const params = stateToUrlParams({ page, limit, sorts, filter, query });
 		const newSearch = params.toString();
