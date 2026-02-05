@@ -91,6 +91,25 @@ export const keyToSortEntries = (key: string): TSortEntry[] => {
 };
 
 
+
+/**
+ * Parse a filter/query value from URL string to proper type
+ * Handles boolean strings ("true"/"false") and numeric strings
+ */
+const parseFilterValue = (value: string): unknown => {
+     // ** Boolean handling
+     if (value === 'true') return true;
+     if (value === 'false') return false;
+
+     // ** Number handling - only if it's a valid finite number
+     const num = Number(value);
+     if (!isNaN(num) && isFinite(num) && value.trim() !== '') {
+          return num;
+     }
+
+     return value;
+};
+
 /**
  * Parse URL search params into tabler state
  */
@@ -121,8 +140,10 @@ export const parseUrlParams = (search: string): {
      const query: Record<string, unknown> = {};
 
      params.forEach((value, key) => {
-          if (key.startsWith('f_')) filter[key.slice(2)] = value;
-          else if (key.startsWith('q_')) query[key.slice(2)] = value;
+          // ** Parse value with type coercion (booleans and numbers)
+          const parsedValue = parseFilterValue(value);
+          if (key.startsWith('f_')) filter[key.slice(2)] = parsedValue;
+          else if (key.startsWith('q_')) query[key.slice(2)] = parsedValue;
      });
 
      if (Object.keys(filter).length > 0) state.filter = filter;
