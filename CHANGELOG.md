@@ -1,3 +1,10 @@
+# [9.7.0](https://github.com/muhgholy/next-data-kit/compare/v9.6.0...v9.7.0) (2026-02-05)
+
+
+### Features
+
+* **utils:** fix boolean filter parsing in search-params memory mode ([49db5a6](https://github.com/muhgholy/next-data-kit/commit/49db5a6d2185e2e1600699d7a2e6b89c80b2ff5a))
+
 # [9.6.0](https://github.com/muhgholy/next-data-kit/compare/v9.5.0...v9.6.0) (2026-02-04)
 
 
